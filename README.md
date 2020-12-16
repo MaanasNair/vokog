@@ -1,2 +1,2 @@
 Initial features:
-Initial beta release
+Initial beta release 0.1.0
