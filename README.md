@@ -1,3 +1,2 @@
 Initial features:
-
- Not updated yet.
+Initial beta release
