@@ -1,0 +1,28 @@
+/* #fb-root > div.fb_dialog.fb_dialog_advanced.fb_shrink_active {
+ left: initial !important;
+ right: 18pt;
+ z-index: 9999999 !important;
+}
+.fb-customerchat.fb_invisible_flow.fb_iframe_widget iframe {
+ left: initial !important;
+ right: 65pt !important;
+}
+
+.fb_customer_chat_bubble_pop_in{
+  bottom: 60pt !important;
+} */
+
+
+#fb-root > .fb_dialog{
+  bottom:90px !important;
+  right:30px !important;
+}
+#fb-root > .fb_iframe_widget:not(.fb_iframe_widget_fluid) iframe{
+  bottom:150px !important;
+  right:15px !important;
+}
+@media (max-width: 991px){
+  #fb-root > .fb_dialog{
+    right:20px !important;
+  }
+}
