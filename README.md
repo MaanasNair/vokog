@@ -1,1 +1,3 @@
-shop
+Initial features:
+
+ Not updated yet.
