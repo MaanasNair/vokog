@@ -29,6 +29,9 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 | or another output device for the developers. Here goes nothing!
 |
 */
+/*
+This repo is and will be maintained by Maanas Nair @MaanasNair (github.com/MaanasNair)(MaanasNair.in)
+*/
 
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
