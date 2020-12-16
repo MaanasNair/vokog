@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes
+| Admin Routes (Made by Maanas Nair)
 |--------------------------------------------------------------------------
 |
 | Here is where you can register admin routes for your application. These
