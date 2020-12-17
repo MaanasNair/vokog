@@ -72,7 +72,7 @@
     						{{__('Order Date')}}
     					</td>
     					<td class="text-right">
-    						{{ date('d-m-Y H:m A', $order->date) }}
+    						{{ date('d-m-Y h:i A', $order->date) }} (UTC)
     					</td>
     				</tr>
                     <tr>
