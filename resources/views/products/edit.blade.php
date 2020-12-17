@@ -109,15 +109,17 @@
 								<label class="col-lg-2 control-label">{{__('Main Images')}}</label>
 								<div class="col-lg-7">
 									<div id="photos">
-										@foreach (json_decode($product->photos) as $key => $photo)
-											<div class="col-md-4 col-sm-4 col-xs-6">
-												<div class="img-upload-preview">
-													<img src="{{ asset($photo) }}" alt="" class="img-responsive">
-													<input type="hidden" name="previous_photos[]" value="{{ $photo }}">
-													<button type="button" class="btn btn-danger close-btn remove-files"><i class="fa fa-times"></i></button>
+										@if(is_array(json_decode($product->photos)))
+											@foreach (json_decode($product->photos) as $key => $photo)
+												<div class="col-md-4 col-sm-4 col-xs-6">
+													<div class="img-upload-preview">
+														<img src="{{ asset($photo) }}" alt="" class="img-responsive">
+														<input type="hidden" name="previous_photos[]" value="{{ $photo }}">
+														<button type="button" class="btn btn-danger close-btn remove-files"><i class="fa fa-times"></i></button>
+													</div>
 												</div>
-											</div>
-										@endforeach
+											@endforeach
+										@endif
 									</div>
 								</div>
 							</div>
@@ -385,7 +387,12 @@
 
 				        </div>
 						<div id="demo-stk-lft-tab-10" class="tab-pane fade">
-
+							<div class="form-group">
+								<label class="col-lg-2 control-label">{{__('PDF Specification')}}</label>
+								<div class="col-lg-7">
+									<input type="file" class="form-control" placeholder="{{__('PDF')}}" name="pdf" accept="application/pdf">
+								</div>
+							</div>
 				        </div>
 				    </div>
 				</div>

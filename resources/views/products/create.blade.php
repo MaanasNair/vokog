@@ -211,19 +211,19 @@
 							<div class="form-group">
 								<label class="col-lg-2 control-label">{{__('Unit price')}}</label>
 								<div class="col-lg-7">
-									<input type="number" min="0" step="0.01" placeholder="{{__('Unit price')}}" name="unit_price" class="form-control" required>
+									<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Unit price')}}" name="unit_price" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-lg-2 control-label">{{__('Purchase price')}}</label>
 								<div class="col-lg-7">
-									<input type="number" min="0" step="0.01" placeholder="{{__('Purchase price')}}" name="purchase_price" class="form-control" required>
+									<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Purchase price')}}" name="purchase_price" class="form-control" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-lg-2 control-label">{{__('Tax')}}</label>
 								<div class="col-lg-7">
-									<input type="number" min="0" step="0.01" placeholder="{{__('Tax')}}" name="tax" class="form-control" required>
+									<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Tax')}}" name="tax" class="form-control" required>
 								</div>
 								<div class="col-lg-1">
 									<select class="demo-select2" name="tax_type">
@@ -235,7 +235,7 @@
 							<div class="form-group">
 								<label class="col-lg-2 control-label">{{__('Discount')}}</label>
 								<div class="col-lg-7">
-									<input type="number" min="0" step="0.01" placeholder="{{__('Discount')}}" name="discount" class="form-control" required>
+									<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Discount')}}" name="discount" class="form-control" required>
 								</div>
 								<div class="col-lg-1">
 									<select class="demo-select2" name="discount_type">
@@ -300,7 +300,7 @@
 									<div class="form-group">
 										<label class="col-lg-2 control-label">{{__('Shipping cost')}}</label>
 										<div class="col-lg-7">
-											<input type="number" min="0" step="0.01" placeholder="{{__('Shipping cost')}}" name="local_pickup_shipping_cost" class="form-control" required>
+											<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Shipping cost')}}" name="local_pickup_shipping_cost" class="form-control" required>
 										</div>
 									</div>
 								</div>
@@ -324,7 +324,7 @@
 									<div class="form-group">
 										<label class="col-lg-2 control-label">{{__('Shipping cost')}}</label>
 										<div class="col-lg-7">
-											<input type="number" min="0" step="0.01" placeholder="{{__('Shipping cost')}}" name="flat_shipping_cost" class="form-control" required>
+											<input type="number" min="0" value="0" step="0.01" placeholder="{{__('Shipping cost')}}" name="flat_shipping_cost" class="form-control" required>
 										</div>
 									</div>
 								</div>
