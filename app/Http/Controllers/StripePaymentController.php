@@ -46,7 +46,7 @@ class StripePaymentController extends Controller
                 Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
                 $payment = json_encode(Stripe\Charge::create ([
-                        "amount" => convert_to_usd($order->grand_total) * 100,
+                        "amount" => round(convert_to_usd($order->grand_total) * 100),
                         "currency" => "usd",
                         "source" => $request->stripeToken
                 ]));
@@ -60,7 +60,7 @@ class StripePaymentController extends Controller
                 Stripe\Stripe::setApiKey($seller->stripe_secret);
 
                 $payment = json_encode(Stripe\Charge::create ([
-                        "amount" => convert_to_usd($request->session()->get('payment_data')['amount']) * 100,
+                        "amount" => round(convert_to_usd($request->session()->get('payment_data')['amount']) * 100),
                         "currency" => "usd",
                         "source" => $request->stripeToken
                 ]));
@@ -73,7 +73,7 @@ class StripePaymentController extends Controller
                 Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
                 $payment = json_encode(Stripe\Charge::create ([
-                        "amount" => convert_to_usd($request->session()->get('payment_data')['amount']) * 100,
+                        "amount" => round(convert_to_usd($request->session()->get('payment_data')['amount']) * 100),
                         "currency" => "usd",
                         "source" => $request->stripeToken
                 ]));

@@ -7,6 +7,7 @@ use App\Order;
 use App\Product;
 use App\Color;
 use App\OrderDetail;
+use App\CouponUsage;
 use Auth;
 use Session;
 use DB;
@@ -103,7 +104,7 @@ class OrderController extends Controller
         $order->shipping_address = json_encode($request->session()->get('shipping_info'));
         $order->payment_type = $request->payment_option;
         $order->code = date('Ymd-his');
-        $order->date = strtotime(date('d-m-Y'));
+        $order->date = strtotime('now');
 
         if($order->save()){
             $subtotal = 0;
@@ -151,10 +152,25 @@ class OrderController extends Controller
             }
 
             $order->grand_total = $subtotal + $tax + $shipping;
+
+            if(Session::has('coupon_discount')){
+                $order->grand_total -= Session::get('coupon_discount');
+                $order->coupon_discount = Session::get('coupon_discount');
+
+                $coupon_usage = new CouponUsage;
+                $coupon_usage->user_id = Auth::user()->id;
+                $coupon_usage->coupon_id = Session::get('coupon_id');
+                $coupon_usage->save();
+            }
+
             $order->save();
 
             //stores the pdf for invoice
-            $pdf = PDF::loadView('invoices.customer_invoice', compact('order'));
+            $pdf = PDF::setOptions([
+                            'isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true,
+                            'logOutputFile' => storage_path('logs/log.htm'),
+                            'tempDir' => storage_path('logs/')
+                        ])->loadView('invoices.customer_invoice', compact('order'));
             $output = $pdf->output();
     		file_put_contents('public/invoices/'.'Order#'.$order->code.'.pdf', $output);
 
@@ -259,11 +275,11 @@ class OrderController extends Controller
         }
         $status = 'paid';
         foreach($order->orderDetails as $key => $orderDetail){
-            if($orderDetail->payment_status == 'unpaid'){
+            if($orderDetail->payment_status != 'paid'){
                 $status = 'unpaid';
             }
         }
-        $order->payment_status == $status;
+        $order->payment_status = $status;
         $order->save();
         return 1;
     }

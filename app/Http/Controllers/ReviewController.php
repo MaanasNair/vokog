@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Review;
+use App\Product;
 use Auth;
+use DB;
 
 class ReviewController extends Controller
 {
@@ -15,7 +17,22 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        //
+        $reviews = Review::all();
+        return view('reviews.index', compact('reviews'));
+    }
+
+
+    public function seller_reviews()
+    {
+        $reviews = DB::table('reviews')
+                    ->orderBy('id', 'desc')
+                    ->join('products', 'reviews.product_id', '=', 'products.id')
+                    ->where('products.user_id', Auth::user()->id)
+                    ->select('reviews.id')
+                    ->distinct()
+                    ->paginate(9);
+
+        return view('frontend.seller.reviews', compact('reviews'));
     }
 
     /**
@@ -42,6 +59,14 @@ class ReviewController extends Controller
         $review->rating = $request->rating;
         $review->comment = $request->comment;
         if($review->save()){
+            $product = Product::findOrFail($request->product_id);
+            if(count(Review::where('product_id', $product->id)->where('status', 1)->get()) > 0){
+                $product->rating = Review::where('product_id', $product->id)->where('status', 1)->sum('rating')/count(Review::where('product_id', $product->id)->where('status', 1)->get());
+            }
+            else {
+                $product->rating = 0;
+            }
+            $product->save();
             flash('Review has been submitted successfully')->success();
             return back();
         }
@@ -92,5 +117,23 @@ class ReviewController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function updatePublished(Request $request)
+    {
+        $review = Review::findOrFail($request->id);
+        $review->status = $request->status;
+        if($review->save()){
+            $product = Product::findOrFail($review->product->id);
+            if(count(Review::where('product_id', $product->id)->where('status', 1)->get()) > 0){
+                $product->rating = Review::where('product_id', $product->id)->where('status', 1)->sum('rating')/count(Review::where('product_id', $product->id)->where('status', 1)->get());
+            }
+            else {
+                $product->rating = 0;
+            }
+            $product->save();
+            return 1;
+        }
+        return 0;
     }
 }

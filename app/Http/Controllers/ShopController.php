@@ -41,6 +41,7 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
+        $user = null;
         if(!Auth::check()){
             if(User::where('email', $request->email)->first() != null){
                 flash(__('Email already exists!'))->error();
@@ -65,6 +66,11 @@ class ShopController extends Controller
                 $user->customer->delete();
             }
             $user->user_type = "seller";
+            $user->save();
+        }
+
+        if(BusinessSetting::where('type', 'email_verification')->first()->value != 1){
+            $user->email_verified_at = date('Y-m-d H:m:s');
             $user->save();
         }
 
@@ -127,32 +133,35 @@ class ShopController extends Controller
             $shop->name = $request->name;
             $shop->address = $request->address;
             $shop->slug = preg_replace('/\s+/', '-', $request->name).'-'.$shop->id;
-        }
 
-        if($request->hasFile('logo')){
-            $shop->logo = $request->logo->store('uploads/hop/logo');
-        }
-
-        if($request->has('previous_sliders')){
-            $sliders = $request->previous_sliders;
-        }
-        else{
-            $sliders = array();
-        }
-
-        if($request->hasFile('sliders')){
-            foreach ($request->sliders as $key => $slider) {
-                array_push($sliders, $slider->store('uploads/shop/sliders'));
+            if($request->hasFile('logo')){
+                $shop->logo = $request->logo->store('uploads/hop/logo');
             }
         }
 
-        $shop->sliders = json_encode($sliders);
-
-        if($request->has('facebook') || $request->has('google') || $request->has('twitter') || $request->has('youtube')){
+        elseif($request->has('facebook') || $request->has('google') || $request->has('twitter') || $request->has('youtube') || $request->has('instagram')){
             $shop->facebook = $request->facebook;
             $shop->google = $request->google;
             $shop->twitter = $request->twitter;
             $shop->youtube = $request->youtube;
+            $shop->instagram = $request->instagram;
+        }
+
+        else{
+            if($request->has('previous_sliders')){
+                $sliders = $request->previous_sliders;
+            }
+            else{
+                $sliders = array();
+            }
+
+            if($request->hasFile('sliders')){
+                foreach ($request->sliders as $key => $slider) {
+                    array_push($sliders, $slider->store('uploads/shop/sliders'));
+                }
+            }
+
+            $shop->sliders = json_encode($sliders);
         }
 
         if($shop->save()){

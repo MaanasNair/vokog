@@ -143,18 +143,26 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Google')}} </label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="text" class="form-control mb-3" placeholder="{{__('Google')}}" name="google" value="{{ $shop->google }}">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
                                             <label>{{__('Twitter')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Twitter')}}" name="twitter" value="{{ $shop->twitter }}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Instagram')}} </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Instagram')}}" name="instagram" value="{{ $shop->instagram }}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Google')}} </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Google')}}" name="google" value="{{ $shop->google }}">
                                         </div>
                                     </div>
                                     <div class="row">

@@ -271,7 +271,7 @@
                                             <label>{{__('Unit Price')}} <span class="required-star">*</span></label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="unit_price" placeholder="{{__('Unit Price')}} ({{__('Base Price')}})">
+                                            <input type="number" min="0" value="0" step="0.01" class="form-control mb-3" name="unit_price" placeholder="{{__('Unit Price')}} ({{__('Base Price')}})" required>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -279,7 +279,7 @@
                                             <label>{{__('Purchase Price')}} <span class="required-star">*</span></label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="purchase_price" placeholder="{{__('Purchase Price')}}" required>
+                                            <input type="number" min="0" value="0" step="0.01" class="form-control mb-3" name="purchase_price" placeholder="{{__('Purchase Price')}}" required>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -287,7 +287,7 @@
                                             <label>{{__('Tax')}}</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="tax" placeholder="{{__('Tax')}}">
+                                            <input type="number" min="0" value="0" step="0.01" class="form-control mb-3" name="tax" placeholder="{{__('Tax')}}" required>
                                         </div>
                                         <div class="col-4 col-md-2">
                                             <div class="mb-3">
@@ -303,7 +303,7 @@
                                             <label>{{__('Discount')}}</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="discount" placeholder="{{__('Discount')}}">
+                                            <input type="number" min="0" value="0" step="0.01" class="form-control mb-3" name="discount" placeholder="{{__('Discount')}}" required>
                                         </div>
                                         <div class="col-4 col-md-2">
                                             <div class="mb-3">
@@ -331,7 +331,7 @@
                                             <label>{{__('Local Pickup')}}</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="local_pickup_shipping_cost" placeholder="{{__('Local Pickup Cost')}}">
+                                            <input type="number" min="0" step="0.01" value="0" class="form-control mb-3" name="local_pickup_shipping_cost" placeholder="{{__('Local Pickup Cost')}}">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="switch" style="margin-top:5px;">
@@ -345,7 +345,7 @@
                                             <label>{{__('Flat Rate')}}</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="flat_shipping_cost" placeholder="{{__('Flat Rate Cost')}}">
+                                            <input type="number" min="0" step="0.01" value="0" class="form-control mb-3" name="flat_shipping_cost" placeholder="{{__('Flat Rate Cost')}}">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="switch" style="margin-top:5px;">
@@ -359,7 +359,7 @@
                                             <label>{{__('Free Shipping')}}</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="number" min="0" step="0.01" class="form-control mb-3" name="free_shipping_cost" value="0" disabled placeholder="{{__('Flat Rate Cost')}}">
+                                            <input type="number" min="0" step="0.01" value="0" class="form-control mb-3" name="free_shipping_cost" value="0" disabled placeholder="{{__('Flat Rate Cost')}}">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="switch" style="margin-top:5px;">

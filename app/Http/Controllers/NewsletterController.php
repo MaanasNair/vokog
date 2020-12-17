@@ -19,25 +19,35 @@ class NewsletterController extends Controller
 
     public function send(Request $request)
     {
-        //sends newsletter to selected users
-    	foreach ($request->user_emails as $key => $email) {
-            $array['view'] = 'emails.newsletter';
-            $array['subject'] = $request->subject;
-            $array['from'] = env('MAIL_USERNAME');
-            $array['content'] = $request->content;
+        if (env('MAIL_USERNAME') != null && env('MAIL_PASSWORD') != null) {
+            //sends newsletter to selected users
+        	if ($request->has('user_emails')) {
+                foreach ($request->user_emails as $key => $email) {
+                    $array['view'] = 'emails.newsletter';
+                    $array['subject'] = $request->subject;
+                    $array['from'] = env('MAIL_USERNAME');
+                    $array['content'] = $request->content;
 
-            Mail::to($email)->queue(new EmailManager($array));
-    	}
+                    Mail::to($email)->queue(new EmailManager($array));
+            	}
+            }
 
-        //sends newsletter to subscribers
-        foreach ($request->subscriber_emails as $key => $email) {
-            $array['view'] = 'emails.newsletter';
-            $array['subject'] = $request->subject;
-            $array['from'] = env('MAIL_USERNAME');
-            $array['content'] = $request->content;
+            //sends newsletter to subscribers
+            if ($request->has('subscriber_emails')) {
+                foreach ($request->subscriber_emails as $key => $email) {
+                    $array['view'] = 'emails.newsletter';
+                    $array['subject'] = $request->subject;
+                    $array['from'] = env('MAIL_USERNAME');
+                    $array['content'] = $request->content;
 
-            Mail::to($email)->queue(new EmailManager($array));
-    	}
+                    Mail::to($email)->queue(new EmailManager($array));
+            	}
+            }
+        }
+        else {
+            flash(__('Please configure SMTP first'))->error();
+            return back();
+        }
 
     	flash(__('Newsletter has been send'))->success();
     	return redirect()->route('admin.dashboard');

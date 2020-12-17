@@ -5,49 +5,84 @@
         <img src="https://via.placeholder.com/2000x300.jpg" alt="" class="img-fluid">
     </section> -->
 
+    @php
+        $total = 0;
+        $rating = 0;
+        foreach ($shop->user->products as $key => $seller_product) {
+            $total += $seller_product->reviews->count();
+            $rating += $seller_product->reviews->sum('rating');
+        }
+    @endphp
+
     <section class="gry-bg pt-4 ">
         <div class="container">
             <div class="row align-items-baseline">
                 <div class="col-md-6">
                     <div class="d-flex">
-                        <img height="60" src="{{ asset($shop->logo) }}" alt="Shop Logo">
+                        <img height="70" src="{{ asset($shop->logo) }}" alt="Shop Logo">
                         <div class="pl-4">
-                            <h3 class="strong-700 heading-4 mb-0 mt-2">{{ $shop->name }}
+                            <h3 class="strong-700 heading-4 mb-0">{{ $shop->name }}
                                 @if ($shop->user->seller->verification_status == 1)
                                     <span class="ml-2"><i class="fa fa-check-circle" style="color:green"></i></span>
                                 @else
                                     <span class="ml-2"><i class="fa fa-times-circle" style="color:red"></i></span>
                                 @endif
                             </h3>
+                            <div class="star-rating star-rating-sm mb-1">
+                                @if ($total > 0)
+                                    {{ renderStarRating($rating/$total) }}
+                                @else
+                                    {{ renderStarRating(0) }}
+                                @endif
+                            </div>
                             <div class="location alpha-6">{{ $shop->address }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <ul class="text-md-right mt-4 mt-md-0 social-nav model-2">
-                        <li>
-                            <a href="{{ $shop->facebook }}" class="facebook social_a" target="_blank" data-toggle="tooltip" data-original-title="Facebook">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $shop->google }}" class="google-plus social_a" target="_blank" data-toggle="tooltip" data-original-title="Google">
-                                <i class="fa fa-google-plus"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $shop->twitter }}" class="twitter social_a" target="_blank" data-toggle="tooltip" data-original-title="Twitter">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $shop->youtube }}" class="youtube social_a" target="_blank" data-toggle="tooltip" data-original-title="Youtube">
-                                <i class="fa fa-youtube"></i>
-                            </a>
-                        </li>
+                        @if ($shop->facebook != null)
+                            <li>
+                                <a href="{{ $shop->facebook }}" class="facebook social_a" target="_blank" data-toggle="tooltip" data-original-title="Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                        @endif
+                        @if ($shop->twitter != null)
+                            <li>
+                                <a href="{{ $shop->twitter }}" class="twitter social_a" target="_blank" data-toggle="tooltip" data-original-title="Twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                        @endif
+                        @if ($shop->instagram != null)
+                            <li>
+                                <a href="{{ $shop->instagram }}" class="instagram social_a" target="_blank" data-toggle="tooltip" data-original-title="Instagram">
+                                    <i class="fa fa-instagram"></i>
+                                </a>
+                            </li>
+                        @endif
+                        @if ($shop->google != null)
+                            <li>
+                                <a href="{{ $shop->google }}" class="google-plus social_a" target="_blank" data-toggle="tooltip" data-original-title="Google">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </li>
+                        @endif
+                        @if ($shop->youtube != null)
+                            <li>
+                                <a href="{{ $shop->youtube }}" class="youtube social_a" target="_blank" data-toggle="tooltip" data-original-title="Youtube">
+                                    <i class="fa fa-youtube"></i>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </div>
+        </div>
+    </section>
+    <section class="bg-white">
+        <div class="container">
             <div class="row sticky-top mt-4">
                 <div class="col">
                     <div class="seller-shop-menu">
@@ -63,7 +98,7 @@
     </section>
 
     @if (!isset($type))
-        <section class="py-5">
+        <section class="py-4">
             <div class="container">
                 <div class="home-slide">
                     <div class="slick-carousel" data-slick-arrows="true" data-slick-dots="true">
@@ -78,9 +113,9 @@
                 </div>
             </div>
         </section>
-        <section class="slice sct-color-1 pt-2">
+        <section class="sct-color-1 pt-5 pb-4">
             <div class="container">
-                <div class="section-title section-title--style-1 text-center mb-5">
+                <div class="section-title section-title--style-1 text-center mb-4">
                     <h3 class="section-title-inner heading-3 strong-600">
                         {{__('Featured Products')}}
                     </h3>
@@ -104,7 +139,10 @@
                                                         <del class="old-product-price strong-400">{{ home_base_price($product->id) }}</del>
                                                         <span class="product-price strong-600">{{ home_discounted_base_price($product->id) }}</span>
                                                     </div>
-                                                    <h2 class="product-title p-0 mt-2 text-truncate-2">
+                                                    <div class="star-rating star-rating-sm mt-1">
+                                                        {{ renderStarRating($product->rating) }}
+                                                    </div>
+                                                    <h2 class="product-title p-0 text-truncate-2">
                                                         <a href="{{ route('product', $product->slug) }}">{{ __($product->name) }}</a>
                                                     </h2>
                                                 </div>
@@ -145,20 +183,10 @@
                             <div class="location">{{ $shop->address }}</div>
                             <div class="rating text-center d-block">
                                 <span class="star-rating star-rating-sm d-block">
-                                    @php
-                                        $rating = 0; $total = 0;
-                                        foreach ($shop->user->products as $key => $seller_product) {
-                                            $rating += $seller_product->reviews->sum('rating');
-                                            $total += $seller_product->reviews->count();
-                                        }
-                                    @endphp
                                     @if ($total > 0)
-                                        @for ($i=0; $i < floor($rating/$total); $i++)
-                                            <i class="fa fa-star"></i>
-                                        @endfor
-                                        @for ($i=0; $i < ceil(5-$rating/$total); $i++)
-                                            <i class="fa fa-star-o"></i>
-                                        @endfor
+                                        {{ renderStarRating($rating/$total) }}
+                                    @else
+                                        {{ renderStarRating(0) }}
                                     @endif
                                 </span>
                                 <span class="rating-count d-block ml-0">({{ $total }} {{__('customer reviews')}})</span>
@@ -261,31 +289,33 @@
                             {{__('All Products')}}
                         @endif
                     </h4>
-                    <div class="product-list row">
+                    <div class="product-list row gutters-5 sm-no-gutters">
                         @php
                             if (!isset($type)){
-                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->orderBy('created_at', 'desc')->paginate(6);
+                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->orderBy('created_at', 'desc')->paginate(12);
                             }
                             elseif ($type == 'top_selling'){
-                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->orderBy('num_of_sale', 'desc')->paginate(6);
+                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->orderBy('num_of_sale', 'desc')->paginate(12);
                             }
                             elseif ($type == 'all_products'){
-                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->paginate(6);
+                                $products = \App\Product::where('user_id', $shop->user->id)->where('published', 1)->paginate(12);
                             }
                         @endphp
                         @foreach ($products as $key => $product)
-                            <div class="col-lg-4 col-md-6">
+                            <div class="col-lg-3 col-md-4 col-6">
                                 <div class="card product-box-1 mb-3">
                                     <div class="card-image">
                                         <a href="{{ route('product', $product->slug) }}" class="d-block" style="background-image:url('{{ asset($product->thumbnail_img) }}');" tabindex="0">
                                         </a>
                                     </div>
                                     <div class="card-body p-0">
-                                        <div class="title p-3 text-truncate-2">
-                                            <a href="{{ route('product', $product->slug) }}">{{ __($product->name) }}</a>
+                                        <div class="px-3 py-2">
+                                            <h2 class="title text-truncate-2 mb-0">
+                                                <a href="{{ route('product', $product->slug) }}">{{ __($product->name) }}</a>
+                                            </h2>
                                         </div>
                                         <div class="price-bar row no-gutters">
-                                            <div class="price col-8">
+                                            <div class="price col-7">
                                                 @if(home_price($product->id) != home_discounted_price($product->id))
                                                     <del class="old-product-price strong-600">{{ home_base_price($product->id) }}</del>
                                                     <span class="product-price strong-600">{{ home_discounted_base_price($product->id) }}</span>
@@ -293,19 +323,22 @@
                                                     <span class="product-price strong-600">{{ home_discounted_base_price($product->id) }}</span>
                                                 @endif
                                             </div>
-                                            <div class="col-4">
-                                                <button class="add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})">
-                                                    <i class="ion-ios-heart-outline"></i>
-                                                </button>
-                                                <button class="add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})">
-                                                    <i class="ion-ios-browsers-outline"></i>
-                                                </button>
+                                            <div class="col-5">
+                                                <div class="star-rating star-rating-sm float-right">
+                                                    {{ renderStarRating($product->rating) }}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="cart-add">
-                                            <button type="button" class=" btn btn-block btn-icon-left" onclick="showAddToCartModal({{ $product->id }})">
-                                                <i class="icon ion-android-cart"></i>{{__('Add to cart')}}
-                                            </button>
+                                        <div class="cart-add d-flex">
+                                                <button class="btn add-wishlist border-right" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})">
+                                                    <i class="la la-heart-o"></i>
+                                                </button>
+                                                <button class="btn add-compare border-right" title="Add to Compare" onclick="addToCompare({{ $product->id }})">
+                                                    <i class="la la-refresh"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-block btn-icon-left" onclick="showAddToCartModal({{ $product->id }})">
+                                                    <span class="d-none d-sm-inline-block">{{__('Add to cart')}}</span><i class="la la-shopping-cart ml-2"></i>
+                                                </button>
                                         </div>
                                     </div>
                                 </div>

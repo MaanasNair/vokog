@@ -1,7 +1,7 @@
 <div class="sidebar sidebar--style-3 no-border stickyfill p-0">
     <div class="widget mb-0">
         <div class="widget-profile-box text-center p-3">
-            <div class="image" style="background-image:url('{{ Auth::user()->avatar_original }}')"></div>
+            <div class="image" style="background-image:url('{{ asset(Auth::user()->avatar_original) }}')"></div>
             <div class="name">{{ Auth::user()->name }}</div>
         </div>
         <div class="sidebar-widget-title py-3">
@@ -41,11 +41,21 @@
                         </span>
                     </a>
                 </li>
+                @if (\App\BusinessSetting::where('type', 'wallet_system')->first()->value == 1)
+                    <li>
+                        <a href="{{ route('wallet.index') }}" class="{{ areActiveRoutesHome(['wallet.index'])}}">
+                            <i class="la la-dollar"></i>
+                            <span class="category-name">
+                                {{__('My Wallet')}}
+                            </span>
+                        </a>
+                    </li>
+                @endif
                 <li>
-                    <a href="{{ route('wallet.index') }}" class="{{ areActiveRoutesHome(['wallet.index'])}}">
-                        <i class="la la-dollar"></i>
+                    <a href="{{ route('support_ticket.index') }}" class="{{ areActiveRoutesHome(['support_ticket.index'])}}">
+                        <i class="la la-support"></i>
                         <span class="category-name">
-                            {{__('My Wallet')}}
+                            {{__('Support Ticket')}}
                         </span>
                     </a>
                 </li>

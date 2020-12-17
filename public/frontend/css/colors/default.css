@@ -126,17 +126,19 @@ ul.categories--style-3 > li > ul > li > a.active,
 .product-box-1 .price-bar .price,
 .sub-category-menu ul li a:hover,
 .product-box-2 .add-to-cart
-
 {
     color: #e62e04;
 }
 
-
-
+.hov-shaddow:hover{
+    box-shadow:0 3px 10px rgba(230, 46, 4, .4)
+}
+.btn-alt-base-1{
+    background: #fc8a1a;
+}
 
 .c-base-1,
 .link-menu--style-2 a.active
-
 {
     color: #e62e04 !important;
 }
@@ -227,7 +229,6 @@ input:checked + .toggle-switch-slider:before,
 .section-title-1 li a.active,
 .section-title-1 li a:hover,
 .product-box-1 .cart-add .btn:hover
-
 {
     background: #e62e04;
 }

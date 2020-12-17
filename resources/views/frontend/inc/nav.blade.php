@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header bg-white">
     <!-- Top Bar -->
     <div class="top-navbar">
         <div class="container">
@@ -52,6 +52,9 @@
 
                 <div class="col-5 text-right d-none d-lg-block">
                     <ul class="inline-links">
+                        <li>
+                            <a href="{{ route('orders.track') }}" class="top-bar-item">{{__('Track Order')}}</a>
+                        </li>
                         @auth
                         <li>
                             <a href="{{ route('dashboard') }}" class="top-bar-item">{{__('My Profile')}}</a>
@@ -154,6 +157,15 @@
                             </a>
                         </li>
 
+                        @if (\App\BusinessSetting::where('type', 'wallet_system')->first()->value == 1)
+                            <li>
+                                <a href="{{ route('wallet.index') }}">
+                                    <i class="la la-dollar"></i>
+                                    <span>{{__('My Wallet')}}</span>
+                                </a>
+                            </li>
+                        @endif
+
                         <li>
                             <a href="{{ route('profile') }}">
                                 <i class="la la-user"></i>
@@ -196,7 +208,7 @@
                             </li>
                         </ul>
                         <div class="sidebar-widget-title py-0">
-                            <span>{{__('Earinngs')}}</span>
+                            <span>{{__('Earnings')}}</span>
                         </div>
                         <div class="widget-balance py-3">
                             <div class="text-center">
@@ -277,7 +289,7 @@
         <div class="">
             <div class="container">
                 <div class="row no-gutters align-items-center">
-                    <div class="col-lg-3 col-10">
+                    <div class="col-lg-3 col-8">
                         <div class="d-flex">
                             <div class="d-block d-lg-none mobile-menu-icon-box">
                                 <!-- Navbar toggler  -->
@@ -312,7 +324,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-9 col-2 position-static">
+                    <div class="col-lg-9 col-4 position-static">
                         <div class="d-flex w-100">
                             <div class="search-box flex-grow-1 px-4">
                                 <form action="{{ route('search') }}" method="GET">
@@ -390,7 +402,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="d-none d-lg-inline-block" data-hover="dropdown">
+                                <div class="d-inline-block" data-hover="dropdown">
                                     <div class="nav-cart-box dropdown" id="cart_items">
                                         <a href="" class="nav-box-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="la la-shopping-cart d-inline-block nav-box-icon"></i>

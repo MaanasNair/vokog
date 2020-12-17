@@ -1,5 +1,5 @@
 
-<section class="slice-sm footer-top-bar">
+<section class="slice-sm footer-top-bar bg-white">
     <div class="container sct-inner">
         <div class="row no-gutters">
             <div class="col-lg-3 col-md-6">
@@ -119,25 +119,30 @@
                        <ul class="footer-links">
                             @if (Auth::check())
                                 <li>
-                                    <a href="{{ route('logout') }}" title="Home">
+                                    <a href="{{ route('logout') }}" title="Logout">
                                         {{__('Logout')}}
                                     </a>
                                 </li>
                             @else
                                 <li>
-                                    <a href="{{ route('user.login') }}" title="Home">
+                                    <a href="{{ route('user.login') }}" title="Login">
                                         {{__('Login')}}
                                     </a>
                                 </li>
                             @endif
                             <li>
-                                <a href="{{ route('purchase_history.index') }}" title="About us">
+                                <a href="{{ route('purchase_history.index') }}" title="Order History">
                                     {{__('Order History')}}
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('wishlists.index') }}" title="Services">
+                                <a href="{{ route('wishlists.index') }}" title="My Wishlist">
                                     {{__('My Wishlist')}}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('orders.track') }}" title="Track Order">
+                                    {{__('Track Order')}}
                                 </a>
                             </li>
                         </ul>

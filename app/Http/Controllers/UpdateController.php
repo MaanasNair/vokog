@@ -38,6 +38,21 @@ class UpdateController extends Controller
             $sql = "INSERT INTO `languages` (`id`, `name`, `code`, `rtl`, `created_at`, `updated_at`) VALUES (NULL, 'Arabic', 'sa', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
             DB::unprepared($sql);
         }
+        if (BusinessSetting::where('type', 'email_verification')->first() == null) {
+            $sql = "INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_at`) VALUES (NULL, 'email_verification', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+            DB::unprepared($sql);
+        }
+        if(BusinessSetting::where('type', 'wallet_system')->first() == null){
+            $sql = "INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_at`) VALUES (NULL, 'wallet_system', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+            DB::unprepared($sql);
+        }
+        if(!Schema::hasColumn('shops', 'instagram')){
+            DB::unprepared("ALTER TABLE `shops` ADD `instagram` VARCHAR(255) NULL DEFAULT NULL AFTER `youtube`");
+        }
+        if(!Schema::hasTable('coupons')){
+            $sql_path = base_path('shop_update_14.sql');
+            DB::unprepared(file_get_contents($sql_path));
+        }
 
         return redirect('step2');
     }

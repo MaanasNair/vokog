@@ -47,10 +47,12 @@
                                                 </a>
                                             </div>
 
-                                            <h2 class="heading heading-6 strong-600 mt-2 mb-3 text-truncate-2">
+                                            <h2 class="heading heading-6 strong-600 mt-2 text-truncate-2">
                                                 <a href="{{ route('product', $wishlist->product->slug) }}">{{ $wishlist->product->name }}</a>
                                             </h2>
-
+                                            <div class="star-rating star-rating-sm mb-1">
+                                                {{ renderStarRating($wishlist->product->rating) }}
+                                            </div>
                                             <div class="mt-2">
                                                 <div class="price-box">
                                                     @if(home_base_price($wishlist->product->id) != home_discounted_base_price($wishlist->product->id))

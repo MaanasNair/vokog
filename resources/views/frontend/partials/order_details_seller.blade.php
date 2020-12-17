@@ -7,24 +7,25 @@
 
 @php
     $status = $order->orderDetails->first()->delivery_status;
+    $payment_status = $order->orderDetails->first()->payment_status;
 @endphp
 
 <div class="modal-body gry-bg px-3 pt-0">
     <div class="pt-4">
         <ul class="process-steps clearfix">
-            <li class="done">
+            <li @if($status == 'pending') class="active" @else class="done" @endif>
                 <div class="icon">1</div>
                 <div class="title">{{__('Order placed')}}</div>
             </li>
-            <li @if($status == 'pending') class="active" @else class="done" @endif>
+            <li @if($status == 'on_review') class="active" @elseif($status == 'on_delivery' || $status == 'delivered') class="done" @endif>
                 <div class="icon">2</div>
                 <div class="title">{{__('On review')}}</div>
             </li>
-            <li @if($status == 'delivered' || $status == 'on_delivery') class="done" @else class="active" @endif>
+            <li @if($status == 'on_delivery') class="active" @elseif($status == 'delivered') class="done" @endif>
                 <div class="icon">3</div>
                 <div class="title">{{__('On delivery')}}</div>
             </li>
-            <li @if($status == 'delivered') class="done" @else class="active" @endif>
+            <li @if($status == 'delivered') class="done" @endif>
                 <div class="icon">4</div>
                 <div class="title">{{__('Delivered')}}</div>
             </li>
@@ -34,8 +35,8 @@
         <div class="offset-lg-2 col-lg-4 col-sm-6">
             <div class="form-inline">
                 <select class="form-control selectpicker form-control-sm"  data-minimum-results-for-search="Infinity" id="update_payment_status">
-                    <option value="paid" @if ($status == 'pending') selected @endif>{{__('Unpaid')}}</option>
-                    <option value="unpaid" @if ($status == 'on_review') selected @endif>{{__('Paid')}}</option>
+                    <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>{{__('Unpaid')}}</option>
+                    <option value="paid" @if ($payment_status == 'paid') selected @endif>{{__('Paid')}}</option>
                 </select>
                 <label class="my-2" >{{__('Payment Status')}}</label>
             </div>
@@ -61,7 +62,7 @@
                 <div class="col-lg-6">
                     <table class="details-table table">
                         <tr>
-                            <td class="w-50 strong-600">{{__('Order id')}}:</td>
+                            <td class="w-50 strong-600">{{__('Order Code')}}:</td>
                             <td>{{ $order->code }}</td>
                         </tr>
                         <tr>
@@ -100,7 +101,7 @@
                         </tr>
                         <tr>
                             <td class="w-50 strong-600">{{__('Payment method')}}:</td>
-                            <td>{{ $order->payment_type }}</td>
+                            <td>{{ ucfirst(str_replace('_', ' ', $order->payment_type)) }}</td>
                         </tr>
                     </table>
                 </div>
@@ -189,6 +190,17 @@
         $.post('{{ route('orders.update_delivery_status') }}', {_token:'{{ @csrf_token() }}',order_id:order_id,status:status}, function(data){
             $('#order_details').modal('hide');
             showFrontendAlert('success', 'Order status has been updated');
+            location.reload().setTimeOut(500);
+        });
+    });
+
+    $('#update_payment_status').on('change', function(){
+        var order_id = {{ $order->id }};
+        var status = $('#update_payment_status').val();
+        $.post('{{ route('orders.update_payment_status') }}', {_token:'{{ @csrf_token() }}',order_id:order_id,status:status}, function(data){
+            $('#order_details').modal('hide');
+            //console.log(data);
+            showFrontendAlert('success', 'Payment status has been updated');
             location.reload().setTimeOut(500);
         });
     });

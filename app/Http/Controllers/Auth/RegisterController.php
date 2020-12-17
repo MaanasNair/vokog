@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\Customer;
+use App\BusinessSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -70,11 +71,18 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
+        if(BusinessSetting::where('type', 'email_verification')->first()->value != 1){
+            $user->email_verified_at = date('Y-m-d H:m:s');
+            $user->save();
+            flash(__('Registration successfull.'))->success();
+        }
+        else {
+            flash(__('Registration successfull. Please verify your email.'))->success();
+        }
+
         $customer = new Customer;
         $customer->user_id = $user->id;
         $customer->save();
-
-        flash(__('Registration successfull. Please verify your email.'))->success();
 
         return $user;
     }

@@ -56,9 +56,9 @@
                                 <div class="row">
                                     <div class="col-12">
                                         @if (Session::get('payment_type') == 'cart_payment')
-                                            <button class="btn btn-base-1 btn-block" type="submit">{{__('Pay Now')}} (${{ convert_to_usd(\App\Order::findOrFail(Session::get('order_id'))->grand_total) }})</button>
+                                            <button class="btn btn-base-1 btn-block" type="submit">{{__('Pay Now')}} (${{ number_format(convert_to_usd(\App\Order::findOrFail(Session::get('order_id'))->grand_total), 2) }})</button>
                                         @elseif(Session::get('payment_type') == 'wallet_payment')
-                                            <button class="btn btn-base-1 btn-block" type="submit">{{__('Pay Now')}} (${{ convert_to_usd(Session::get('payment_data')['amount']) }})</button>
+                                            <button class="btn btn-base-1 btn-block" type="submit">{{__('Pay Now')}} (${{ number_format(convert_to_usd(Session::get('payment_data')['amount']), 2) }})</button>
                                         @endif
                                     </div>
                                 </div>

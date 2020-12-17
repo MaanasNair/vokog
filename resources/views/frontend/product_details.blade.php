@@ -1,5 +1,11 @@
 @extends('frontend.layouts.app')
 
+@section('meta_title'){{ $product->meta_title }}@stop
+
+@section('meta_description'){{ $product->meta_description }}@stop
+
+@section('meta_keywords'){{ $product->tags }}@stop
+
 @section('meta')
     <!-- Schema.org markup for Google+ -->
     <meta itemprop="name" content="{{ $product->meta_title }}">
@@ -37,18 +43,20 @@
                 <div class="row no-gutters cols-xs-space cols-sm-space cols-md-space">
                     <div class="col-lg-6">
                         <div class="product-gal sticky-top d-flex flex-row-reverse">
-                            <div class="product-gal-img">
-                                <img class="xzoom img-fluid" src="{{ asset(json_decode($product->photos)[0]) }}" xoriginal="{{ asset(json_decode($product->photos)[0]) }}" />
-                            </div>
-                            <div class="product-gal-thumb">
-                                <div class="xzoom-thumbs">
-                                    @foreach (json_decode($product->photos) as $key => $photo)
-                                        <a href="{{ asset($photo) }}">
-                                            <img class="xzoom-gallery" width="80" src="{{ asset($photo) }}"  @if($key == 0) xpreview="{{ asset($photo) }}" @endif>
-                                        </a>
-                                    @endforeach
+                            @if(is_array(json_decode($product->photos)) && count(json_decode($product->photos)) > 0)
+                                <div class="product-gal-img">
+                                    <img class="xzoom img-fluid" src="{{ asset(json_decode($product->photos)[0]) }}" xoriginal="{{ asset(json_decode($product->photos)[0]) }}" />
                                 </div>
-                            </div>
+                                <div class="product-gal-thumb">
+                                    <div class="xzoom-thumbs">
+                                        @foreach (json_decode($product->photos) as $key => $photo)
+                                            <a href="{{ asset($photo) }}">
+                                                <img class="xzoom-gallery" width="80" src="{{ asset($photo) }}"  @if($key == 0) xpreview="{{ asset($photo) }}" @endif>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -67,35 +75,25 @@
                                 <li class="active"><a href="{{ route('products.subsubcategory', $product->subsubcategory_id) }}">{{ $product->subsubcategory->name }}</a></li>
                             </ul>
 
-                            <div class="row align-items-center">
+                            <div class="row">
                                 <div class="col-6">
+                                    <!-- Rating stars -->
+                                    <div class="rating mb-1">
+                                        @php
+                                            $total = 0;
+                                            $total += $product->reviews->count();
+                                        @endphp
+                                        <span class="star-rating">
+                                            {{ renderStarRating($product->rating) }}
+                                        </span>
+                                        <span class="rating-count">({{ $total }} {{__('customer reviews')}})</span>
+                                    </div>
                                     <div class="sold-by">
                                         <small class="mr-2">{{__('Sold by')}}: </small>
                                         @if ($product->added_by == 'seller' && \App\BusinessSetting::where('type', 'vendor_system_activation')->first()->value == 1)
-                                            <a href="{{ route('shop.visit', $product->user->shop->slug) }}">{{ $product->user->name }}</a>
+                                            <a href="{{ route('shop.visit', $product->user->shop->slug) }}">{{ $product->user->shop->name }}</a>
                                         @else
                                             {{ __('Inhouse product') }}
-                                        @endif
-                                    </div>
-                                    <!-- Rating stars -->
-                                    <div class="rating">
-                                        @php
-                                            $rating = 0; $total = 0;
-                                            foreach ($product->user->products as $key => $seller_product) {
-                                                $rating += $seller_product->reviews->sum('rating');
-                                                $total += $seller_product->reviews->count();
-                                            }
-                                        @endphp
-                                        @if ($total > 0)
-                                            <span class="star-rating star-rating-sm">
-                                                @for ($i=0; $i < floor($rating/$total); $i++)
-                                                    <i class="fa fa-star"></i>
-                                                @endfor
-                                                @for ($i=0; $i < ceil(5-$rating/$total); $i++)
-                                                    <i class="fa fa-star-o"></i>
-                                                @endfor
-                                            </span>
-                                            <span class="rating-count">({{ $total }} {{__('customer reviews')}})</span>
                                         @endif
                                     </div>
                                 </div>
@@ -183,7 +181,7 @@
                                         <ul class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-2">
                                             @foreach ($choice->options as $key => $option)
                                                 <li>
-                                                    <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}" value="{{ $option }}">
+                                                    <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}" value="{{ $option }}" @if($key == 0) checked @endif>
                                                     <label for="{{ $choice->name }}-{{ $option }}">{{ $option }}</label>
                                                 </li>
                                             @endforeach
@@ -202,7 +200,7 @@
                                             <ul class="list-inline checkbox-color mb-1">
                                                 @foreach (json_decode($product->colors) as $key => $color)
                                                     <li>
-                                                        <input type="radio" id="{{ $product->id }}-color-{{ $key }}" name="color" value="{{ $color }}">
+                                                        <input type="radio" id="{{ $product->id }}-color-{{ $key }}" name="color" value="{{ $color }}" @if($key == 0) checked @endif>
                                                         <label style="background: {{ $color }};" for="{{ $product->id }}-color-{{ $key }}" data-toggle="tooltip"></label>
                                                     </li>
                                                 @endforeach
@@ -259,24 +257,40 @@
 
                             <div class="d-table width-100 mt-3">
                                 <div class="d-table-cell">
+                                    <!-- Buy Now button -->
+                                    @if(count(json_decode($product->variations, true)) >= 1)
+                                        @if ($qty > 0)
+                                            <button type="button" class="btn btn-styled btn-base-1 btn-icon-left strong-700 hov-bounce hov-shaddow" onclick="buyNow()">
+                                                <i class="la la-shopping-cart"></i> {{__('Buy Now')}}
+                                            </button>
+                                        @endif
+                                    @endif
                                     <!-- Add to cart button -->
-                                    <button type="button" class="btn btn-base-1 btn-icon-left" onclick="addToCart()">
-                                        <i class="la la-shopping-cart"></i> {{__('Add to cart')}}
-                                    </button>
-                                    <!-- Add to wishlist button -->
-                                    <button type="button" class="btn btn-outline btn-base-1 btn-icon-left" onclick="addToWishList({{ $product->id }})">
-                                        <i class="la la-heart-o"></i>
-                                        <span class="d-none d-md-inline-block"> {{__('Add to wishlist')}}</span>
-                                    </button>
-                                    <!-- Add to compare button -->
-                                    <button type="button" class="btn btn-outline btn-base-1 btn-icon-left" onclick="addToCompare({{ $product->id }})">
-                                        <i class="la la-refresh"></i>
-                                        <span class="d-none d-md-inline-block"> {{__('Add to compare')}}</span>
+                                    <button type="button" class="btn btn-styled btn-alt-base-1 c-white btn-icon-left strong-700 hov-bounce hov-shaddow ml-2" onclick="addToCart()">
+                                        <i class="la la-shopping-cart"></i>
+                                        <span class="d-none d-md-inline-block"> {{__('Add to cart')}}</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <hr class="mt-4">
+
+                            <hr class="mt-3 mb-0">
+
+                            <div class="d-table width-100 mt-2">
+                                <div class="d-table-cell">
+                                    <!-- Add to wishlist button -->
+                                    <button type="button" class="btn pl-0 btn-link strong-700" onclick="addToWishList({{ $product->id }})">
+                                        {{__('Add to wishlist')}}
+                                    </button>
+                                    <!-- Add to compare button -->
+                                    <button type="button" class="btn btn-link btn-icon-left strong-700" onclick="addToCompare({{ $product->id }})">
+                                        {{__('Add to compare')}}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <hr class="mt-2">
+
                             <div class="row no-gutters mt-3">
                                 <div class="col-2">
                                     <div class="product-description-label alpha-6">{{__('Return Policy')}}:</div>
@@ -379,25 +393,24 @@
                                 {{ __('Inhouse product') }}
                             @endif
                             @php
-                                $rating = 0; $total = 0;
+                                $total = 0;
+                                $rating = 0;
                                 foreach ($product->user->products as $key => $seller_product) {
-                                    $rating += $seller_product->reviews->sum('rating');
                                     $total += $seller_product->reviews->count();
+                                    $rating += $seller_product->reviews->sum('rating');
                                 }
                             @endphp
-                            @if ($total > 0)
-                                <div class="rating text-center d-block">
-                                    <span class="star-rating star-rating-sm d-block">
-                                        @for ($i=0; $i < floor($rating/$total); $i++)
-                                            <i class="fa fa-star"></i>
-                                        @endfor
-                                        @for ($i=0; $i < ceil(5-$rating/$total); $i++)
-                                            <i class="fa fa-star-o"></i>
-                                        @endfor
-                                    </span>
-                                    <span class="rating-count d-block ml-0">({{ $total }} {{__('customer reviews')}})</span>
-                                </div>
-                            @endif
+
+                            <div class="rating text-center d-block">
+                                <span class="star-rating star-rating-sm d-block">
+                                    @if ($total > 0)
+                                        {{ renderStarRating($rating/$total) }}
+                                    @else
+                                        {{ renderStarRating(0) }}
+                                    @endif
+                                </span>
+                                <span class="rating-count d-block ml-0">({{ $total }} {{__('customer reviews')}})</span>
+                            </div>
                         </div>
                         <div class="row no-gutters align-items-center">
                             @if($product->added_by == 'seller')
@@ -475,9 +488,12 @@
                                         <a href="{{ route('product', $top_product->slug) }}" style="background-image:url('{{ asset($top_product->thumbnail_img) }}');"></a>
                                     </div>
                                     <div class="product-details float-left">
-                                        <h4 class="title text-truncate-2">
+                                        <h4 class="title text-truncate">
                                             <a href="{{ route('product', $top_product->slug) }}" class="d-block">{{ $top_product->name }}</a>
                                         </h4>
+                                        <div class="star-rating star-rating-sm mt-1">
+                                            {{ renderStarRating($top_product->rating) }}
+                                        </div>
                                         <div class="price-box">
                                             <!-- @if(home_base_price($top_product->id) != home_discounted_base_price($top_product->id))
                                                 <del class="old-product-price strong-400">{{ home_base_price($top_product->id) }}</del>
@@ -569,12 +585,12 @@
                                                             </div>
                                                             <div class="col">
                                                                 <div class="rating text-right clearfix d-block">
-                                                                    <span class="star-rating float-right">
+                                                                    <span class="star-rating star-rating-sm float-right">
                                                                         @for ($i=0; $i < $review->rating; $i++)
-                                                                            <i class="fa fa-star"></i>
+                                                                            <i class="fa fa-star active"></i>
                                                                         @endfor
                                                                         @for ($i=0; $i < 5-$review->rating; $i++)
-                                                                            <i class="fa fa-star-o"></i>
+                                                                            <i class="fa fa-star"></i>
                                                                         @endfor
                                                                     </span>
                                                                 </div>
@@ -588,12 +604,18 @@
                                             </div>
                                         @endforeach
 
+                                        @if(count($product->reviews) <= 0)
+                                            <div class="text-center">
+                                                {{ __('There have been no reviews for this product yet.') }}
+                                            </div>
+                                        @endif
+
                                         @if(Auth::check())
                                             @php
                                                 $commentable = false;
                                             @endphp
                                             @foreach ($product->orderDetails as $key => $orderDetail)
-                                                @if($orderDetail->order->user_id == Auth::user()->id)
+                                                @if($orderDetail->order->user_id == Auth::user()->id && $orderDetail->delivery_status == 'delivered' && \App\Review::where('user_id', Auth::user()->id)->where('product_id', $product->id)->first() == null)
                                                     @php
                                                         $commentable = true;
                                                     @endphp
@@ -667,28 +689,52 @@
                             </h3>
                         </div>
                         <div class="caorusel-box">
-                            <div class="slick-carousel" data-slick-items="4" data-slick-lg-items="4"  data-slick-md-items="3" data-slick-sm-items="2" data-slick-xs-items="2">
+                            <div class="slick-carousel" data-slick-items="3" data-slick-xl-items="2" data-slick-lg-items="3"  data-slick-md-items="2" data-slick-sm-items="1" data-slick-xs-items="1"  data-slick-rows="2">
                                 @foreach (filter_products(\App\Product::where('subcategory_id', $product->subcategory_id)->where('id', '!=', $product->id))->limit(10)->get() as $key => $related_product)
-                                    <div class="product-card-2 card card-product m-2 shop-cards shop-tech">
-                                        <div class="card-body p-0">
-                                            <div class="card-image">
-                                                <a href="{{ route('product', $related_product->slug) }}" class="d-block" style="background-image:url('{{ asset($related_product->thumbnail_img) }}');">
+                                <div class="p-2">
+                                    <div class="row no-gutters product-box-2 align-items-center">
+                                        <div class="col-4">
+                                            <div class="position-relative overflow-hidden h-100">
+                                                <a href="{{ route('product', $related_product->slug) }}" class="d-block product-image h-100" style="background-image:url('{{ asset($related_product->thumbnail_img) }}');">
                                                 </a>
-                                            </div>
-
-                                            <div class="p-3">
-                                                <div class="price-box">
-                                                    @if(home_base_price($related_product->id) != home_discounted_base_price($related_product->id))
-                                                        <del class="old-product-price strong-400">{{ home_base_price($related_product->id) }}</del>
-                                                    @endif
-                                                    <span class="product-price strong-600">{{ home_discounted_base_price($related_product->id) }}</span>
+                                                <div class="product-btns">
+                                                    <button class="btn add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $related_product->id }})">
+                                                        <i class="la la-heart-o"></i>
+                                                    </button>
+                                                    <button class="btn add-compare" title="Add to Compare" onclick="addToCompare({{ $related_product->id }})">
+                                                        <i class="la la-refresh"></i>
+                                                    </button>
+                                                    <button class="btn quick-view" title="Quick view" onclick="showAddToCartModal({{ $related_product->id }})">
+                                                        <i class="la la-eye"></i>
+                                                    </button>
                                                 </div>
-                                                <h2 class="product-title p-0 mt-2 text-truncate-2">
+                                            </div>
+                                        </div>
+                                        <div class="col-8 border-left">
+                                            <div class="p-3">
+                                                <h2 class="product-title mb-0 p-0 text-truncate">
                                                     <a href="{{ route('product', $related_product->slug) }}">{{ __($related_product->name) }}</a>
                                                 </h2>
+                                                <div class="star-rating star-rating-sm mb-2">
+                                                    {{ renderStarRating($related_product->rating) }}
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="price-box float-left">
+                                                        @if(home_base_price($related_product->id) != home_discounted_base_price($related_product->id))
+                                                            <del class="old-product-price strong-400">{{ home_base_price($related_product->id) }}</del>
+                                                        @endif
+                                                        <span class="product-price strong-600">{{ home_discounted_base_price($related_product->id) }}</span>
+                                                    </div>
+                                                    <div class="float-right">
+                                                        <button class="add-to-cart btn" title="Add to Cart" onclick="showAddToCartModal({{ $related_product->id }})">
+                                                            <i class="la la-shopping-cart"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
                         </div>
@@ -703,8 +749,11 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
+
+            getVariantPrice();
+
     		$('#share').share({
-    			networks: ['facebook','googleplus','twitter','linkedin','tumblr','in1','stumbleupon','digg'],
+    			networks: ['facebook','twitter','linkedin','tumblr','in1','stumbleupon','digg'],
     			theme: 'square'
     		});
     	});

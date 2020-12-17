@@ -133,7 +133,7 @@
   padding: 0 50px 0 0;
   font-size: 22px;
   color: #555;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   border: 0;
   background-color: transparent;
   background-image: none;
@@ -472,7 +472,7 @@
 .top-navbar .aux-text ul li a,
 .top-navbar .aux-text ul li a span {
   font-size: 0.75rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .top-navbar .top-navbar-menu {
@@ -493,7 +493,7 @@
   position: relative;
   float: left;
   display: inline-block;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .top-navbar .top-navbar-menu > ul.top-menu > li > a {
@@ -677,7 +677,7 @@
 }
 
 .top-navbar-currency-language li {
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #a1a1a1;
 }
 
@@ -726,7 +726,7 @@
 .top-navbar .top-navbar-links .top-bar-date span,
 .top-navbar .top-navbar-links .top-bar-link a,
 .top-navbar .top-navbar-links .top-bar-link span {
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -755,7 +755,7 @@
 }
 
 .top-navbar .topbar-login > li a {
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -836,7 +836,7 @@
 }
 .navbar-nav .nav-link {
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: 500;
   text-transform: none;
   letter-spacing: 0;
@@ -2916,7 +2916,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   line-height: 1.46;
 }
 
@@ -2924,7 +2924,7 @@ h6 {
   margin: 0 0 6px;
   padding: 0;
   text-transform: none;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: 600;
   color: #111111;
   line-height: 1.46;
@@ -3627,7 +3627,7 @@ a > .block {
   padding: 6px 8px;
   font-weight: 500;
   font-size: 0.75rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .overlay-label.image-title--top {
@@ -4355,7 +4355,7 @@ a > .block {
   border-right: 1px solid #f1f1f1;
   font-size: 0.75rem;
   position: relative;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #818a91;
 }
 
@@ -5851,7 +5851,7 @@ a > .block {
 
 .block-cell .block-text p.price {
   font-size: 1.25rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .block-cell .block-text:before {
@@ -5905,7 +5905,7 @@ a > .block {
 .btn {
   position: relative;
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-style: normal;
   text-align: center;
   border-radius: 2px;
@@ -10426,7 +10426,7 @@ a > .feature--boxed-border p {
   line-height: 40px;
   display: inline-block;
   font-size: 20px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .icon-block--style-3 .icon-block-subtext {
@@ -10864,7 +10864,7 @@ ul.categories > li > a {
   padding: 0.75rem 0;
   color: #818a91;
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 ul.categories > li > a:after,
@@ -10891,7 +10891,7 @@ ul.categories > li > ul > li > a {
   padding: 0.3125rem 0;
   color: #818a91;
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 
@@ -11635,7 +11635,7 @@ ul.list-border--dotted > li:last-child {
 .pagination .page-link,
 .pagination .page-item > span {
   padding: 0.625rem 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 0.7rem;
   color: #818a91;
   background-color: transparent;
@@ -11689,7 +11689,7 @@ ul.list-border--dotted > li:last-child {
 .pagination-lg .page-item .page-link,
 .pagination-lg .page-item > span {
   padding: 0.875rem 1.125rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 0.7rem;
   color: #818a91;
   background-color: transparent;
@@ -12741,7 +12741,7 @@ section.ss-slice::after {
 
 .section-title .section-title-inner {
   margin: 0 0 5px 0;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 2rem;
   font-weight: 500;
   text-transform: none;
@@ -12824,14 +12824,14 @@ section.ss-slice::after {
   color: rgba(0, 0, 0, 0.1);
   font-size: 50px;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   z-index: 1;
 }
 
 .section-title--style-1 .underlay-subtitle {
   font-size: 5rem;
   font-weight: 700;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   opacity: 0.5;
   line-height: 1;
 }
@@ -13256,7 +13256,7 @@ section.ss-slice::after {
 
 .table-profile > tbody > tr > td.td-label {
   font-size: 0.75rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: 500;
   color: #818a91;
   text-transform: uppercase;
@@ -13561,7 +13561,7 @@ section.ss-slice::after {
   font-weight: 600;
   color: #111111;
   font-size: 1rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 @media (max-width: 991px) {
@@ -13624,7 +13624,7 @@ section.ss-slice::after {
     color: #2b2b2c;
     font-size: 16px;
     font-weight: 600;
-    font-family: "Nunito", sans-serif;
+    font-family: "Open Sans", sans-serif;
     z-index: 10;
   }
 
@@ -13683,7 +13683,7 @@ section.ss-slice::after {
   border: 1px solid #f1f1f1;
   color: #000;
   font-size: 13px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   position: relative;
 }
 
@@ -13732,7 +13732,7 @@ section.ss-slice::after {
   color: #2b2b2c;
   padding: 1rem 0;
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .tabs--style-2 > .nav-tabs > li > a > i {
@@ -13901,7 +13901,7 @@ section.ss-slice::after {
 .countdown .countdown-label {
   font-size: 2rem;
   font-weight: 300;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .countdown .countdown-label {
@@ -13945,7 +13945,7 @@ section.ss-slice::after {
   font-weight: 400;
   text-align: center;
   line-height: 60px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .countdown--style-1 .countdown-label {
@@ -13954,7 +13954,7 @@ section.ss-slice::after {
   text-align: center;
   font-size: 13px;
   font-weight: 500;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   text-transform: uppercase;
 }
 
@@ -15636,7 +15636,7 @@ span.flatpickr-weekday {
 
 .milestone-counter .milestone-count {
   font-size: 60px;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding: 0;
   margin: 0;
   font-weight: 600;
@@ -15652,7 +15652,7 @@ span.flatpickr-weekday {
 }
 
 .milestone-counter .milestone-info {
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding: 0;
   margin: 0;
   font-size: 1rem;
@@ -16142,7 +16142,7 @@ span.flatpickr-weekday {
   border-style: none;
   border-width: 0;
   color: white;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 70px;
   font-style: normal;
   font-weight: 800;
@@ -16179,7 +16179,7 @@ span.flatpickr-weekday {
   line-height: 70px;
   font-weight: 700;
   font-style: normal;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding: 21px 30px 16px;
   text-decoration: none;
   text-align: left;
@@ -16197,7 +16197,7 @@ span.flatpickr-weekday {
   line-height: 20px;
   font-weight: 700;
   font-style: normal;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding: 21px 30px 16px;
   text-decoration: none;
   text-align: left;
@@ -16217,7 +16217,7 @@ span.flatpickr-weekday {
   border-style: solid;
   border-width: 0;
   color: white;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 70px;
   font-style: normal;
   font-weight: 400;
@@ -16278,7 +16278,7 @@ span.flatpickr-weekday {
   }
 }
 .tp-tab-title {
-  font-family: "Nunito", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
 .select2-container {
@@ -18521,7 +18521,7 @@ span.flatpickr-weekday {
   margin: 0;
   padding: 0 1rem;
   font-size: 1rem;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: 600;
   color: #111111;
 }
@@ -18967,7 +18967,7 @@ span.flatpickr-weekday {
   padding: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #2b2b2c;
 }
 
@@ -19932,7 +19932,7 @@ span.flatpickr-weekday {
 }
 
 .typeface-alt {
-  font-family: "Nunito", sans-serif !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
 .font-blzee {
@@ -20513,7 +20513,7 @@ body {
 .page-title.page-title--style-2 h2 {
   display: block;
   padding: 10px 0;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .page-title.page-title--style-2 .breadcrumb {
@@ -21343,7 +21343,7 @@ body {
   margin-bottom: 1rem;
   margin-top: 0;
   padding: 0;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .sidebar .sidebar-search-widget {
@@ -21493,7 +21493,7 @@ body {
 
 .contacts .contact-info strong {
   color: #2b2b2c;
-  font-family: "Nunito", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
 }

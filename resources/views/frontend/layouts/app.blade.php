@@ -13,8 +13,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
-<meta name="description" content="{{ $seosetting->description }}">
-<meta name="keywords" content="{{ $seosetting->keyword }}">
+<meta name="description" content="@yield('meta_description', $seosetting->description)" />
+<meta name="keywords" content="@yield('meta_keywords', $seosetting->keyword)">
 <meta name="author" content="{{ $seosetting->author }}">
 <meta name="sitemap_link" content="{{ $seosetting->sitemap_link }}">
 @yield('meta')
@@ -22,7 +22,7 @@
 <!-- Favicon -->
 <link name="favicon" type="image/x-icon" href="{{ asset(\App\GeneralSetting::first()->favicon) }}" rel="shortcut icon" />
 
-<title>{{ config('app.name', 'Laravel') }}</title>
+<title>@yield('meta_title', config('app.name', 'Laravel'))</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
@@ -81,7 +81,7 @@
 
 
 <!-- MAIN WRAPPER -->
-<div class="body-wrap shop-default shop-cards shop-tech">
+<div class="body-wrap shop-default shop-cards shop-tech gry-bg">
 
     <!-- Header -->
     @include('frontend.inc.nav')
@@ -109,12 +109,11 @@
     </div>
 
     @if (\App\BusinessSetting::where('type', 'facebook_chat')->first()->value == 1)
-        <div class="fb-customerchat fb_invisible_flow"
-            page_id="{{ env('FACEBOOK_PAGE_ID') }}"
-            theme_color="#459645"
-            logged_in_greeting="Hi! How can we help you?"
-            logged_out_greeting="GoodBye!... Hope to see you soon."
-            minimized="true">
+        <div id="fb-root"></div>
+        <!-- Your customer chat code -->
+        <div class="fb-customerchat"
+          attribution=setup_tool
+          page_id="{{ env('FACEBOOK_PAGE_ID') }}">
         </div>
     @endif
 
@@ -330,6 +329,30 @@
                    $('#addToCart-modal-body').html(data);
                    updateNavCart();
                    $('#cart_items_sidenav').html(parseInt($('#cart_items_sidenav').html())+1);
+               }
+           });
+        }
+        else{
+            showFrontendAlert('warning', 'Please choose all the options');
+        }
+    }
+
+    function buyNow(){
+        if(checkAddToCartValidity()) {
+            $('#addToCart').modal();
+            $('.c-preloader').show();
+            $.ajax({
+               type:"POST",
+               url: '{{ route('cart.addToCart') }}',
+               data: $('#option-choice-form').serializeArray(),
+               success: function(data){
+                   //$('#addToCart-modal-body').html(null);
+                   //$('.c-preloader').hide();
+                   //$('#modal-size').removeClass('modal-lg');
+                   //$('#addToCart-modal-body').html(data);
+                   updateNavCart();
+                   $('#cart_items_sidenav').html(parseInt($('#cart_items_sidenav').html())+1);
+                   window.location.replace("{{ route('checkout.shipping_info') }}");
                }
            });
         }

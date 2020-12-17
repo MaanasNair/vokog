@@ -7,12 +7,14 @@ use Session;
 use Auth;
 use Hash;
 use App\Category;
+use App\Brand;
 use App\SubSubCategory;
 use App\Product;
 use App\User;
 use App\Seller;
 use App\Shop;
 use App\Color;
+use App\Order;
 use App\BusinessSetting;
 use App\Http\Controllers\SearchController;
 use ImageOptimizer;
@@ -198,6 +200,17 @@ class HomeController extends Controller
         return view('frontend.index');
     }
 
+    public function trackOrder(Request $request)
+    {
+        if($request->has('order_code')){
+            $order = Order::where('code', $request->order_code)->first();
+            if($order != null){
+                return view('frontend.track_order', compact('order'));
+            }
+        }
+        return view('frontend.track_order');
+    }
+
     public function product($slug)
     {
         $product  = Product::where('slug', $slug)->first();
@@ -228,7 +241,7 @@ class HomeController extends Controller
 
     public function listing(Request $request)
     {
-        $products = filter_products(Product::orderBy('created_at', 'desc'))->paginate(9);
+        $products = filter_products(Product::orderBy('created_at', 'desc'))->paginate(12);
         return view('frontend.product_listing', compact('products'));
     }
 
@@ -236,6 +249,11 @@ class HomeController extends Controller
     {
         $categories = Category::all();
         return view('frontend.all_category', compact('categories'));
+    }
+    public function all_brands(Request $request)
+    {
+        $categories = Category::all();
+        return view('frontend.all_brand', compact('categories'));
     }
 
     public function show_product_upload_form(Request $request)
@@ -350,7 +368,7 @@ class HomeController extends Controller
             }
         }
 
-        $products = filter_products($products)->paginate(9)->appends(request()->query());
+        $products = filter_products($products)->paginate(12)->appends(request()->query());
 
         return view('frontend.product_listing', compact('products', 'query', 'category_id', 'subcategory_id', 'subsubcategory_id', 'brand_id', 'sort_by', 'seller_id','min_price', 'max_price'));
     }
@@ -366,6 +384,34 @@ class HomeController extends Controller
     public function home_settings(Request $request)
     {
         return view('home_settings.index');
+    }
+
+    public function top_10_settings(Request $request)
+    {
+        foreach (Category::all() as $key => $category) {
+            if(in_array($category->id, $request->top_categories)){
+                $category->top = 1;
+                $category->save();
+            }
+            else{
+                $category->top = 0;
+                $category->save();
+            }
+        }
+
+        foreach (Brand::all() as $key => $brand) {
+            if(in_array($brand->id, $request->top_brands)){
+                $brand->top = 1;
+                $brand->save();
+            }
+            else{
+                $brand->top = 0;
+                $brand->save();
+            }
+        }
+
+        flash(__('Top 10 categories and brands have been updated successfully'))->success();
+        return redirect()->route('home_settings.index');
     }
 
     public function variant_price(Request $request)

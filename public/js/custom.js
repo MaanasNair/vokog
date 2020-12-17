@@ -39,6 +39,10 @@ $(document).on('nifty.ready', function() {
         maximumSelectionLength: 4
     });
 
+	$(".demo-select2-max-10").select2({
+        maximumSelectionLength: 10
+    });
+
 
 	// SELECT2 PLACEHOLDER
 	// =================================================================

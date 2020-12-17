@@ -245,10 +245,10 @@
                         </form>
                         <!-- <hr class=""> -->
                         <div class="products-box-bar p-3 bg-white">
-                            <div class="row">
+                            <div class="row sm-no-gutters gutters-5">
                                 @foreach ($products as $key => $product)
-                                    <div class="col-lg-4 col-6">
-                                        <div class="product-card-1 mb-3">
+                                    <div class="col-xxl-3 col-xl-4 col-lg-3 col-md-4 col-6">
+                                        <div class="product-card-1 mb-2">
                                             <figure class="product-image-container">
                                                 <a href="{{ route('product', $product->slug) }}" class="product-image d-block" style="background-image:url('{{ asset($product->thumbnail_img) }}');">
                                                 </a>
@@ -258,9 +258,12 @@
                                                 @endif
                                             </figure>
                                             <div class="product-details text-center">
-                                                <h2 class="product-title text-truncate-2">
+                                                <h2 class="product-title text-truncate mb-0">
                                                     <a href="{{ route('product', $product->slug) }}">{{ __($product->name) }}</a>
                                                 </h2>
+                                                <div class="star-rating star-rating-sm mt-1 mb-2">
+                                                    {{ renderStarRating($product->rating) }}
+                                                </div>
                                                 <div class="price-box">
                                                     @if(home_base_price($product->id) != home_discounted_base_price($product->id))
                                                         <span class="old-product-price strong-300">{{ home_base_price($product->id) }}</span>
@@ -274,7 +277,7 @@
                                                     </button>
 
                                                     <button type="button" class="paction add-cart btn btn-base-1 btn-circle btn-icon-left" onclick="showAddToCartModal({{ $product->id }})">
-                                                        <i class="fa la la-shopping-cart"></i>{{__('Add to cart')}}
+                                                        <i class="fa la la-shopping-cart mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block">{{__('Add to cart')}}</span>
                                                     </button>
 
                                                     <button class="paction add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})">

@@ -54,6 +54,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('reviews.seller') }}" class="{{ areActiveRoutesHome(['reviews.seller'])}}">
+                        <i class="la la-star-o"></i>
+                        <span class="category-name">
+                            {{__('Product Reviews')}}
+                        </span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('shops.index') }}" class="{{ areActiveRoutesHome(['shops.index'])}}">
                         <i class="la la-cog"></i>
                         <span class="category-name">
@@ -77,11 +85,21 @@
                         </span>
                     </a>
                 </li>
+                @if (\App\BusinessSetting::where('type', 'wallet_system')->first()->value == 1)
+                    <li>
+                        <a href="{{ route('wallet.index') }}" class="{{ areActiveRoutesHome(['wallet.index'])}}">
+                            <i class="la la-dollar"></i>
+                            <span class="category-name">
+                                {{__('My Wallet')}}
+                            </span>
+                        </a>
+                    </li>
+                @endif
                 <li>
-                    <a href="{{ route('wallet.index') }}" class="{{ areActiveRoutesHome(['wallet.index'])}}">
-                        <i class="la la-dollar"></i>
+                    <a href="{{ route('support_ticket.index') }}" class="{{ areActiveRoutesHome(['support_ticket.index'])}}">
+                        <i class="la la-support"></i>
                         <span class="category-name">
-                            {{__('My Wallet')}}
+                            {{__('Support Ticket')}}
                         </span>
                     </a>
                 </li>
@@ -89,7 +107,7 @@
         </div>
 
         <div class="sidebar-widget-title py-3">
-            <span>{{__('Earinngs')}}</span>
+            <span>{{__('Earnings')}}</span>
         </div>
         <div class="widget-balance pb-3 pt-1">
             <div class="text-center">

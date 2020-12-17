@@ -128,7 +128,16 @@ ul.categories--style-3 > li > ul > li > a.active,
 .product-box-2 .add-to-cart
 
 {
-    color: #3498db;
+    color: #377dff;
+}
+
+
+
+.hov-shaddow:hover{
+    box-shadow:0 3px 10px rgba(52, 152, 219, .4)
+}
+.btn-alt-base-1{
+    background: #27d485;
 }
 
 
@@ -138,7 +147,7 @@ ul.categories--style-3 > li > ul > li > a.active,
 .link-menu--style-2 a.active
 
 {
-    color: #3498db !important;
+    color: #377dff !important;
 }
 
 
@@ -229,14 +238,14 @@ input:checked + .toggle-switch-slider:before,
 .product-box-1 .cart-add .btn:hover
 
 {
-    background: #3498db;
+    background: #377dff;
 }
 
 
 
 .pace .pace-progress,
 .widget-profile-menu a:hover {
-    background: #3498db !important;
+    background: #377dff !important;
 }
 
 
@@ -285,7 +294,7 @@ input:checked + .toggle-switch-slider:before,
 .product-box-2 .add-to-cart:hover
 
 {
-    background-color: #3498db;
+    background-color: #377dff;
 }
 
 
@@ -296,7 +305,7 @@ input:checked + .toggle-switch-slider:before,
 .bg-base-1
 
 {
-    background-color: #3498db !important;
+    background-color: #377dff !important;
 }
 
 
@@ -371,7 +380,7 @@ a > .feature--boxed-border:hover,
 .seller-shop-menu li a:hover
 
 {
-    border-color: #3498db;
+    border-color: #377dff;
 }
 
 .btn-base-1.btn-outline,
@@ -379,7 +388,7 @@ a > .feature--boxed-border:hover,
 .btn-base-1.btn-outline:focus,
 .btn-base-1.btn-outline:hover
 {
-    border-color: #3498db !important;
+    border-color: #377dff !important;
 }
 
 .slice--arrow.slice--arrow.bg-base-1:before,
@@ -389,7 +398,7 @@ a > .feature--boxed-border:hover,
 .icon-block--arrow .block-icon:after
 
 {
-    border-top-color: #3498db;
+    border-top-color: #377dff;
 }
 
 
@@ -410,14 +419,14 @@ a > .feature--boxed-border:hover,
     .navbar-dropdown--inverse .mega-dropdown-menu .meganav-section-title > a:hover
 
     {
-        color: #3498db;
+        color: #377dff;
     }
 
     .tabs .nav-pills.nav-pills--rounded .active .nav-pill .nav-pill-circle,
     .tabs .nav-pills.nav-pills--rounded a.active:hover .nav-pill .nav-pill-circle
     
     {
-        background: #3498db;
+        background: #377dff;
     }
 
 
@@ -439,7 +448,7 @@ a > .feature--boxed-border:hover,
     .navbar-inverse .dropdown-menu .dropdown-item:focus,
     .navbar-inverse .dropdown-menu .dropdown-item:hover
     {
-        color: #3498db;
+        color: #377dff;
     }
 }
 
@@ -453,32 +462,32 @@ a > .feature--boxed-border:hover,
     .navbar-aside .navbar-expand-lg .navbar-nav .show .nav-link:hover
     
     {
-        color: #3498db;
+        color: #377dff;
     }
 }
 
 
 .shape-container[data-shape-fill="primary"] .shape-item {
-    fill: #3498db;
+    fill: #377dff;
 }
 
 
 input:focus + .toggle-switch-slider {
-    box-shadow: 0 0 1px #3498db;
+    box-shadow: 0 0 1px #377dff;
 }
 
 
 .bg-base-1.ss-style-zigzag::after {
-    background-image: -webkit-gradient(linear, 0 0, 300% 100%, color-stop(0.25, #3498db), color-stop(0.25, #3498db));
-    background-image: linear-gradient(135deg, #3498db 25%, transparent 25%), linear-gradient(225deg, #3498db 25%, transparent 25%);
+    background-image: -webkit-gradient(linear, 0 0, 300% 100%, color-stop(0.25, #377dff), color-stop(0.25, #377dff));
+    background-image: linear-gradient(135deg, #377dff 25%, transparent 25%), linear-gradient(225deg, #377dff 25%, transparent 25%);
 }
 
 .photostream .photo-wrapper img:hover {
-    box-shadow: 0 0 0 3px #3498db;
+    box-shadow: 0 0 0 3px #377dff;
 }
 
 .map-container address {
-    background-color: fade(#3498db, 80%);
+    background-color: fade(#377dff, 80%);
 }
 
 
@@ -519,11 +528,11 @@ input:focus + .toggle-switch-slider {
 .social-media.social-media--style-1-v1 > li > a:hover
 
 {
-    background-color: #1976b5;
+    background-color: #1f5dd2;
 }
 
 .cta-wrapper > a:hover > .bg-base-1 {
-    background: #1976b5 !important;
+    background: #1f5dd2 !important;
 }
 
 .btn-base-1:active,
@@ -539,18 +548,18 @@ input:focus + .toggle-switch-slider {
 .product .product-actions--1 .btn-product-action:hover
 
 {
-    border-color: #1976b5;
+    border-color: #1f5dd2;
 }
 
 
 .custom-input-file--2 + label:hover,
 .custom-input-file--2.has-focus + label,
 .custom-input-file--2:focus + label {
-    color: #1976b5;
+    color: #1f5dd2;
 }
 
 @media (min-width: 768px) {
     .promos.bg-base-1 .scale {
-        box-shadow: 0 0 4px 1px #1976b5;
+        box-shadow: 0 0 4px 1px #1f5dd2;
     }
 }

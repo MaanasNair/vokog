@@ -101,10 +101,26 @@
                     </td>
                 </tr>
 
+                @if (Session::has('coupon_discount'))
+                    <tr class="cart-shipping">
+                        <th>{{__('Coupon Discount')}}</th>
+                        <td class="text-right">
+                            <span class="text-italic">{{ single_price(Session::get('coupon_discount')) }}</span>
+                        </td>
+                    </tr>
+                @endif
+
+                @php
+                    $total = $subtotal+$tax+$shipping;
+                    if(Session::has('coupon_discount')){
+                        $total -= Session::get('coupon_discount');
+                    }
+                @endphp
+
                 <tr class="cart-total">
                     <th><span class="strong-600">{{__('Total')}}</span></th>
                     <td class="text-right">
-                        <strong><span>{{ single_price($subtotal+$tax+$shipping) }}</span></strong>
+                        <strong><span>{{ single_price($total) }}</span></strong>
                     </td>
                 </tr>
             </tfoot>

@@ -12,6 +12,8 @@ use App\Http\Controllers\PublicSslCommerzPaymentController;
 use App\Http\Controllers\OrderController;
 use App\Order;
 use App\BusinessSetting;
+use App\Coupon;
+use App\CouponUsage;
 use Session;
 
 class CheckoutController extends Controller
@@ -101,10 +103,10 @@ class CheckoutController extends Controller
     public function get_shipping_info(Request $request)
     {
         $categories = Category::all();
-        return view('frontend.partials.shipping_info', compact('categories'));
+        return view('frontend.shipping_info', compact('categories'));
     }
 
-    public function get_payment_info(Request $request)
+    public function store_shipping_info(Request $request)
     {
         $data['name'] = $request->name;
         $data['email'] = $request->email;
@@ -117,6 +119,114 @@ class CheckoutController extends Controller
 
         $shipping_info = $data;
         $request->session()->put('shipping_info', $shipping_info);
-        return view('frontend.partials.payment_select');
+
+        $subtotal = 0;
+        $tax = 0;
+        $shipping = 0;
+        foreach (Session::get('cart') as $key => $cartItem){
+            $subtotal += $cartItem['price']*$cartItem['quantity'];
+            $tax += $cartItem['tax']*$cartItem['quantity'];
+            $shipping += $cartItem['shipping']*$cartItem['quantity'];
+        }
+
+        $total = $subtotal + $tax + $shipping;
+
+        if(Session::has('coupon_discount')){
+                $total -= Session::get('coupon_discount');
+        }
+
+        return view('frontend.payment_select', compact('total'));
+    }
+
+    public function get_payment_info(Request $request)
+    {
+        $subtotal = 0;
+        $tax = 0;
+        $shipping = 0;
+        foreach (Session::get('cart') as $key => $cartItem){
+            $subtotal += $cartItem['price']*$cartItem['quantity'];
+            $tax += $cartItem['tax']*$cartItem['quantity'];
+            $shipping += $cartItem['shipping']*$cartItem['quantity'];
+        }
+
+        $total = $subtotal + $tax + $shipping;
+
+        if(Session::has('coupon_discount')){
+                $total -= Session::get('coupon_discount');
+        }
+
+        return view('frontend.payment_select', compact('total'));
+    }
+
+    public function apply_coupon_code(Request $request){
+        //dd($request->all());
+        $coupon = Coupon::where('code', $request->code)->first();
+
+        if($coupon != null && strtotime(date('d-m-Y')) >= $coupon->start_date && strtotime(date('d-m-Y')) <= $coupon->end_date && CouponUsage::where('user_id', Auth::user()->id)->where('coupon_id', $coupon->id)->first() == null){
+            $coupon_details = json_decode($coupon->details);
+
+            if ($coupon->type == 'cart_base')
+            {
+                $subtotal = 0;
+                $tax = 0;
+                $shipping = 0;
+                foreach (Session::get('cart') as $key => $cartItem)
+                {
+                    $subtotal += $cartItem['price']*$cartItem['quantity'];
+                    $tax += $cartItem['tax']*$cartItem['quantity'];
+                    $shipping += $cartItem['shipping']*$cartItem['quantity'];
+                }
+                $sum = $subtotal+$tax+$shipping;
+
+                if ($sum > $coupon_details->min_buy) {
+                    if ($coupon->discount_type == 'percent') {
+                        $coupon_discount =  ($sum * $coupon->discount)/100;
+                        if ($coupon_discount > $coupon_details->max_discount) {
+                            $coupon_discount = $coupon_details->max_discount;
+                        }
+                    }
+                    elseif ($coupon->discount_type == 'amount') {
+                        $coupon_discount = $coupon->discount;
+                    }
+
+                    if(!Session::has('coupon_discount')){
+                        $request->session()->put('coupon_id', $coupon->id);
+                        $request->session()->put('coupon_discount', $coupon_discount);
+                        flash('Coupon has been applied')->success();
+                    }
+                    else{
+                        flash('Coupon is already applied')->warning();
+                    }
+                }
+            }
+            elseif ($coupon->type == 'product_base')
+            {
+                $coupon_discount = 0;
+                foreach (Session::get('cart') as $key => $cartItem){
+                    foreach ($coupon_details as $key => $coupon_detail) {
+                        if($coupon_detail->product_id == $cartItem['id']){
+                            if ($coupon->discount_type == 'percent') {
+                                $coupon_discount += $cartItem['price']*$coupon->discount/100;
+                            }
+                            elseif ($coupon->discount_type == 'amount') {
+                                $coupon_discount += $coupon->discount;
+                            }
+                        }
+                    }
+                }
+                if(!Session::has('coupon_discount')){
+                    $request->session()->put('coupon_id', $coupon->id);
+                    $request->session()->put('coupon_discount', $coupon_discount);
+                    flash('Coupon has been applied')->success();
+                }
+                else{
+                    flash('Coupon is already applied')->warning();
+                }
+            }
+        }
+        else {
+            flash('No Coupon Exixts')->warning();
+        }
+        return back();
     }
 }

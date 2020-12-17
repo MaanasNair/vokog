@@ -21,7 +21,6 @@
                                     <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
                                         {{__('My Wallet')}}
                                     </h2>
-                                    <div class="ml-4"><button class="btn btn-base-1" onclick="show_wallet_modal()">{{__('Recharge Wallet')}}</button></div>
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="float-md-right">
@@ -37,7 +36,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-4 mx-auto">
+                            <div class="col-md-4">
                                 <div class="dashboard-widget text-center green-widget mt-4 c-pointer">
                                     <a href="javascript:;" class="d-block">
                                         <i class="fa fa-dollar"></i>
@@ -45,6 +44,11 @@
                                         <span class="d-block sub-title">in your wallet</span>
                                     </a>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <button class="btn btn-base-1" onclick="show_wallet_modal()">{{__('Recharge Wallet')}}</button>
                             </div>
                         </div>
 

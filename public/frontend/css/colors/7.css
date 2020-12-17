@@ -125,7 +125,8 @@ ul.categories--style-3 > li > ul > li > a.active,
 .product-box-1 .title a:hover,
 .product-box-1 .price-bar .price,
 .sub-category-menu ul li a:hover,
-.product-box-2 .add-to-cart
+.product-box-2 .add-to-cart,
+.fade-btn
 
 {
     color: #ED4C67;
@@ -232,7 +233,12 @@ input:checked + .toggle-switch-slider:before,
     background: #ED4C67;
 }
 
-
+.hov-shaddow:hover{
+    box-shadow:0 3px 10px rgba(237, 76, 103, .4)
+}
+.btn-alt-base-1{
+    background: #ff825b;
+}
 
 .pace .pace-progress,
 .widget-profile-menu a:hover {

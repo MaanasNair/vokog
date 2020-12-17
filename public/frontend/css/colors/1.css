@@ -132,6 +132,14 @@ ul.categories--style-3 > li > ul > li > a.active,
 }
 
 
+.hov-shaddow:hover{
+    box-shadow:0 3px 10px rgba(26, 188, 156, .4)
+}
+.btn-alt-base-1{
+    background: #00c4fc;
+}
+
+
 
 
 .c-base-1,

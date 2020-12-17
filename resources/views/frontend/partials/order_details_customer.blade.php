@@ -12,19 +12,19 @@
 <div class="modal-body gry-bg px-3 pt-0">
     <div class="pt-4">
         <ul class="process-steps clearfix">
-            <li class="done">
+            <li @if($status == 'pending') class="active" @else class="done" @endif>
                 <div class="icon">1</div>
                 <div class="title">{{__('Order placed')}}</div>
             </li>
-            <li @if($status == 'pending') class="active" @else class="done" @endif>
+            <li @if($status == 'on_review') class="active" @elseif($status == 'on_delivery' || $status == 'delivered') class="done" @endif>
                 <div class="icon">2</div>
                 <div class="title">{{__('On review')}}</div>
             </li>
-            <li @if($status == 'delivered' || $status == 'on_delivery') class="done" @else class="active" @endif>
+            <li @if($status == 'on_delivery') class="active" @elseif($status == 'delivered') class="done" @endif>
                 <div class="icon">3</div>
                 <div class="title">{{__('On delivery')}}</div>
             </li>
-            <li @if($status == 'delivered') class="done" @else class="active" @endif>
+            <li @if($status == 'delivered') class="done" @endif>
                 <div class="icon">4</div>
                 <div class="title">{{__('Delivered')}}</div>
             </li>
@@ -39,7 +39,7 @@
                 <div class="col-lg-6">
                     <table class="details-table table">
                         <tr>
-                            <td class="w-50 strong-600">{{__('Order id')}}:</td>
+                            <td class="w-50 strong-600">{{__('Order Code')}}:</td>
                             <td>{{ $order->code }}</td>
                         </tr>
                         <tr>
@@ -78,7 +78,7 @@
                         </tr>
                         <tr>
                             <td class="w-50 strong-600">{{__('Payment method')}}:</td>
-                            <td>{{ $order->payment_type }}</td>
+                            <td>{{ ucfirst(str_replace('_', ' ', $order->payment_type)) }}</td>
                         </tr>
                     </table>
                 </div>
@@ -141,6 +141,12 @@
                                 <th>{{__('Tax')}}</th>
                                 <td class="text-right">
                                     <span class="text-italic">{{ single_price($order->orderDetails->sum('tax')) }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{__('Coupon Discount')}}</th>
+                                <td class="text-right">
+                                    <span class="text-italic">{{ single_price($order->coupon_discount) }}</span>
                                 </td>
                             </tr>
                             <tr>

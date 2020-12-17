@@ -1,5 +1,5 @@
 <?php
-// this is function made to give reviews by the user
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;

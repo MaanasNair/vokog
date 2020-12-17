@@ -23,9 +23,11 @@ class PaypalController extends Controller
 
             if(BusinessSetting::where('type', 'paypal_sandbox')->first()->value == 1){
                 $mode = 'sandbox';
+                $endPoint = 'https://api.sandbox.paypal.com';
             }
             else{
                 $mode = 'live';
+                $endPoint = 'https://api.paypal.com';
             }
 
             if(Session::get('payment_type') == 'cart_payment' || Session::get('payment_type') == 'wallet_payment'){
@@ -35,7 +37,7 @@ class PaypalController extends Controller
 
         		$this->_apiContext->setConfig(array(
         			'mode' => $mode,
-        			'service.EndPoint' => 'https://api.paypal.com',
+        			'service.EndPoint' => $endPoint,
         			'http.ConnectionTimeOut' => 30,
         			'log.LogEnabled' => true,
         			'log.FileName' => public_path('logs/paypal.log'),

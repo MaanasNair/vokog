@@ -72,24 +72,24 @@ class ProductController extends Controller
             foreach ($request->photos as $key => $photo) {
                 $path = $photo->store('uploads/products/photos');
                 array_push($photos, $path);
-                ImageOptimizer::optimize(base_path('public/').$path);
+                //ImageOptimizer::optimize(base_path('public/').$path);
             }
             $product->photos = json_encode($photos);
         }
 
         if($request->hasFile('thumbnail_img')){
             $product->thumbnail_img = $request->thumbnail_img->store('uploads/products/thumbnail');
-            ImageOptimizer::optimize(base_path('public/').$product->thumbnail_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->thumbnail_img);
         }
 
         if($request->hasFile('featured_img')){
             $product->featured_img = $request->featured_img->store('uploads/products/featured');
-            ImageOptimizer::optimize(base_path('public/').$product->featured_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->featured_img);
         }
 
         if($request->hasFile('flash_deal_img')){
             $product->flash_deal_img = $request->flash_deal_img->store('uploads/products/flash_deal');
-            ImageOptimizer::optimize(base_path('public/').$product->flash_deal_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->flash_deal_img);
         }
 
         $product->unit = $request->unit;
@@ -118,7 +118,11 @@ class ProductController extends Controller
 
         if($request->hasFile('meta_img')){
             $product->meta_img = $request->meta_img->store('uploads/products/meta');
-            ImageOptimizer::optimize(base_path('public/').$product->meta_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->meta_img);
+        }
+
+        if($request->hasFile('pdf')){
+            $product->pdf = $request->pdf->store('uploads/products/pdf');
         }
 
         $product->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.str_random(5);
@@ -279,7 +283,7 @@ class ProductController extends Controller
             foreach ($request->photos as $key => $photo) {
                 $path = $photo->store('uploads/products/photos');
                 array_push($photos, $path);
-                ImageOptimizer::optimize(base_path('public/').$path);
+                //ImageOptimizer::optimize(base_path('public/').$path);
             }
         }
         $product->photos = json_encode($photos);
@@ -287,19 +291,19 @@ class ProductController extends Controller
         $product->thumbnail_img = $request->previous_thumbnail_img;
         if($request->hasFile('thumbnail_img')){
             $product->thumbnail_img = $request->thumbnail_img->store('uploads/products/thumbnail');
-            ImageOptimizer::optimize(base_path('public/').$product->thumbnail_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->thumbnail_img);
         }
 
         $product->featured_img = $request->previous_featured_img;
         if($request->hasFile('featured_img')){
             $product->featured_img = $request->featured_img->store('uploads/products/featured');
-            ImageOptimizer::optimize(base_path('public/').$product->featured_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->featured_img);
         }
 
         $product->flash_deal_img = $request->previous_flash_deal_img;
         if($request->hasFile('flash_deal_img')){
             $product->flash_deal_img = $request->flash_deal_img->store('uploads/products/flash_deal');
-            ImageOptimizer::optimize(base_path('public/').$product->flash_deal_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->flash_deal_img);
         }
 
         $product->unit = $request->unit;
@@ -329,7 +333,11 @@ class ProductController extends Controller
         $product->meta_img = $request->previous_meta_img;
         if($request->hasFile('meta_img')){
             $product->meta_img = $request->meta_img->store('uploads/products/meta');
-            ImageOptimizer::optimize(base_path('public/').$product->meta_img);
+            //ImageOptimizer::optimize(base_path('public/').$product->meta_img);
+        }
+
+        if($request->hasFile('pdf')){
+            $product->pdf = $request->pdf->store('uploads/products/pdf');
         }
 
         $product->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.substr($product->slug, -5);

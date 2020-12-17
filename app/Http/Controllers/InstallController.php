@@ -63,6 +63,10 @@ class InstallController extends Controller
         $businessSetting->value = $request->system_default_currency;
         $businessSetting->save();
 
+        $businessSetting = BusinessSetting::where('type', 'home_default_currency')->first();
+        $businessSetting->value = $request->system_default_currency;
+        $businessSetting->save();
+
         $this->writeEnvironmentFile('APP_NAME', $request->system_name);
 
         $user = new User;
