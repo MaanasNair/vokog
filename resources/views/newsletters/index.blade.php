@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="name">{{__('Emails')}} ({{__('Users')}})</label>
                     <div class="col-sm-10">
-                        <select class="form-control demo-select2-multiple-selects" name="user_emails[]" multiple required>
+                        <select class="form-control demo-select2-multiple-selects" name="user_emails[]" multiple>
                             @foreach($users as $user)
                                 <option value="{{$user->email}}">{{$user->email}}</option>
                             @endforeach
