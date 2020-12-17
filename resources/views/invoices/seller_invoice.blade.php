@@ -57,32 +57,59 @@
 		<table>
 			<tr>
 				<td>
-					@if(Auth::user()->shop->logo != null)
-						<img src="{{ asset(Auth::user()->shop->logo) }}" height="40" style="display:inline-block;">
+					@if (Auth::user()->user_type == 'seller')
+						@if(Auth::user()->shop->logo != null)
+							<img src="{{ asset(Auth::user()->shop->logo) }}" height="40" style="display:inline-block;">
+						@else
+							<img src="{{ asset('frontend/images/logo/logo.png') }}" height="40" style="display:inline-block;">
+						@endif
 					@else
-						<img src="{{ asset('frontend/images/logo/logo.png') }}" height="40" style="display:inline-block;">
+						@if($generalsetting->logo != null)
+							<img src="{{ asset($generalsetting->logo) }}" height="40" style="display:inline-block;">
+						@else
+							<img src="{{ asset('frontend/images/logo/logo.png') }}" height="40" style="display:inline-block;">
+						@endif
 					@endif
 				</td>
 				<td style="font-size: 2.5rem;" class="text-right strong">INVOICE</td>
 			</tr>
 		</table>
 		<table>
-			<tr>
-				<td style="font-size: 1.2rem;" class="strong">{{ Auth::user()->shop->name }}</td>
-				<td class="text-right"></td>
-			</tr>
-			<tr>
-				<td class="gry-color small">{{ Auth::user()->shop->address }}</td>
-				<td class="text-right"></td>
-			</tr>
-			<tr>
-				<td class="gry-color small">Email: {{ Auth::user()->email }}</td>
-				<td class="text-right small"><span class="gry-color small">Order ID:</span> <span class="strong">{{ $order->code }}</span></td>
-			</tr>
-			<tr>
-				<td class="gry-color small">Phone: {{ Auth::user()->phone }}</td>
-				<td class="text-right small"><span class="gry-color small">Order Date:</span> <span class=" strong">{{ date('d-m-Y', $order->date) }}</span></td>
-			</tr>
+			@if (Auth::user()->user_type == 'seller')
+				<tr>
+					<td style="font-size: 1.2rem;" class="strong">{{ Auth::user()->shop->name }}</td>
+					<td class="text-right"></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">{{ Auth::user()->shop->address }}</td>
+					<td class="text-right"></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">Email: {{ Auth::user()->email }}</td>
+					<td class="text-right small"><span class="gry-color small">Order ID:</span> <span class="strong">{{ $order->code }}</span></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">Phone: {{ Auth::user()->phone }}</td>
+					<td class="text-right small"><span class="gry-color small">Order Date:</span> <span class=" strong">{{ date('d-m-Y', $order->date) }}</span></td>
+				</tr>
+			@else
+				<tr>
+					<td style="font-size: 1.2rem;" class="strong">{{ $generalsetting->site_name }}</td>
+					<td class="text-right"></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">{{ $generalsetting->address }}</td>
+					<td class="text-right"></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">Email: {{ $generalsetting->email }}</td>
+					<td class="text-right small"><span class="gry-color small">Order ID:</span> <span class="strong">{{ $order->code }}</span></td>
+				</tr>
+				<tr>
+					<td class="gry-color small">Phone: {{ $generalsetting->phone }}</td>
+					<td class="text-right small"><span class="gry-color small">Order Date:</span> <span class=" strong">{{ date('d-m-Y', $order->date) }}</span></td>
+				</tr>
+			@endif
 		</table>
 
 	</div>
