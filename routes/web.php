@@ -47,7 +47,9 @@ Route::post('/cart/updateQuantity', 'CartController@updateQuantity')->name('cart
 
 Route::post('/checkout/payment', 'CheckoutController@checkout')->name('payment.checkout');
 Route::get('/checkout', 'CheckoutController@get_shipping_info')->name('checkout.shipping_info');
-Route::post('/checkout/payment_info', 'CheckoutController@get_payment_info')->name('checkout.payment_info');
+Route::post('/checkout/payment_select', 'CheckoutController@store_shipping_info')->name('checkout.store_shipping_infostore');
+Route::get('/checkout/payment_select', 'CheckoutController@get_payment_info')->name('checkout.payment_info');
+Route::post('/checkout/apply_coupon_code', 'CheckoutController@apply_coupon_code')->name('checkout.apply_coupon_code');
 
 //Paypal START
 Route::get('/paypal/payment/done', 'PaypalController@getDone')->name('payment.done');
@@ -73,11 +75,7 @@ Route::post('/compare/addToCompare', 'CompareController@addToCompare')->name('co
 
 Route::resource('subscribers','SubscriberController');
 
-Route::resource('orders','OrderController');
-Route::get('/orders/destroy/{id}', 'OrderController@destroy')->name('orders.destroy');
-Route::post('/orders/details', 'OrderController@order_details')->name('orders.details');
-Route::post('/orders/update_status', 'OrderController@update_status')->name('orders.update_status');
-
+Route::get('/brands', 'HomeController@all_brands')->name('brands.all');
 Route::get('/categories', 'HomeController@all_categories')->name('categories.all');
 Route::get('/search', 'HomeController@search')->name('search');
 Route::get('/search?q={search}', 'HomeController@search')->name('suggestion.search');
@@ -103,10 +101,11 @@ Route::group(['middleware' => ['user', 'verified']], function(){
 	Route::resource('wishlists','WishlistController');
 	Route::post('/wishlists/remove', 'WishlistController@remove')->name('wishlists.remove');
 
-	Route::resource('/reviews', 'ReviewController');
-
 	Route::get('/wallet', 'WalletController@index')->name('wallet.index');
 	Route::post('/recharge', 'WalletController@recharge')->name('wallet.recharge');
+
+	Route::resource('support_ticket','SupportTicketController');
+	Route::post('support_ticket/reply','SupportTicketController@seller_store')->name('support_ticket.seller_store');
 });
 
 Route::group(['prefix' =>'seller', 'middleware' => ['seller', 'verified']], function(){
@@ -117,6 +116,8 @@ Route::group(['prefix' =>'seller', 'middleware' => ['seller', 'verified']], func
 
 	Route::get('/shop/apply_for_verification', 'ShopController@verify_form')->name('shop.verify');
 	Route::post('/shop/apply_for_verification', 'ShopController@verify_form_store')->name('shop.verify.store');
+
+	Route::get('/reviews', 'ReviewController@seller_reviews')->name('reviews.seller');
 });
 
 Route::group(['middleware' => ['auth']], function(){
@@ -134,8 +135,12 @@ Route::group(['middleware' => ['auth']], function(){
 
 	Route::resource('orders','OrderController');
 	Route::get('/orders/destroy/{id}', 'OrderController@destroy')->name('orders.destroy');
+	Route::post('/orders/details', 'OrderController@order_details')->name('orders.details');
 	Route::post('/orders/update_delivery_status', 'OrderController@update_delivery_status')->name('orders.update_delivery_status');
 	Route::post('/orders/update_payment_status', 'OrderController@update_payment_status')->name('orders.update_payment_status');
+
+	Route::resource('/reviews', 'ReviewController');
 });
 
 Route::resource('shops', 'ShopController');
+Route::get('/track_your_order', 'HomeController@trackOrder')->name('orders.track');

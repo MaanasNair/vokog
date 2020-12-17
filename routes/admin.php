@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (Made by Maanas Nair)
+| Admin Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register admin routes for your application. These
@@ -77,6 +77,7 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
 	Route::post('/languages/key_value_store', 'LanguageController@key_value_store')->name('languages.key_value_store');
 
 	Route::get('/frontend_settings/home', 'HomeController@home_settings')->name('home_settings.index');
+	Route::post('/frontend_settings/home/top_10', 'HomeController@top_10_settings')->name('top_10_settings.store');
 	Route::get('/sellerpolicy/{type}', 'PolicyController@index')->name('sellerpolicy.index');
 	Route::get('/returnpolicy/{type}', 'PolicyController@index')->name('returnpolicy.index');
 	Route::get('/supportpolicy/{type}', 'PolicyController@index')->name('supportpolicy.index');
@@ -91,6 +92,8 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
 	    Route::get('/sliders/destroy/{id}', 'SliderController@destroy')->name('sliders.destroy');
 
 		Route::resource('home_banners','BannerController');
+		Route::get('/home_banners/create/{position}', 'BannerController@create')->name('home_banners.create');
+		Route::post('/home_banners/update_status', 'BannerController@update_status')->name('home_banners.update_status');
 	    Route::get('/home_banners/destroy/{id}', 'BannerController@destroy')->name('home_banners.destroy');
 
 		Route::resource('home_categories','HomeCategoryController');
@@ -136,4 +139,19 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
 	Route::get('/seller_report', 'ReportController@seller_report')->name('seller_report.index');
 	Route::get('/seller_sale_report', 'ReportController@seller_sale_report')->name('seller_sale_report.index');
 	Route::get('/wish_report', 'ReportController@wish_report')->name('wish_report.index');
+
+	//Coupons
+	Route::resource('coupon','CouponController');
+	Route::post('/coupon/get_form', 'CouponController@get_coupon_form')->name('coupon.get_coupon_form');
+	Route::post('/coupon/get_form_edit', 'CouponController@get_coupon_form_edit')->name('coupon.get_coupon_form_edit');
+	Route::get('/coupon/destroy/{id}', 'CouponController@destroy')->name('coupon.destroy');
+
+	//Reviews
+	Route::get('/reviews', 'ReviewController@index')->name('reviews.index');
+	Route::post('/reviews/published', 'ReviewController@updatePublished')->name('reviews.published');
+
+	//Support_Ticket
+	Route::get('support_ticket/','SupportTicketController@admin_index')->name('support_ticket.admin_index');
+	Route::get('support_ticket/{id}/show','SupportTicketController@admin_show')->name('support_ticket.admin_show');
+	Route::post('support_ticket/reply','SupportTicketController@admin_store')->name('support_ticket.admin_store');
 });
