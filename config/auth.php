@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Defaults (added email and fixed email verification)
+    | Authentication Defaults
     |--------------------------------------------------------------------------
     |
     | This option controls the default authentication "guard" and password
