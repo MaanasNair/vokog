@@ -123,6 +123,9 @@
                                             <a class="nav-link" href="{{route('products.seller')}}">{{__('Seller Products')}}</a>
                                         </li>
                                     @endif
+                                    <li class="{{ areActiveRoutes(['reviews.index'])}}">
+                                        <a class="nav-link" href="{{route('reviews.index')}}">{{__('Product Reviews')}}</a>
+                                    </li>
                                 </ul>
                             </li>
                         @endif
@@ -342,6 +345,40 @@
                                     <a class="nav-link" href="{{route('generalsettings.color')}}">{{__('Color Settings')}}</a>
                                 </li>
                             </ul>
+                        </li>
+                        @endif
+
+                        @if(Auth::user()->user_type == 'admin' || in_array('12', json_decode(Auth::user()->staff->role->permissions)))
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-desktop"></i>
+                                <span class="menu-title">{{__('E-commerce Setup')}}</span>
+                                <i class="arrow"></i>
+                            </a>
+
+                            <!--Submenu-->
+                            <ul class="collapse">
+                                <li>
+                                    <li class="{{ areActiveRoutes(['coupon.index','coupon.create','coupon.edit',])}}">
+                                        <a class="nav-link" href="{{route('coupon.index')}}">{{__('Coupon')}}</a>
+                                    </li>
+                                </li>
+                            </ul>
+                        </li>
+                        @endif
+
+                        @if(Auth::user()->user_type == 'admin' || in_array('13', json_decode(Auth::user()->staff->role->permissions)))
+                            @php
+                                $support_ticket = DB::table('tickets')
+                                            ->where('viewed', 0)
+                                            ->select('id')
+                                            ->count();
+                            @endphp
+                        <li class="{{ areActiveRoutes(['support_ticket.admin_index'])}}">
+                            <a class="nav-link" href="{{ route('support_ticket.admin_index') }}">
+                                <i class="fa fa-support"></i>
+                                <span class="menu-title">{{__('Suppot Ticket')}} @if($support_ticket > 0)<span class="pull-right badge badge-info">{{ $support_ticket }}</span>@endif</span>
+                            </a>
                         </li>
                         @endif
 
