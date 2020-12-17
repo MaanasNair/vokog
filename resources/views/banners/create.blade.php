@@ -14,13 +14,23 @@
                     <input type="text" placeholder="{{__('URL')}}" id="url" name="url" class="form-control" required>
                 </div>
             </div>
+            <input type="hidden" name="position" value="{{ $position }}">
+            {{-- <div class="form-group">
+                <label class="col-sm-3" for="url">{{__('Banner Position')}}</label>
+                <div class="col-sm-9">
+                    <select class="form-control demo-select2" name="position" required>
+                        <option value="1">{{__('Banner Position 1')}}</option>
+                        <option value="2">{{__('Banner Position 2')}}</option>
+                    </select>
+                </div>
+            </div> --}}
             <div class="form-group">
                 <div class="col-sm-3">
                     <label class="control-label">{{__('Banner Images')}}</label>
                     <strong>(850px*420px)</strong>
                 </div>
                 <div class="col-sm-9">
-                    <div id="photos">
+                    <div id="photo">
 
                     </div>
                 </div>
@@ -38,9 +48,12 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
-        $("#photos").spartanMultiImagePicker({
-            fieldName:        'photos[]',
-            maxCount:         10,
+
+        $('.demo-select2').select2();
+
+        $("#photo").spartanMultiImagePicker({
+            fieldName:        'photo',
+            maxCount:         1,
             rowHeight:        '200px',
             groupClassName:   'col-md-4 col-sm-9 col-xs-6',
             maxFileSize:      '',
