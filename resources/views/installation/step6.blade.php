@@ -7,6 +7,6 @@
     <div class="text-center">
         <a href="{{ env('APP_URL') }}" class="btn btn-primary">Go to Home</a>
         <a href="{{ env('APP_URL') }}/admin" class="btn btn-success">Login to Admin panel</a>
-		<br /><center><a class="btn btn-primary" href="https://daviruzsystems.com" target="_blank">Da-viruz Systems</a></center>
+		<br />
     </div>
 @endsection

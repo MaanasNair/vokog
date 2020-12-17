@@ -1,7 +1,7 @@
 @extends('layouts.blank')
 @section('content')
     <div class="mar-ver pad-btm text-center">
-        <h1 class="h3">Active eCommerce CMS Installation</h1>
+        <h1 class="h3">Vokog Installation</h1>
         <p>You will need to know the following items before
         proceeding.</p>
     </div>
@@ -19,10 +19,6 @@
     </p>
     <p style="font-size: 14px;">
         Gather the information mentioned above before hitting the start installation button. If you are ready....
-    </p>
-    <br>
-    <p style="font-size: 14px;">
-        <a href="https://daviruzsysetms.com" target="_blank">Da-viruz Systems</a>
     </p>
     <br>
     <div class="text-center">
