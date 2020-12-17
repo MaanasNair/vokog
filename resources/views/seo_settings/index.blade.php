@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="description">{{__('Description')}}</label>
                         <div class="col-sm-9">
-                            <textarea class="editor" name="description">{{ $seosetting->description }}</textarea>
+                            <textarea class="form-control" rows="5" name="description">{{ $seosetting->description }}</textarea>
                         </div>
                     </div>
                 </div>
