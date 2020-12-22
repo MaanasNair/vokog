@@ -1,9 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-
-@if(Auth::user()->user_type == 'admin' || in_array('1', json_decode(Auth::user()->staff->role->permissions)))
+@if(env('MAIL_USERNAME') == null && env('MAIL_PASSWORD') == null)
     <div class="row">
+        <div class="col-sm-12">
+            <div class="bg-danger pad-all text-center mar-btm">
+                <h4 class="text-light mar-btm">Please Configure SMTP Setting to work all email sending funtionality.</h4>
+                <a class="btn btn-info btn-rounded" href="{{ route('smtp_settings.index') }}">Configure Now</a>
+            </div>
+        </div>
+    </div>
+@endif
+@if(Auth::user()->user_type == 'admin' || in_array('1', json_decode(Auth::user()->staff->role->permissions)))
+<div class="row">
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-body text-center dash-widget dash-widget-left">
