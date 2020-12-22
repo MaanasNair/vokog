@@ -62,13 +62,13 @@
 
                     <div class="row no-gutters">
                         <div class="col-2">
-                            <div class="product-description-label">{{ $choice->title }}:</div>
+                            <div class="product-description-label mt-2 ">{{ $choice->title }}:</div>
                         </div>
                         <div class="col-10">
                             <ul class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-2">
                                 @foreach ($choice->options as $key => $option)
                                     <li>
-                                        <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}" value="{{ $option }}">
+                                        <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}" value="{{ $option }}" @if($key == 0) checked @endif>
                                         <label for="{{ $choice->name }}-{{ $option }}">{{ $option }}</label>
                                     </li>
                                 @endforeach
@@ -78,25 +78,25 @@
 
                     @endforeach
 
-                    @if(count(json_decode($product->colors)) > 0)
+                    @if (count(json_decode($product->colors)) > 0)
                         <div class="row no-gutters">
                             <div class="col-2">
-                                <div class="product-description-label">{{__('Color')}}:</div>
+                                <div class="product-description-label mt-2">{{__('Color')}}:</div>
                             </div>
                             <div class="col-10">
                                 <ul class="list-inline checkbox-color mb-1">
                                     @foreach (json_decode($product->colors) as $key => $color)
                                         <li>
-                                            <input type="radio" id="{{ $product->id }}-color-{{ $key }}" name="color" value="{{ $color }}">
+                                            <input type="radio" id="{{ $product->id }}-color-{{ $key }}" name="color" value="{{ $color }}" @if($key == 0) checked @endif>
                                             <label style="background: {{ $color }};" for="{{ $product->id }}-color-{{ $key }}" data-toggle="tooltip"></label>
                                         </li>
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
-                    @endif
 
-                    <hr>
+                        <hr>
+                    @endif
 
                     <!-- Quantity + Add to cart -->
                     <div class="row no-gutters">
@@ -118,7 +118,15 @@
                                         </button>
                                     </span>
                                 </div>
-                                {{-- <div class="avialable-amount">(1298 pc available)</div> --}}
+                                @php
+                                    $qty = 0;
+                                    foreach (json_decode($product->variations) as $key => $variation) {
+                                        $qty += $variation->qty;
+                                    }
+                                @endphp
+                                @if(count(json_decode($product->variations, true)) >= 1)
+                                    <div class="avialable-amount">(<span id="available-quantity">{{ $qty }}</span> {{__('available')}})</div>
+                                @endif
                             </div>
                         </div>
                     </div>

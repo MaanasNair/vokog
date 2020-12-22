@@ -13,7 +13,7 @@
         <div class="title">{{__('Category Suggestions')}}</div>
         <ul>
             @foreach ($subsubcategories as $key => $subsubcategory)
-                <li><a href="{{ route('products.subsubcategory', $subsubcategory->id) }}">{{ __($subsubcategory->name) }}</a></li>
+                <li><a href="{{ route('products.subsubcategory', $subsubcategory->slug) }}">{{ __($subsubcategory->name) }}</a></li>
             @endforeach
         </ul>
     @endif

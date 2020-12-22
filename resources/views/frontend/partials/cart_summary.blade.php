@@ -126,5 +126,29 @@
             </tfoot>
         </table>
 
+        @if (Auth::check() && \App\BusinessSetting::where('type', 'coupon_system')->first()->value == 1)
+            @if (Session::has('coupon_discount'))
+                <div class="mt-3">
+                    <form class="form-inline" action="{{ route('checkout.remove_coupon_code') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group flex-grow-1">
+                            <div class="form-control bg-gray w-100">{{ \App\Coupon::find(Session::get('coupon_id'))->code }}</div>
+                        </div>
+                        <button type="submit" class="btn btn-base-1">{{__('Change Coupon')}}</button>
+                    </form>
+                </div>
+            @else
+                <div class="mt-3">
+                    <form class="form-inline" action="{{ route('checkout.apply_coupon_code') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group flex-grow-1">
+                            <input type="text" class="form-control w-100" name="code" placeholder="Have coupon code? Enter here" required>
+                        </div>
+                        <button type="submit" class="btn btn-base-1">{{__('Apply')}}</button>
+                    </form>
+                </div>
+            @endif
+        @endif
+
     </div>
 </div>

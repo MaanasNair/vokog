@@ -19,6 +19,27 @@
 <meta name="sitemap_link" content="{{ $seosetting->sitemap_link }}">
 @yield('meta')
 
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="{{ config('app.name', 'Laravel') }}">
+<meta itemprop="description" content="{{ $seosetting->description }}">
+<meta itemprop="image" content="{{ asset(\App\GeneralSetting::first()->logo) }}">
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="product">
+<meta name="twitter:site" content="@publisher_handle">
+<meta name="twitter:title" content="{{ config('app.name', 'Laravel') }}">
+<meta name="twitter:description" content="{{ $seosetting->description }}">
+<meta name="twitter:creator" content="@author_handle">
+<meta name="twitter:image" content="{{ asset(\App\GeneralSetting::first()->logo) }}">
+
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ config('app.name', 'Laravel') }}" />
+<meta property="og:type" content="Ecommerce Site" />
+<meta property="og:url" content="{{ route('home') }}" />
+<meta property="og:image" content="{{ asset(\App\GeneralSetting::first()->logo) }}" />
+<meta property="og:description" content="{{ $seosetting->description }}" />
+<meta property="og:site_name" content="{{ env('APP_NAME') }}" />
+
 <!-- Favicon -->
 <link name="favicon" type="image/x-icon" href="{{ asset(\App\GeneralSetting::first()->favicon) }}" rel="shortcut icon" />
 
@@ -139,6 +160,9 @@
 
 <script type="text/javascript">
     function showFrontendAlert(type, message){
+        if(type == 'danger'){
+            type = 'error';
+        }
         swal({
             position: 'top-end',
             type: type,
@@ -278,6 +302,7 @@
                 tint: '#000',
                 defaultScale: -1
             });
+            getVariantPrice();
         });
     }
 
@@ -293,7 +318,8 @@
                data: $('#option-choice-form').serializeArray(),
                success: function(data){
                    $('#option-choice-form #chosen_price_div').removeClass('d-none');
-                   $('#option-choice-form #chosen_price_div #chosen_price').html(data);
+                   $('#option-choice-form #chosen_price_div #chosen_price').html(data.price);
+                   $('#available-quantity').html(data.quantity);
                }
            });
         }
