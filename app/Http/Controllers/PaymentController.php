@@ -20,6 +20,17 @@ class PaymentController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function payment_histories(Request $request)
+    {
+        $payments = Payment::orderBy('created_at', 'desc')->get();
+        return view('sellers.payment_histories', compact('payments'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -48,7 +59,8 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        //
+        $payments = Payment::where('seller_id', decrypt($id))->orderBy('created_at', 'desc')->get();
+        return view('sellers.payment', compact('payments'));
     }
 
     /**

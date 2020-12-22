@@ -41,6 +41,14 @@ class CategoryController extends Controller
     {
         $category = new Category;
         $category->name = $request->name;
+        $category->meta_title = $request->meta_title;
+        $category->meta_description = $request->meta_description;
+        if ($request->slug != null) {
+            $category->slug = str_replace(' ', '-', $request->slug);
+        }
+        else {
+            $category->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.str_random(5);
+        }
 
         $data = openJSONFile('en');
         $data[$category->name] = $category->name;
@@ -105,6 +113,15 @@ class CategoryController extends Controller
         }
 
         $category->name = $request->name;
+        $category->meta_title = $request->meta_title;
+        $category->meta_description = $request->meta_description;
+        if ($request->slug != null) {
+            $category->slug = str_replace(' ', '-', $request->slug);
+        }
+        else {
+            $category->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.str_random(5);
+        }
+
         if($request->hasFile('banner')){
             $category->banner = $request->file('banner')->store('uploads/categories/banner');
         }
@@ -137,7 +154,7 @@ class CategoryController extends Controller
             }
             $subcategory->delete();
         }
-        
+
         Product::where('category_id', $category->id)->delete();
         HomeCategory::where('category_id', $category->id)->delete();
 

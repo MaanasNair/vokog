@@ -45,6 +45,7 @@ class PublicSslCommerzPaymentController extends Controller
                     $post_data['cus_postcode'] = $request->session()->get('shipping_info')['postal_code'];
                     $post_data['cus_country'] = $request->session()->get('shipping_info')['country'];
                     $post_data['cus_phone'] = $request->session()->get('shipping_info')['phone'];
+                    $post_data['cus_email'] = $request->session()->get('shipping_info')['email'];
                 }
                 elseif (Session::get('payment_type') == 'seller_payment') {
                     $post_data = array();

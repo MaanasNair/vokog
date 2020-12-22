@@ -67,8 +67,14 @@ class LoginController extends Controller
             $newUser->email           = $user->email;
             $newUser->email_verified_at = date('Y-m-d H:m:s');
             $newUser->provider_id     = $user->id;
-            $newUser->avatar          = $user->avatar;
-            $newUser->avatar_original = $user->avatar_original;
+
+            $extension = pathinfo($user->avatar_original, PATHINFO_EXTENSION);
+            $filename = 'uploads/users/'.str_random(5).'-'.$user->id.'.'.$extension;
+            $fullpath = 'public/'.$filename;
+            $file = file_get_contents($user->avatar_original);
+            file_put_contents($fullpath, $file);
+
+            $newUser->avatar_original = $filename;
             $newUser->save();
 
             $customer = new Customer;
@@ -77,7 +83,12 @@ class LoginController extends Controller
 
             auth()->login($newUser, true);
         }
-        return redirect()->route('home');
+        if(session('link') != null){
+            return redirect(session('link'));
+        }
+        else{
+            return redirect()->route('dashboard');
+        }
     }
 
 
@@ -91,8 +102,12 @@ class LoginController extends Controller
         {
             return redirect()->route('admin.dashboard');
         }
-
-        return redirect()->route('home');
+        elseif(session('link') != null){
+            return redirect(session('link'));
+        }
+        else{
+            return redirect()->route('dashboard');
+        }
     }
 
     /**

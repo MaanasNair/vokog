@@ -44,6 +44,14 @@ class SubCategoryController extends Controller
         $subcategory = new SubCategory;
         $subcategory->name = $request->name;
         $subcategory->category_id = $request->category_id;
+        $subcategory->meta_title = $request->meta_title;
+        $subcategory->meta_description = $request->meta_description;
+        if ($request->slug != null) {
+            $subcategory->slug = str_replace(' ', '-', $request->slug);
+        }
+        else {
+            $subcategory->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.str_random(5);
+        }
 
         $data = openJSONFile('en');
         $data[$subcategory->name] = $subcategory->name;
@@ -103,6 +111,14 @@ class SubCategoryController extends Controller
 
         $subcategory->name = $request->name;
         $subcategory->category_id = $request->category_id;
+        $subcategory->meta_title = $request->meta_title;
+        $subcategory->meta_description = $request->meta_description;
+        if ($request->slug != null) {
+            $subcategory->slug = str_replace(' ', '-', $request->slug);
+        }
+        else {
+            $subcategory->slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->name)).'-'.str_random(5);
+        }
 
         if($subcategory->save()){
             flash(__('Subcategory has been updated successfully'))->success();

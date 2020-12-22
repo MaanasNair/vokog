@@ -188,7 +188,7 @@ if (! function_exists('convert_price')) {
             $price = floatval($price) / floatval($currency->exchange_rate);
         }
 
-        $code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'home_default_currency')->first()->value)->code;
+        $code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'system_default_currency')->first()->value)->code;
         if(Session::has('currency_code')){
             $currency = Currency::where('code', Session::get('currency_code', $code))->first();
         }
@@ -412,7 +412,7 @@ if (! function_exists('productDescCache')) {
 if (! function_exists('currency_symbol')) {
     function currency_symbol()
     {
-        $code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'home_default_currency')->first()->value)->code;
+        $code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'system_default_currency')->first()->value)->code;
         if(Session::has('currency_code')){
             $currency = Currency::where('code', Session::get('currency_code', $code))->first();
         }

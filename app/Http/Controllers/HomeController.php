@@ -8,6 +8,7 @@ use Auth;
 use Hash;
 use App\Category;
 use App\Brand;
+use App\SubCategory;
 use App\SubSubCategory;
 use App\Product;
 use App\User;
@@ -37,22 +38,22 @@ class HomeController extends Controller
         return view('frontend.user_registration');
     }
 
-    public function user_login(Request $request)
-    {
-        $user = User::whereIn('user_type', ['customer', 'seller'])->where('email', $request->email)->first();
-        if($user != null){
-            if(Hash::check($request->password, $user->password)){
-                if($request->has('remember')){
-                    auth()->login($user, true);
-                }
-                else{
-                    auth()->login($user, false);
-                }
-                return redirect()->route('dashboard');
-            }
-        }
-        return back();
-    }
+    // public function user_login(Request $request)
+    // {
+    //     $user = User::whereIn('user_type', ['customer', 'seller'])->where('email', $request->email)->first();
+    //     if($user != null){
+    //         if(Hash::check($request->password, $user->password)){
+    //             if($request->has('remember')){
+    //                 auth()->login($user, true);
+    //             }
+    //             else{
+    //                 auth()->login($user, false);
+    //             }
+    //             return redirect()->route('dashboard');
+    //         }
+    //     }
+    //     return back();
+    // }
 
     public function cart_login(Request $request)
     {
@@ -134,7 +135,7 @@ class HomeController extends Controller
         }
 
         if($request->hasFile('photo')){
-            $user->avatar_original = $request->photo->store('uploads');
+            $user->avatar_original = $request->photo->store('uploads/users');
         }
 
         if($user->save()){
@@ -176,6 +177,15 @@ class HomeController extends Controller
         $seller->stripe_status = $request->stripe_status;
         $seller->stripe_key = $request->stripe_key;
         $seller->stripe_secret = $request->stripe_secret;
+        $seller->instamojo_status = $request->instamojo_status;
+        $seller->instamojo_api_key = $request->instamojo_api_key;
+        $seller->instamojo_token = $request->instamojo_token;
+        $seller->razorpay_status = $request->razorpay_status;
+        $seller->razorpay_api_key = $request->razorpay_api_key;
+        $seller->razorpay_secret = $request->razorpay_secret;
+        $seller->paystack_status = $request->paystack_status;
+        $seller->paystack_public_key = $request->paystack_public_key;
+        $seller->paystack_secret_key = $request->paystack_secret_key;
 
         if($user->save() && $seller->save()){
             flash(__('Your Profile has been updated successfully!'))->success();
@@ -309,11 +319,11 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $query = $request->q;
-        $brand_id = $request->brand_id;
+        $brand_id = (Brand::where('slug', $request->brand)->first() != null) ? Brand::where('slug', $request->brand)->first()->id : null;
         $sort_by = $request->sort_by;
-        $category_id = $request->category_id;
-        $subcategory_id = $request->subcategory_id;
-        $subsubcategory_id = $request->subsubcategory_id;
+        $category_id = (Category::where('slug', $request->category)->first() != null) ? Category::where('slug', $request->category)->first()->id : null;
+        $subcategory_id = (SubCategory::where('slug', $request->subcategory)->first() != null) ? SubCategory::where('slug', $request->subcategory)->first()->id : null;
+        $subsubcategory_id = (SubSubCategory::where('slug', $request->subsubcategory)->first() != null) ? SubSubCategory::where('slug', $request->subsubcategory)->first()->id : null;
         $min_price = $request->min_price;
         $max_price = $request->max_price;
         $seller_id = $request->seller_id;
@@ -321,7 +331,7 @@ class HomeController extends Controller
         $conditions = ['published' => 1];
 
         if($brand_id != null){
-            $conditions = array_merge($conditions, ['brand_id' => $request->brand_id]);
+            $conditions = array_merge($conditions, ['brand_id' => $brand_id]);
         }
         if($category_id != null){
             $conditions = array_merge($conditions, ['category_id' => $category_id]);
@@ -418,6 +428,7 @@ class HomeController extends Controller
     {
         $product = Product::find($request->id);
         $str = '';
+        $quantity = 0;
 
         if($request->has('color')){
             $data['color'] = $request['color'];
@@ -435,6 +446,7 @@ class HomeController extends Controller
 
         if($str != null){
             $price = json_decode($product->variations)->$str->price;
+            $quantity = json_decode($product->variations)->$str->qty;
         }
         else{
             $price = $product->unit_price;
@@ -466,7 +478,7 @@ class HomeController extends Controller
         elseif($product->tax_type == 'amount'){
             $price += $product->tax;
         }
-        return single_price($price*$request->quantity);
+        return array('price' => single_price($price*$request->quantity), 'quantity' => $quantity);
     }
 
     public function sellerpolicy(){

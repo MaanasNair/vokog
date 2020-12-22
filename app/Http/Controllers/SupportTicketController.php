@@ -45,10 +45,24 @@ class SupportTicketController extends Controller
      */
     public function store(Request $request)
     {
+        //dd();
         $ticket = new Ticket;
+        $ticket->code = max(100000, (Ticket::latest()->first() != null ? Ticket::latest()->first()->code + 1 : 0));
         $ticket->user_id = Auth::user()->id;
         $ticket->subject = $request->subject;
         $ticket->details = $request->details;
+
+        $files = array();
+
+        if($request->hasFile('attachments')){
+            foreach ($request->attachments as $key => $attachment) {
+                $item['name'] = $attachment->getClientOriginalName();
+                $item['path'] = $attachment->store('uploads/support_tickets/');
+                array_push($files, $item);
+            }
+            $ticket->files = json_encode($files);
+        }
+
         if($ticket->save()){
             flash('Ticket has been sent successfully')->success();
             return redirect()->route('support_ticket.index');
@@ -60,11 +74,24 @@ class SupportTicketController extends Controller
 
     public function admin_store(Request $request)
     {
+        //dd($request->all());
         $ticket_reply = new TicketReply;
         $ticket_reply->ticket_id = $request->ticket_id;
         $ticket_reply->user_id = Auth::user()->id;
         $ticket_reply->reply = $request->reply;
-        $ticket_reply->ticket->viewed = 1;
+
+        $files = array();
+
+        if($request->hasFile('attachments')){
+            foreach ($request->attachments as $key => $attachment) {
+                $item['name'] = $attachment->getClientOriginalName();
+                $item['path'] = $attachment->store('uploads/support_tickets/');
+                array_push($files, $item);
+            }
+            $ticket_reply->files = json_encode($files);
+        }
+
+        $ticket_reply->ticket->status = $request->status;
         $ticket_reply->ticket->save();
         if($ticket_reply->save()){
             flash('Reply has been sent successfully')->success();
@@ -81,7 +108,20 @@ class SupportTicketController extends Controller
         $ticket_reply->ticket_id = $request->ticket_id;
         $ticket_reply->user_id = $request->user_id;
         $ticket_reply->reply = $request->reply;
+
+        $files = array();
+
+        if($request->hasFile('attachments')){
+            foreach ($request->attachments as $key => $attachment) {
+                $item['name'] = $attachment->getClientOriginalName();
+                $item['path'] = $attachment->store('uploads/support_tickets/');
+                array_push($files, $item);
+            }
+            $ticket_reply->files = json_encode($files);
+        }
+
         $ticket_reply->ticket->viewed = 0;
+        $ticket_reply->ticket->status = 'pending';
         $ticket_reply->ticket->save();
         if($ticket_reply->save()){
             flash('Reply has been sent successfully')->success();
@@ -102,14 +142,15 @@ class SupportTicketController extends Controller
     {
         $ticket = Ticket::findOrFail(decrypt($id));
         $ticket_replies = $ticket->ticketreplies;
-        return view('frontend.support_ticket.edit', compact('ticket','ticket_replies'));
+        return view('frontend.support_ticket.show', compact('ticket','ticket_replies'));
     }
 
     public function admin_show($id)
     {
         $ticket = Ticket::findOrFail(decrypt($id));
-        $ticket_replies = $ticket->ticketreplies;
-        return view('support_tickets.show', compact('ticket','ticket_replies'));
+        $ticket->viewed = 1;
+        $ticket->save();
+        return view('support_tickets.show', compact('ticket'));
     }
 
     /**

@@ -20,6 +20,7 @@ class IsUser
             return $next($request);
         }
         else{
+            session(['link' => url()->current()]);
             return redirect()->route('user.login');
         }
     }

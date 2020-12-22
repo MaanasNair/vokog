@@ -12,6 +12,12 @@ use Hash;
 
 class ShopController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('user', ['only' => ['index']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +36,13 @@ class ShopController extends Controller
      */
     public function create()
     {
-        return view('frontend.seller_form');
+        if(Auth::check() && Auth::user()->user_type == 'admin'){
+            flash(__('Admin can not be a seller'))->error();
+            return back();
+        }
+        else{
+            return view('frontend.seller_form');
+        }
     }
 
     /**
@@ -90,6 +102,11 @@ class ShopController extends Controller
                 flash(__('Your Shop has been created successfully!'))->success();
                 return redirect()->route('shops.index');
             }
+            else{
+                $seller->delete();
+                $user->user_type == 'customer';
+                $user->save();
+            }
         }
 
         flash(__('Sorry! Something went wrong.'))->error();
@@ -134,8 +151,11 @@ class ShopController extends Controller
             $shop->address = $request->address;
             $shop->slug = preg_replace('/\s+/', '-', $request->name).'-'.$shop->id;
 
+            $shop->meta_title = $request->meta_title;
+            $shop->meta_description = $request->meta_description;
+
             if($request->hasFile('logo')){
-                $shop->logo = $request->logo->store('uploads/hop/logo');
+                $shop->logo = $request->logo->store('uploads/shop/logo');
             }
         }
 
