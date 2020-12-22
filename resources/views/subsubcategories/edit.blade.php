@@ -48,6 +48,24 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{__('Meta Title')}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="meta_title" value="{{ $subsubcategory->meta_title }}" placeholder="{{__('Meta Title')}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{__('Description')}}</label>
+                    <div class="col-sm-9">
+                        <textarea name="meta_description" rows="8" class="form-control">{{ $subsubcategory->meta_description }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="name">{{__('Slug')}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" placeholder="{{__('Slug')}}" id="slug" name="slug" value="{{ $subsubcategory->slug }}" class="form-control">
+                    </div>
+                </div>
             </div>
 
             <div class="panel-footer text-right">
