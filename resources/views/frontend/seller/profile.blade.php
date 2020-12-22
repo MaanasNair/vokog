@@ -241,8 +241,90 @@
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Stripe Secret')}}" value="{{ Auth::user()->seller->stripe_secret }}" name="stripe_secret">
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Instamojo')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <label class="switch mb-3">
+                                                <input value="1" name="instamojo_status" type="checkbox" @if (Auth::user()->seller->instamojo_status == 1) checked @endif>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Instamojo Api Key')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Instamojo Api Key')}}" value="{{ Auth::user()->seller->instamojo_api_key }}" name="instamojo_api_key">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Instamojo Auth Token')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Instamojo Auth Token')}}" value="{{ Auth::user()->seller->instamojo_token }}" name="instamojo_token">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('RazorPay')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <label class="switch mb-3">
+                                                <input value="1" name="razorpay_status" type="checkbox" @if (Auth::user()->seller->razorpay_status == 1) checked @endif>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Razor Key')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Razor Key')}}" value="{{ Auth::user()->seller->razorpay_api_key }}" name="razorpay_api_key">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Razor Secret')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Razor Secret')}}" value="{{ Auth::user()->seller->razorpay_secret }}" name="razorpay_secret">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('PayStack')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <label class="switch mb-3">
+                                                <input value="1" name="paystack_status" type="checkbox" @if (Auth::user()->seller->paystack_status == 1) checked @endif>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('PayStack Public Key')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('PayStack Public Key')}}" value="{{ Auth::user()->seller->paystack_public_key }}" name="paystack_public_key">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('PayStack Secret Key')}}</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('PayStack Secret Key')}}" value="{{ Auth::user()->seller->paystack_secret_key }}" name="paystack_secret_key">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
 
                             <div class="text-right mt-4">
                                 <button type="submit" class="btn btn-styled btn-base-1">{{__('Update Profile')}}</button>

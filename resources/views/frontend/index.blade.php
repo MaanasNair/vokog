@@ -24,7 +24,7 @@
                                     $brands = array();
                                 @endphp
                                 <li>
-                                    <a href="{{ route('products.category', $category->id) }}">
+                                    <a href="{{ route('products.category', $category->slug) }}">
                                         <img class="cat-image" src="{{ asset($category->icon) }}" width="30">
                                         <span class="cat-name">{{ __($category->name) }}</span>
                                     </a>
@@ -38,7 +38,7 @@
                                                                 @foreach ($category->subcategories as $subcategory)
                                                                     <div class="card">
                                                                         <ul class="sub-cat-items">
-                                                                            <li class="sub-cat-name"><a href="{{ route('products.subcategory', $subcategory->id) }}">{{ __($subcategory->name) }}</a></li>
+                                                                            <li class="sub-cat-name"><a href="{{ route('products.subcategory', $subcategory->slug) }}">{{ __($subcategory->name) }}</a></li>
                                                                             @foreach ($subcategory->subsubcategories as $subsubcategory)
                                                                                 @php
                                                                                     foreach (json_decode($subsubcategory->brands) as $brand) {
@@ -47,7 +47,7 @@
                                                                                         }
                                                                                     }
                                                                                 @endphp
-                                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->id) }}">{{ __($subsubcategory->name) }}</a></li>
+                                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->slug) }}">{{ __($subsubcategory->name) }}</a></li>
                                                                             @endforeach
                                                                         </ul>
                                                                     </div>
@@ -91,7 +91,7 @@
                                                             @foreach ($brands as $brand_id)
                                                                 @if(\App\Brand::find($brand_id) != null)
                                                                     <li class="sub-brand-item">
-                                                                        <a href="{{ route('products.brand', $brand_id) }}" ><img src="{{ asset(\App\Brand::find($brand_id)->logo) }}" class="img-fluid"></a>
+                                                                        <a href="{{ route('products.brand', \App\Brand::find($brand_id)->slug) }}" ><img src="{{ asset(\App\Brand::find($brand_id)->logo) }}" class="img-fluid"></a>
                                                                     </li>
                                                                 @endif
                                                             @endforeach
@@ -124,7 +124,7 @@
                             @foreach (\App\Category::where('featured', 1)->get()->take(7) as $key => $category)
                                 <li @if ($key == 0) class="active" @endif>
                                     <div class="trend-category-single">
-                                        <a href="{{ route('products.category', $category->id) }}" class="d-block">
+                                        <a href="{{ route('products.category', $category->slug) }}" class="d-block">
                                             <div class="name">{{ __($category->name) }}</div>
                                             <div class="img" style="background-image:url('{{ asset($category->banner) }}')">
                                             </div>
@@ -234,7 +234,7 @@
 
     <section class="mb-4">
         <div class="container">
-            <div class="p-4 bg-white shadow-sm">
+            <div class="px-2 py-4 p-md-4 bg-white shadow-sm">
                 <div class="section-title-1 clearfix">
                     <h3 class="heading-5 strong-700 mb-0 float-left">
                         <span class="mr-4">{{__('Featured Products')}}</span>
@@ -277,7 +277,7 @@
     @if (\App\BusinessSetting::where('type', 'best_selling')->first()->value == 1)
         <section class="mb-4">
             <div class="container">
-                <div class="p-4 bg-white shadow-sm">
+                <div class="px-2 py-4 p-md-4 bg-white shadow-sm">
                     <div class="section-title-1 clearfix">
                         <h3 class="heading-5 strong-700 mb-0 float-left">
                             <span class="mr-4">{{__('Best Selling')}}</span>
@@ -345,7 +345,7 @@
     @foreach (\App\HomeCategory::where('status', 1)->get() as $key => $homeCategory)
         <section class="mb-4">
             <div class="container">
-                <div class="p-4 bg-white shadow-sm">
+                <div class="px-2 py-4 p-md-4 bg-white shadow-sm">
                     <div class="section-title-1 clearfix">
                         <h3 class="heading-5 strong-700 mb-0 float-left">
                             <span class="mr-4">{{ $homeCategory->category->name }}</span>
@@ -444,7 +444,7 @@
         @endphp
         <section class="mb-5">
             <div class="container">
-                <div class="p-4 bg-white shadow-sm">
+                <div class="px-2 py-4 p-md-4 bg-white shadow-sm">
                     <div class="section-title-1 clearfix">
                         <h3 class="heading-5 strong-700 mb-0 float-left">
                             <span class="mr-4">{{__('Best Sellers')}}</span>
@@ -524,7 +524,7 @@
                     <div class="row gutters-5">
                         @foreach (\App\Category::where('top', 1)->get() as $category)
                             <div class="mb-3 col-6">
-                                <a href="{{ route('products.category', $category->id) }}" class="bg-white border d-block c-base-2 box-2 icon-anim pl-2">
+                                <a href="{{ route('products.category', $category->slug) }}" class="bg-white border d-block c-base-2 box-2 icon-anim pl-2">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col-3 text-center">
                                             <img src="{{ asset($category->banner) }}" alt="" class="img-fluid img">
@@ -555,7 +555,7 @@
                     <div class="row">
                         @foreach (\App\Brand::where('top', 1)->get() as $brand)
                             <div class="mb-3 col-6">
-                                <a href="{{ route('products.brand', $brand->id) }}" class="bg-white border d-block c-base-2 box-2 icon-anim pl-2">
+                                <a href="{{ route('products.brand', $brand->slug) }}" class="bg-white border d-block c-base-2 box-2 icon-anim pl-2">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col-3 text-center">
                                             <img src="{{ asset($brand->logo) }}" alt="" class="img-fluid img">

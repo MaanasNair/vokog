@@ -15,11 +15,9 @@
                         <div class="page-title">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <h2 class="heading heading-6 text-capitalize strong-600 mb-0 d-inline-block">
+                                    <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
                                         {{__('Products')}}
                                     </h2>
-                                    <a href="{{ route('seller.products.upload')}}" class="btn btn-base-1 ml-3">{{__('Add New Product')}}</a>
-
                                 </div>
                                 <div class="col-md-6">
                                     <div class="float-md-right">
@@ -33,7 +31,15 @@
                             </div>
                         </div>
 
-                        <!-- Order history table -->
+                        <div class="row">
+                            <div class="col-md-4 offset-md-4">
+                                <a class="dashboard-widget text-center plus-widget mt-4 d-block" href="{{ route('seller.products.upload')}}">
+                                    <i class="la la-plus"></i>
+                                    <span class="d-block title heading-6 strong-400 c-base-1">{{ __('Add New Product') }}</span>
+                                </a>
+                            </div>
+                        </div>
+                        
                         <div class="card no-border mt-4">
                             <div>
                                 <table class="table table-sm table-hover table-responsive-md">

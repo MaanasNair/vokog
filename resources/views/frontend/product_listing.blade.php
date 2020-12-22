@@ -1,5 +1,49 @@
 @extends('frontend.layouts.app')
 
+@if(isset($subsubcategory_id))
+    @php
+        $meta_title = \App\SubSubCategory::find($subsubcategory_id)->meta_title;
+        $meta_description = \App\SubSubCategory::find($subsubcategory_id)->meta_description;
+    @endphp
+@elseif (isset($subcategory_id))
+    @php
+        $meta_title = \App\SubCategory::find($subcategory_id)->meta_title;
+        $meta_description = \App\SubCategory::find($subcategory_id)->meta_description;
+    @endphp
+@elseif (isset($category_id))
+    @php
+        $meta_title = \App\Category::find($category_id)->meta_title;
+        $meta_description = \App\Category::find($category_id)->meta_description;
+    @endphp
+@elseif (isset($brand_id))
+    @php
+        $meta_title = \App\Brand::find($brand_id)->meta_title;
+        $meta_description = \App\Brand::find($brand_id)->meta_description;
+    @endphp
+@else
+    @php
+        $meta_title = env('APP_NAME');
+        $meta_description = \App\SeoSetting::first()->description;
+    @endphp
+@endif
+
+@section('meta_title'){{ $meta_title }}@stop
+@section('meta_description'){{ $meta_description }}@stop
+
+@section('meta')
+    <!-- Schema.org markup for Google+ -->
+    <meta itemprop="name" content="{{ $meta_title }}">
+    <meta itemprop="description" content="{{ $meta_description }}">
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:title" content="{{ $meta_title }}">
+    <meta name="twitter:description" content="{{ $meta_description }}">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{{ $meta_title }}" />
+    <meta property="og:description" content="{{ $meta_description }}" />
+@endsection
+
 @section('content')
 
     <div class="breadcrumb-area">
@@ -10,16 +54,16 @@
                         <li><a href="{{ route('home') }}">{{__('Home')}}</a></li>
                         <li><a href="{{ route('products') }}">{{__('All Categories')}}</a></li>
                         @if(isset($category_id))
-                            <li class="active"><a href="{{ route('products.category', $category_id) }}">{{ \App\Category::find($category_id)->name }}</a></li>
+                            <li class="active"><a href="{{ route('products.category', \App\Category::find($category_id)->slug) }}">{{ \App\Category::find($category_id)->name }}</a></li>
                         @endif
                         @if(isset($subcategory_id))
-                            <li ><a href="{{ route('products.category', \App\SubCategory::find($subcategory_id)->category->id) }}">{{ \App\SubCategory::find($subcategory_id)->category->name }}</a></li>
-                            <li class="active"><a href="{{ route('products.subcategory', $subcategory_id) }}">{{ \App\SubCategory::find($subcategory_id)->name }}</a></li>
+                            <li ><a href="{{ route('products.category', \App\SubCategory::find($subcategory_id)->category->slug) }}">{{ \App\SubCategory::find($subcategory_id)->category->name }}</a></li>
+                            <li class="active"><a href="{{ route('products.subcategory', \App\SubCategory::find($subcategory_id)->slug) }}">{{ \App\SubCategory::find($subcategory_id)->name }}</a></li>
                         @endif
                         @if(isset($subsubcategory_id))
-                            <li ><a href="{{ route('products.category', \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->id) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->name }}</a></li>
-                            <li ><a href="{{ route('products.subcategory', \App\SubsubCategory::find($subsubcategory_id)->subcategory->id) }}">{{ \App\SubsubCategory::find($subsubcategory_id)->subcategory->name }}</a></li>
-                            <li class="active"><a href="{{ route('products.subsubcategory', $subsubcategory_id) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->name }}</a></li>
+                            <li ><a href="{{ route('products.category', \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->slug) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->name }}</a></li>
+                            <li ><a href="{{ route('products.subcategory', \App\SubsubCategory::find($subsubcategory_id)->subcategory->slug) }}">{{ \App\SubsubCategory::find($subsubcategory_id)->subcategory->name }}</a></li>
+                            <li class="active"><a href="{{ route('products.subsubcategory', \App\SubSubCategory::find($subsubcategory_id)->slug) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->name }}</a></li>
                         @endif
                     </ul>
                 </div>
@@ -54,7 +98,7 @@
                                                     <div id="subCategory-{{ $key }}-{{ $key2 }}" class="collapse">
                                                         <ul class="sub-sub-category-list">
                                                             @foreach ($subcategory->subsubcategories as $key3 => $subsubcategory)
-                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->id) }}">{{ __($subsubcategory->name) }}</a></li>
+                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->slug) }}">{{ __($subsubcategory->name) }}</a></li>
                                                             @endforeach
                                                         </ul>
                                                     </div>
@@ -156,7 +200,7 @@
 
                                         @foreach ($brands as $key => $id)
                                             @if (\App\Brand::find($id) != null)
-                                                <li><a href="{{ route('products.brand', $id) }}"><img src="{{ asset(\App\Brand::find($id)->logo) }}" alt="" class="img-fluid"></a></li>
+                                                <li><a href="{{ route('products.brand', \App\Brand::find($id)->slug) }}"><img src="{{ asset(\App\Brand::find($id)->logo) }}" alt="" class="img-fluid"></a></li>
                                             @endif
                                         @endforeach
                                     </ul>
@@ -171,13 +215,13 @@
                         </div>
                         <form class="" id="search-form" action="{{ route('search') }}" method="GET">
                             @isset($category_id)
-                                <input type="hidden" name="category_id" value="{{ $category_id }}">
+                                <input type="hidden" name="category" value="{{ \App\Category::find($category_id)->slug }}">
                             @endisset
                             @isset($subcategory_id)
-                                <input type="hidden" name="subcategory_id" value="{{ $subcategory_id }}">
+                                <input type="hidden" name="subcategory" value="{{ \App\SubCategory::find($subcategory_id)->slug }}">
                             @endisset
                             @isset($subsubcategory_id)
-                                <input type="hidden" name="subsubcategory_id" value="{{ $subsubcategory_id }}">
+                                <input type="hidden" name="subsubcategory" value="{{ \App\SubSubCategory::find($subsubcategory_id)->slug }}">
                             @endisset
 
                             <div class="sort-by-bar row no-gutters bg-white mb-3 px-3">
@@ -213,11 +257,11 @@
                                             <div class="sort-by-box px-1">
                                                 <div class="form-group">
                                                     <label>{{__('Brands')}}</label>
-                                                    <select class="form-control sortSelect" data-placeholder="{{__('All Brands')}}" name="brand_id" onchange="filter()">
+                                                    <select class="form-control sortSelect" data-placeholder="{{__('All Brands')}}" name="brand" onchange="filter()">
                                                         <option value="">{{__('All Brands')}}</option>
                                                         @foreach ($brands as $key => $id)
                                                             @if (\App\Brand::find($id) != null)
-                                                                <option value="{{ $id }}" @isset($brand_id) @if ($brand_id == $id) selected @endif @endisset>{{ \App\Brand::find($id)->name }}</option>
+                                                                <option value="{{ \App\Brand::find($id)->slug }}" @isset($brand_id) @if ($brand_id == $id) selected @endif @endisset>{{ \App\Brand::find($id)->name }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -248,7 +292,40 @@
                             <div class="row sm-no-gutters gutters-5">
                                 @foreach ($products as $key => $product)
                                     <div class="col-xxl-3 col-xl-4 col-lg-3 col-md-4 col-6">
-                                        <div class="product-card-1 mb-2">
+                                        <div class="product-box-2 bg-white alt-box my-2">
+                                            <div class="position-relative overflow-hidden">
+                                                <a href="{{ route('product', $product->slug) }}" class="d-block product-image h-100" style="background-image:url('{{ asset($product->thumbnail_img) }}');" tabindex="0">
+                                                </a>
+                                                <div class="product-btns clearfix">
+                                                    <button class="btn add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})" tabindex="0">
+                                                        <i class="la la-heart-o"></i>
+                                                    </button>
+                                                    <button class="btn add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})" tabindex="0">
+                                                        <i class="la la-refresh"></i>
+                                                    </button>
+                                                    <button class="btn quick-view" title="Quick view" onclick="showAddToCartModal({{ $product->id }})" tabindex="0">
+                                                        <i class="la la-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="p-3 border-top">
+                                                <h2 class="product-title p-0 text-truncate">
+                                                    <a href="{{ route('product', $product->slug) }}" tabindex="0">{{ __($product->name) }}</a>
+                                                </h2>
+                                                <div class="star-rating mb-1">
+                                                    {{ renderStarRating($product->rating) }}
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="price-box float-left">
+                                                        @if(home_base_price($product->id) != home_discounted_base_price($product->id))
+                                                            <del class="old-product-price strong-400">{{ home_base_price($product->id) }}</del>
+                                                        @endif
+                                                        <span class="product-price strong-600">{{ home_discounted_base_price($product->id) }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="product-card-1 mb-2">
                                             <figure class="product-image-container">
                                                 <a href="{{ route('product', $product->slug) }}" class="product-image d-block" style="background-image:url('{{ asset($product->thumbnail_img) }}');">
                                                 </a>
@@ -269,7 +346,7 @@
                                                         <span class="old-product-price strong-300">{{ home_base_price($product->id) }}</span>
                                                     @endif
                                                     <span class="product-price strong-300"><strong>{{ home_discounted_base_price($product->id) }}</strong></span>
-                                                </div><!-- End .price-box -->
+                                                </div>
 
                                                 <div class="product-card-1-action">
                                                     <button class="paction add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})">
@@ -283,9 +360,9 @@
                                                     <button class="paction add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})">
                                                         <i class="la la-refresh"></i>
                                                     </button>
-                                                </div><!-- End .product-action -->
-                                            </div><!-- End .product-details -->
-                                        </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
                                     </div>
                                 @endforeach
                             </div>

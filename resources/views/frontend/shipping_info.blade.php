@@ -8,8 +8,8 @@
                 <div class="row cols-delimited">
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center">
-                            <div class="block-icon mb-0">
-                                <i class="icon-hotel-restaurant-105"></i>
+                            <div class="block-icon c-gray-light mb-0">
+                                <i class="la la-shopping-cart"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">1. {{__('My Cart')}}</h3>
@@ -20,7 +20,7 @@
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center active">
                             <div class="block-icon mb-0">
-                                <i class="icon-finance-067"></i>
+                                <i class="la la-truck"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">2. {{__('Shipping info')}}</h3>
@@ -31,7 +31,7 @@
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center">
                             <div class="block-icon c-gray-light mb-0">
-                                <i class="icon-finance-059"></i>
+                                <i class="la la-credit-card"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">3. {{__('Payment')}}</h3>
@@ -104,13 +104,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-group has-feedback">
                                                     <label class="control-label">{{__('Postal code')}}</label>
-                                                    <input type="text" class="form-control" value="{{ $user->postal_code }}" name="postal_code" required>
+                                                    <input type="number" min="0" class="form-control" value="{{ $user->postal_code }}" name="postal_code" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group has-feedback">
                                                     <label class="control-label">{{__('Phone')}}</label>
-                                                    <input type="text" class="form-control" value="{{ $user->phone }}" name="phone" required>
+                                                    <input type="number" min="0" class="form-control" value="{{ $user->phone }}" name="phone" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,13 +169,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-group has-feedback">
                                                     <label class="control-label">{{__('Postal code')}}</label>
-                                                    <input type="text" class="form-control" placeholder="{{__('Postal code')}}" name="postal_code" required>
+                                                    <input type="number" min="0" class="form-control" placeholder="{{__('Postal code')}}" name="postal_code" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group has-feedback">
                                                     <label class="control-label">{{__('Phone')}}</label>
-                                                    <input type="text" class="form-control" placeholder="{{__('Phone')}}" name="phone" required>
+                                                    <input type="number" min="0" class="form-control" placeholder="{{__('Phone')}}" name="phone" required>
                                                 </div>
                                             </div>
                                         </div>

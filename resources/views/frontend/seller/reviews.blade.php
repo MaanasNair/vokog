@@ -31,22 +31,23 @@
                             </div>
                         </div>
 
-                        @if (count($reviews) > 0)
-                            <!-- Order history table -->
-                            <div class="card no-border mt-4">
-                                <div>
-                                    <table class="table table-sm table-hover table-responsive-md">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>{{__('Product')}}</th>
-                                                <th>{{__('Customer')}}</th>
-                                                <th>{{__('Rating')}}</th>
-                                                <th>{{__('Comment')}}</th>
-                                                <th>{{__('Published')}}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        
+                        <!-- Order history table -->
+                        <div class="card no-border mt-4">
+                            <div>
+                                <table class="table table-sm table-responsive-md">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{{__('Product')}}</th>
+                                            <th>{{__('Customer')}}</th>
+                                            <th>{{__('Rating')}}</th>
+                                            <th>{{__('Comment')}}</th>
+                                            <th>{{__('Published')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (count($reviews) > 0)
                                             @foreach ($reviews as $key => $review)
                                                 @php
                                                     $review = \App\Review::find($review->id);
@@ -87,11 +88,18 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        @else
+                                            <tr>
+                                                <td class="text-center pt-5 h4" colspan="100%">
+                                                    <i class="la la-meh-o d-block heading-1 alpha-5"></i>
+                                                    <span class="d-block">{{ __('No review found.') }}</span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
                             </div>
-                        @endif
+                        </div>
 
                         <div class="pagination-wrapper py-4">
                             <ul class="pagination justify-content-end">

@@ -24,7 +24,7 @@
 
     <!-- Open Graph data -->
     <meta property="og:title" content="{{ $product->meta_title }}" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="product" />
     <meta property="og:url" content="{{ route('product', $product->slug) }}" />
     <meta property="og:image" content="{{ asset($product->meta_img) }}" />
     <meta property="og:description" content="{{ $product->meta_description }}" />
@@ -70,9 +70,9 @@
                             <ul class="breadcrumb">
                                 <li><a href="{{ route('home') }}">{{__('Home')}}</a></li>
                                 <li><a href="{{ route('categories.all') }}">{{__('All Categories')}}</a></li>
-                                <li><a href="{{ route('products.category', $product->category_id) }}">{{ $product->category->name }}</a></li>
-                                <li><a href="{{ route('products.subcategory', $product->subcategory_id) }}">{{ $product->subcategory->name }}</a></li>
-                                <li class="active"><a href="{{ route('products.subsubcategory', $product->subsubcategory_id) }}">{{ $product->subsubcategory->name }}</a></li>
+                                <li><a href="{{ route('products.category', $product->category->slug) }}">{{ $product->category->name }}</a></li>
+                                <li><a href="{{ route('products.subcategory', $product->subcategory->slug) }}">{{ $product->subcategory->name }}</a></li>
+                                <li class="active"><a href="{{ route('products.subsubcategory', $product->subsubcategory->slug) }}">{{ $product->subsubcategory->name }}</a></li>
                             </ul>
 
                             <div class="row">
@@ -232,7 +232,7 @@
                                                 </span>
                                             </div>
                                             @if(count(json_decode($product->variations, true)) >= 1)
-                                                <div class="avialable-amount">({{ $qty }} {{__('available')}})</div>
+                                                <div class="avialable-amount">(<span id="available-quantity">{{ $qty }}</span> {{__('available')}})</div>
                                             @endif
                                         </div>
                                     </div>
@@ -465,7 +465,7 @@
                                                     <div id="subCategory-{{ $subcategory->subcategory_id }}" class="collapse show">
                                                         <ul class="sub-sub-category-list">
                                                             @foreach (\App\Product::where('user_id', $product->user_id)->where('category_id',            $category->category_id)->where('subcategory_id', $subcategory->subcategory_id)->select('subsubcategory_id')->distinct()->get() as $subsubcategory)
-                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->subsubcategory_id) }}">{{ App\SubSubCategory::findOrFail($subsubcategory->subsubcategory_id)->name }}</a></li>
+                                                                <li><a href="{{ route('products.subsubcategory', App\SubSubCategory::findOrFail($subsubcategory->subsubcategory_id)->slug) }}">{{ App\SubSubCategory::findOrFail($subsubcategory->subsubcategory_id)->name }}</a></li>
                                                             @endforeach
                                                     </div>
                                                 </div>
@@ -749,13 +749,11 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-
-            getVariantPrice();
-
     		$('#share').share({
     			networks: ['facebook','twitter','linkedin','tumblr','in1','stumbleupon','digg'],
     			theme: 'square'
     		});
+            getVariantPrice();
     	});
 
     </script>

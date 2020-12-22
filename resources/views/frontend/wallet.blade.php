@@ -36,43 +36,57 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-md-4 offset-md-2">
+                                <div class="dashboard-widget text-center green-widget text-white mt-4 c-pointer">
+                                    <i class="fa fa-dollar"></i>
+                                    <span class="d-block title heading-3 strong-400">{{ single_price(Auth::user()->balance) }}</span>
+                                    <span class="d-block sub-title">{{ __('Wallet Balance') }}</span>
+                                    
+                                </div>
+                            </div>
                             <div class="col-md-4">
-                                <div class="dashboard-widget text-center green-widget mt-4 c-pointer">
-                                    <a href="javascript:;" class="d-block">
-                                        <i class="fa fa-dollar"></i>
-                                        <span class="d-block title">{{ single_price(Auth::user()->balance) }}</span>
-                                        <span class="d-block sub-title">in your wallet</span>
-                                    </a>
+                                <div class="dashboard-widget text-center plus-widget mt-4 c-pointer" onclick="show_wallet_modal()">
+                                    <i class="la la-plus"></i>
+                                    <span class="d-block title heading-6 strong-400 c-base-1">{{ __('Recharge Wallet') }}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 mt-4">
-                                <button class="btn btn-base-1" onclick="show_wallet_modal()">{{__('Recharge Wallet')}}</button>
-                            </div>
-                        </div>
 
-                        <div class="card no-border mt-4">
-                            <table class="table table-sm table-hover table-responsive-md">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>{{ __('Date') }}</th>
-                                        <th>{{__('Amount')}}</th>
-                                        <th>{{__('Payment Method')}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   @foreach ($wallets as $key => $wallet)
-                                       <tr>
-                                           <td>{{ $key+1 }}</td>
-                                           <td>{{ date('d-m-Y', strtotime($wallet->created_at)) }}</td>
-                                           <td>{{ single_price($wallet->amount) }}</td>
-                                           <td>{{ ucfirst(str_replace('_', ' ', $wallet ->payment_method)) }}</td>
-                                       </tr>
-                                   @endforeach
-                                </tbody>
-                            </table>
+                        <div class="card no-border mt-5">
+                            <div class="card-header py-3">
+                                <h4 class="mb-0 h6">Wallet recharge history</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm table-responsive-md mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{{ __('Date') }}</th>
+                                            <th>{{__('Amount')}}</th>
+                                            <th>{{__('Payment Method')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($wallets) > 0)
+                                            @foreach ($wallets as $key => $wallet)
+                                                <tr>
+                                                    <td>{{ $key+1 }}</td>
+                                                    <td>{{ date('d-m-Y', strtotime($wallet->created_at)) }}</td>
+                                                    <td>{{ single_price($wallet->amount) }}</td>
+                                                    <td>{{ ucfirst(str_replace('_', ' ', $wallet ->payment_method)) }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td class="text-center pt-5 h4" colspan="100%">
+                                                    <i class="la la-meh-o d-block heading-1 alpha-5"></i>
+                                                <span class="d-block">{{ __('No history found.') }}</span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="pagination-wrapper py-4">
                             <ul class="pagination justify-content-end">
@@ -112,16 +126,27 @@
                             <div class="col-md-10">
                                 <div class="mb-3">
                                     <select class="form-control selectpicker" data-minimum-results-for-search="Infinity" name="payment_option">
-                                        <option value="paypal">{{__('Paypal')}}</option>
-                                        <option value="stripe">{{__('Stripe')}}</option>
-                                        <option value="sslcommerz">{{__('SSLCommerz')}}</option>
+                                        @if (\App\BusinessSetting::where('type', 'paypal_payment')->first()->value == 1)
+                                            <option value="paypal">{{__('Paypal')}}</option>
+                                        @endif
+                                        @if (\App\BusinessSetting::where('type', 'stripe_payment')->first()->value == 1)
+                                            <option value="stripe">{{__('Stripe')}}</option>
+                                        @endif
+                                        @if (\App\BusinessSetting::where('type', 'sslcommerz_payment')->first()->value == 1)
+                                            <option value="sslcommerz">{{__('SSLCommerz')}}</option>
+                                        @endif
+                                        @if (\App\BusinessSetting::where('type', 'instamojo_payment')->first()->value == 1)
+                                            <option value="instamojo">{{__('Instamojo')}}</option>
+                                        @endif
+                                        @if (\App\BusinessSetting::where('type', 'paystack')->first()->value == 1)
+                                            <option value="paystack">{{__('Paystack')}}</option>
+                                        @endif
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('cancel')}}</button>
                         <button type="submit" class="btn btn-base-1">{{__('Confirm')}}</button>
                     </div>
                 </form>

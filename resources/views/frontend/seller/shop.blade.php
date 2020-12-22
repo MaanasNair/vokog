@@ -70,6 +70,22 @@
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Address')}}" name="address" value="{{ $shop->address }}" required>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Meta Title')}} <span class="required-star">*</span></label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control mb-3" placeholder="{{__('Meta Title')}}" name="meta_title" value="{{ $shop->meta_title }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>{{__('Meta Description')}} <span class="required-star">*</span></label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <textarea name="meta_description" rows="6" class="form-control mb-3" required>{{ $shop->meta_description }}</textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-right mt-4">
@@ -94,9 +110,9 @@
                                                 <div class="row">
                                                     @if ($shop->sliders != null)
                                                         @foreach (json_decode($shop->sliders) as $key => $sliders)
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-6">
                                                                 <div class="img-upload-preview">
-                                                                    <img src="{{ asset($sliders) }}" alt="" class="img-responsive">
+                                                                    <img src="{{ asset($sliders) }}" alt="" class="img-fluid">
                                                                     <input type="hidden" name="previous_sliders[]" value="{{ $sliders }}">
                                                                     <button type="button" class="btn btn-danger close-btn remove-files"><i class="fa fa-times"></i></button>
                                                                 </div>
@@ -135,7 +151,7 @@
                                 <div class="form-box-content p-3">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Facebook')}} </label>
+                                            <label ><i class="line-height-1_8 size-24 mr-2 fa fa-facebook bg-facebook c-white text-center"></i>{{__('Facebook')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Facebook')}}" name="facebook" value="{{ $shop->facebook }}">
@@ -143,7 +159,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Twitter')}} </label>
+                                            <label><i class="line-height-1_8 size-24 mr-2 fa fa-twitter bg-twitter c-white text-center"></i>{{__('Twitter')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Twitter')}}" name="twitter" value="{{ $shop->twitter }}">
@@ -151,7 +167,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Instagram')}} </label>
+                                            <label><i class="line-height-1_8 size-24 mr-2 fa fa-instagram bg-instagram c-white text-center"></i>{{__('Instagram')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Instagram')}}" name="instagram" value="{{ $shop->instagram }}">
@@ -159,7 +175,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Google')}} </label>
+                                            <label><i class="line-height-1_8 size-24 mr-2 fa fa-google bg-google c-white text-center"></i>{{__('Google')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Google')}}" name="google" value="{{ $shop->google }}">
@@ -167,7 +183,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>{{__('Youtube')}} </label>
+                                            <label><i class="line-height-1_8 size-24 mr-2 fa fa-youtube bg-youtube c-white text-center"></i>{{__('Youtube')}} </label>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control mb-3" placeholder="{{__('Youtube')}}" name="youtube" value="{{ $shop->youtube }}">

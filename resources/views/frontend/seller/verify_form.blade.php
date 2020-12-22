@@ -67,7 +67,7 @@
                                                 </label>
                                             </div>
                                         </div>
-                                    @elseif ($element->type == 'select')
+                                    @elseif ($element->type == 'select' && is_array(json_decode($element->options)))
                                         <div class="row">
                                             <div class="col-md-2">
                                                 <label>{{ $element->label }}</label>
@@ -82,7 +82,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @elseif ($element->type == 'multi_select')
+                                    @elseif ($element->type == 'multi_select' && is_array(json_decode($element->options)))
                                         <div class="row">
                                             <div class="col-md-2">
                                                 <label>{{ $element->label }}</label>

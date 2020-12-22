@@ -63,7 +63,7 @@
                             @endphp
                             @if(count($categories)>12 && $key == 11)
                                 <div class="sub-category-menu active" id="more">
-                                    <h3 class="category-name"><a href="{{ route('products.category', $category->id) }}">{{ __($category->name) }}</a></h3>
+                                    <h3 class="category-name"><a href="{{ route('products.category', $category->slug) }}">{{ __($category->name) }}</a></h3>
                                     <ul>
                                         @foreach ($category->subcategories as $key => $subcategory)
                                             @foreach ($subcategory->subsubcategories as $key => $subsubcategory)
@@ -80,7 +80,7 @@
                                         @foreach ($brands as $brand_id)
                                             @if(\App\Brand::find($brand_id) != null)
                                                 <li class="brand-box">
-                                                    <a href="{{ route('products.brand', $brand_id) }}">
+                                                    <a href="{{ route('products.brand', \App\Brand::find($brand_id)->slug) }}">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col-xl-4 col-5">
                                                                 <div class="img">
@@ -99,7 +99,7 @@
                                 </div>
                             @else
                                 <div class="sub-category-menu @php if($key < 12) echo 'active'; @endphp" id="{{ $key }}">
-                                    <h3 class="category-name"><a href="{{ route('products.category', $category->id) }}" >{{ __($category->name) }}</a></h3>
+                                    <h3 class="category-name"><a href="{{ route('products.category', $category->slug) }}" >{{ __($category->name) }}</a></h3>
                                     <ul>
                                         @foreach ($category->subcategories as $key => $subcategory)
                                             @foreach ($subcategory->subsubcategories as $key => $subsubcategory)
@@ -115,7 +115,7 @@
                                         @foreach ($brands as $brand_id)
                                             @if(\App\Brand::find($brand_id) != null)
                                                 <li class="brand-box">
-                                                    <a href="{{ route('products.brand', $brand_id) }}">
+                                                    <a href="{{ route('products.brand', \App\Brand::find($brand_id)->slug) }}">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col-xl-4 col-5">
                                                                 <div class="img">

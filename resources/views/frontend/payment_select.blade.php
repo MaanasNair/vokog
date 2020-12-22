@@ -8,8 +8,8 @@
                 <div class="row cols-delimited">
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center">
-                            <div class="block-icon mb-0">
-                                <i class="icon-hotel-restaurant-105"></i>
+                            <div class="block-icon c-gray-light mb-0">
+                                <i class="la la-shopping-cart"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">1. {{__('My Cart')}}</h3>
@@ -19,8 +19,8 @@
 
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center">
-                            <div class="block-icon mb-0">
-                                <i class="icon-finance-067"></i>
+                            <div class="block-icon c-gray-light mb-0">
+                                <i class="la la-truck"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">2. {{__('Shipping info')}}</h3>
@@ -30,8 +30,8 @@
 
                     <div class="col-4">
                         <div class="icon-block icon-block--style-1-v5 text-center active">
-                            <div class="block-icon c-gray-light mb-0">
-                                <i class="icon-finance-059"></i>
+                            <div class="block-icon mb-0">
+                                <i class="la la-credit-card"></i>
                             </div>
                             <div class="block-content d-none d-md-block">
                                 <h3 class="heading heading-sm strong-300 c-gray-light text-capitalize">3. {{__('Payment')}}</h3>
@@ -49,67 +49,107 @@
             <div class="container">
                 <div class="row cols-xs-space cols-sm-space cols-md-space">
                     <div class="col-lg-8">
-                        @if (Auth::check() && \App\BusinessSetting::where('type', 'coupon_system')->first()->value == 1)
-                            <div class="card">
-                                <button type="submit" class="btn btn-base-1" onclick="coupon_code_modal()">{{__('Apply Coupon code')}}</button>
-                            </div>
-                        @endif
-                        <form action="{{ route('payment.checkout') }}" class="form-default" data-toggle="validator" role="form" method="POST">
+                        <form action="{{ route('payment.checkout') }}" class="form-default" data-toggle="validator" role="form" method="POST" id="checkout-form">
                             @csrf
                             <div class="card">
-                                <div class="card-title px-4">
+                                <div class="card-title px-4 py-3">
                                     <h3 class="heading heading-5 strong-500">
                                         {{__('Select a payment option')}}
                                     </h3>
                                 </div>
                                 <div class="card-body text-center">
-                                    <ul class="inline-links">
-                                        @if (\App\BusinessSetting::where('type', 'paypal_payment')->first()->value == 1)
-                                            <li>
-                                                <label class="payment_option">
-                                                    <input type="radio" id="" name="payment_option" value="paypal" checked>
-                                                    <span>
-                                                        <img src="{{ asset('frontend/images/icons/cards/paypal.png')}}" class="img-fluid">
-                                                    </span>
-                                                </label>
-                                            </li>
-                                        @endif
-                                        @if(\App\BusinessSetting::where('type', 'stripe_payment')->first()->value == 1)
-                                            <li>
-                                                <label class="payment_option">
-                                                    <input type="radio" id="" name="payment_option" value="stripe" checked>
-                                                    <span>
-                                                        <img src="{{ asset('frontend/images/icons/cards/stripe.png')}}" class="img-fluid">
-                                                    </span>
-                                                </label>
-                                            </li>
-                                        @endif
-                                        @if(\App\BusinessSetting::where('type', 'sslcommerz_payment')->first()->value == 1)
-                                            <li>
-                                                <label class="payment_option">
-                                                    <input type="radio" id="" name="payment_option" value="sslcommerz" checked>
-                                                    <span>
-                                                        <img src="{{ asset('frontend/images/icons/cards/sslcommerz.png')}}" class="img-fluid">
-                                                    </span>
-                                                </label>
-                                            </li>
-                                        @endif
-                                        @if(\App\BusinessSetting::where('type', 'cash_payment')->first()->value == 1)
-                                            <li>
-                                                <label class="payment_option">
-                                                    <input type="radio" id="" name="payment_option" value="cash_on_delivery" checked>
-                                                    <span>
-                                                        <img src="{{ asset('frontend/images/icons/cards/cod.png')}}" class="img-fluid">
-                                                    </span>
-                                                </label>
-                                            </li>
-                                        @endif
-                                    </ul>
+                                    <div class="row">
+                                        <div class="col-md-6 mx-auto">
+                                            <div class="row">
+                                                @if(\App\BusinessSetting::where('type', 'paypal_payment')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Paypal">
+                                                            <input type="radio" id="" name="payment_option" value="paypal" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/paypal.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'stripe_payment')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Stripe">
+                                                            <input type="radio" id="" name="payment_option" value="stripe" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/stripe.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'sslcommerz_payment')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="sslcommerz">
+                                                            <input type="radio" id="" name="payment_option" value="sslcommerz" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/sslcommerz.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'instamojo_payment')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Instamojo">
+                                                            <input type="radio" id="" name="payment_option" value="instamojo" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/instamojo.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'razorpay')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Razorpay">
+                                                            <input type="radio" id="" name="payment_option" value="razorpay" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/rozarpay.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'paystack')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Paystack">
+                                                            <input type="radio" id="" name="payment_option" value="paystack" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/paystack.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                                @if(\App\BusinessSetting::where('type', 'cash_payment')->first()->value == 1)
+                                                    <div class="col-6">
+                                                        <label class="payment_option mb-4" data-toggle="tooltip" data-title="Cash on Delivery">
+                                                            <input type="radio" id="" name="payment_option" value="cash_on_delivery" checked>
+                                                            <span>
+                                                                <img src="{{ asset('frontend/images/icons/cards/cod.png')}}" class="img-fluid">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                     @if (Auth::check())
-                                        <div class="text-center mt-4">
-                                            or
-                                            <div class="h5">Your wallet balance : <strong>{{ single_price(Auth::user()->balance) }}</strong></div>
-                                            <button onclick="use_wallet()" class="btn btn-base-1" @if(Auth::user()->balance < $total) disabled @endif>Use your Wallet</button>
+                                        <div class="or or--1 mt-2">
+                                            <span>or</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xxl-6 col-lg-8 col-md-10 mx-auto">
+                                                <div class="text-center bg-gray py-4">
+                                                    <i class="fa"></i>
+                                                    <div class="h5 mb-4">Your wallet balance : <strong>{{ single_price(Auth::user()->balance) }}</strong></div>
+                                                    @if(Auth::user()->balance < $total)
+                                                        <button type="button" class="btn btn-base-2" disabled>Insufficient balance</button>
+                                                    @else
+                                                        <button  type="button" onclick="use_wallet()" class="btn btn-base-1" >Pay with wallet</button>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
@@ -135,33 +175,6 @@
                 </div>
             </div>
         </section>
-
-        <div class="modal fade" id="coupon_code_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size" role="document">
-                <div class="modal-content position-relative">
-                    <div class="modal-header">
-                        <h5 class="modal-title strong-600 heading-5">{{__('Apply Coupon Code')}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form class="" action="{{ route('checkout.apply_coupon_code') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-body gry-bg px-3 pt-3">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control mb-3" name="code" placeholder="Code" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('cancel')}}</button>
-                            <button type="submit" class="btn btn-base-1">{{__('Apply')}}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -170,10 +183,6 @@
         function use_wallet(){
             $('input[name=payment_option]').val('wallet');
             $('#checkout-form').submit();
-        }
-
-        function coupon_code_modal(){
-            $('#coupon_code_modal').modal('show');
         }
     </script>
 @endsection
