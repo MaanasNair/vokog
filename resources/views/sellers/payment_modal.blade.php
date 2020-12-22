@@ -9,30 +9,11 @@
         <div>
             <table class="table table-responsive">
                 <tbody>
-                    {{-- <tr>
-                        <td>Total Sold</td>
-                        <td>$177.9</td>
-                    </tr>
                     <tr>
-                        <td>Total Commission</td>
-                        <td>$53.37</td>
-                    </tr>
-                    <tr>
-                        <td>Paid By Customer</td>
-                        <td>$177.9</td>
-                    </tr>
-                    <tr>
-                        <td>Commission On Paid</td>
-                        <td>$53.37</td>
-                    </tr>
-                    <tr>
-                        <td>Paid To Vendor (By Admin)</td>
-                        <td>$0</td>
-                    </tr> --}}
-
-                    <tr>
-                        <td>{{ __('Due to seller') }}</td>
-                        <td>{{ single_price($seller->admin_to_pay) }}</td>
+                        @if($seller->admin_to_pay >= 0)
+                            <td>{{ __('Due to seller') }}</td>
+                            <td>{{ single_price($seller->admin_to_pay) }}</td>
+                        @endif
                     </tr>
                 </tbody>
             </table>
@@ -60,6 +41,15 @@
                         @endif
                         @if($seller->stripe_status == 1)
                             <option value="stripe">{{__('Stripe')}}</option>
+                        @endif
+                        @if($seller->instamojo_status == 1)
+                            <option value="instamojo">{{__('Instamojo')}}</option>
+                        @endif
+                        @if($seller->razorpay_status == 1)
+                            <option value="razorpay">{{__('RazorPay')}}</option>
+                        @endif
+                        @if($seller->paystack_status == 1)
+                            <option value="paystack">{{__('PayStack')}}</option>
                         @endif
                         @if($seller->sslcommerz_status == 1)
                             <option value="sslcommerz">{{__('SSLCommerz')}}</option>

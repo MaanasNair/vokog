@@ -604,6 +604,8 @@
 			}
 		});
 
+		update_sku();
+
 		$('.remove-files').on('click', function(){
             $(this).parents(".col-md-4").remove();
         });
