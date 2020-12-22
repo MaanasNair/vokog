@@ -96,7 +96,7 @@
                     </li>
                 @endif
                 <li>
-                    <a href="{{ route('support_ticket.index') }}" class="{{ areActiveRoutesHome(['support_ticket.index'])}}">
+                    <a href="{{ route('support_ticket.index') }}" class="{{ areActiveRoutesHome(['support_ticket.index', 'support_ticket.show'])}}">
                         <i class="la la-support"></i>
                         <span class="category-name">
                             {{__('Support Ticket')}}
