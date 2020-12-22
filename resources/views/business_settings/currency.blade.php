@@ -3,34 +3,6 @@
 @section('content')
 
 <div class="row">
-    <div class="col-lg-6">
-        <div class="panel">
-            <div class="panel-heading">
-                <h3 class="panel-title text-center">{{__('Home Default Currency')}}</h3>
-            </div>
-            <div class="panel-body">
-                <form class="form-horizontal" action="{{ route('business_settings.update') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <div class="col-lg-3">
-                            <label class="control-label">{{__('Home Default Currency')}}</label>
-                        </div>
-                        <div class="col-lg-6">
-                            <select class="form-control demo-select2-placeholder" name="home_default_currency">
-                                @foreach ($active_currencies as $key => $currency)
-                                    <option value="{{ $currency->id }}" <?php if(\App\BusinessSetting::where('type', 'home_default_currency')->first()->value == $currency->id) echo 'selected'?> >{{ $currency->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <input type="hidden" name="types[]" value="home_default_currency">
-                        <div class="col-lg-3">
-                            <button class="btn btn-purple" type="submit">{{__('Save')}}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <div class="col-lg-6">
         <div class="panel">

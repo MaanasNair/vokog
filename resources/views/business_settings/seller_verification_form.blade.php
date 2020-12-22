@@ -35,14 +35,16 @@
 									    <div class="col-lg-7">
 									        <input class="form-control" type="text" name="label[]" value="{{ $element->label }}" placeholder="Select Label" style="margin-bottom:10px">
 									        <div class="customer_choice_options_types_wrap_child">
-												@foreach (json_decode($element->options) as $value)
-													<div class="form-group">
-													    <div class="col-sm-6 col-sm-offset-4">
-													        <input class="form-control" type="text" name="options_{{ $key }}[]" value="{{ $value }}" required="">
-													    </div>
-													    <div class="col-sm-2"> <span class="btn btn-icon btn-circle icon-lg fa fa-times" onclick="delete_choice_clearfix(this)"></span></div>
-													</div>
-												@endforeach
+												@if (is_array(json_decode($element->options)))
+													@foreach (json_decode($element->options) as $value)
+														<div class="form-group">
+														    <div class="col-sm-6 col-sm-offset-4">
+														        <input class="form-control" type="text" name="options_{{ $key }}[]" value="{{ $value }}" required="">
+														    </div>
+														    <div class="col-sm-2"> <span class="btn btn-icon btn-circle icon-lg fa fa-times" onclick="delete_choice_clearfix(this)"></span></div>
+														</div>
+													@endforeach
+												@endif
 											</div>
 									        <button class="btn btn-success pull-right" type="button" onclick="add_customer_choice_options(this)"><i class="glyphicon glyphicon-plus"></i> Add option</button>
 									    </div>
