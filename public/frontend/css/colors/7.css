@@ -78,9 +78,6 @@ a:hover,
 .checkbox input[type="checkbox"]:checked + label::after,
 .checkbox input[type="radio"]:checked + label::after,
 .checkbox-alphanumeric input:checked ~ label,
-.custom-input-file--2 + label,
-.custom-input-file--3 + label,
-.custom-input-file--4 + label,
 .icon-block--style-1-v1 .block-icon > .icon-number,
 .icon-block--style-1-v1 .block-icon i,
 .icon-block--style-1-v3 .block-icon i,
@@ -267,8 +264,6 @@ input:checked + .toggle-switch-slider:before,
 .radio input[type="radio"]:checked + label::after,
 .radio-primary input[type="radio"] + label::after,
 .radio-primary input[type="radio"]:checked + label::after,
-/* .custom-input-file + label,
-.custom-input-file--4 + label strong, */
 .form-card--style-2 .form-header,
 .modal[data-modal-color=base-1] .modal-content,
 .pagination > .active .page-link,
@@ -339,9 +334,7 @@ label.payment_option input:checked + span,
 input:checked + .toggle-switch-slider:before,
 input:checked + .toggle-switch-slider,
 .checkbox-alphanumeric input:checked ~ label,
-/* .custom-input-file + label,
-.custom-input-file--2 + label,
-.custom-input-file--4 + label, */
+.checkbox-color input:checked ~ label,
 a > .feature--boxed-border:hover,
 .icon-block--style-1-v3 .block-icon,
 .icon-block--style-1-v5.block-bordered-grid-animated:hover .block-inner::after,
@@ -515,9 +508,6 @@ input:focus + .toggle-switch-slider {
 .form-base-1 .form-control,
 .form-base-1 .input-group-addon,
 .form-base-1 .form-control:focus,
-/* .custom-input-file + label:hover,
-.custom-input-file.has-focus + label,
-.custom-input-file:focus + label, */
 .icon-block--style-1-v5 .block-icon-circle,
 .promos.bg-base-1 .promo .price,
 .ss-style-invertedrounded::after,
@@ -539,9 +529,6 @@ input:focus + .toggle-switch-slider {
 .bg-base-1 .btn-base-1:active,
 .bg-base-1 .btn-base-1:focus,
 .bg-base-1 .btn-base-1:hover,
-.custom-input-file--2 + label:hover,
-.custom-input-file--2.has-focus + label,
-.custom-input-file--2:focus + label ,
 .product .product-actions--1 .btn-product-action:hover
 
 {
@@ -549,11 +536,6 @@ input:focus + .toggle-switch-slider {
 }
 
 
-.custom-input-file--2 + label:hover,
-.custom-input-file--2.has-focus + label,
-.custom-input-file--2:focus + label {
-    color: #b52b42;
-}
 
 @media (min-width: 768px) {
     .promos.bg-base-1 .scale {

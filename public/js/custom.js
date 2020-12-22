@@ -1,12 +1,20 @@
 $(document).on('nifty.ready', function() {
 
 	$('.editor').each(function(el){
+		var $this = $(this);
+        var buttons = $this.data('buttons');
+        buttons = !buttons ? "bold,underline,italic,hr,|,ul,ol,|,align,paragraph,|,image,table,link,undo,redo" : buttons;
+
 		var editor = new Jodit(this, {
-		  	"uploader": {
-		    "insertImageAsBase64URI": true
-		},
-			"toolbarAdaptive": false
-		});
+            "uploader": {
+                "insertImageAsBase64URI": true
+            },
+            "toolbarAdaptive": false,
+            "defaultMode": "1",
+            "toolbarSticky": false,
+            "showXPathInStatusbar": false,
+            "buttons": buttons,
+        });
 	});
 
 	// SELECT2 SINGLE

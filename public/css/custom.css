@@ -343,3 +343,14 @@ ul.list-group > li{
 border-bottom: 1px solid #3d4451;	
 }
 
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.support-file-attach {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}

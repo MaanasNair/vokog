@@ -5635,7 +5635,7 @@ a > .block {
   position: absolute;
   top: 0;
   bottom: auto;
-  background: #f3f3f3, 10%;
+  background: #f3f3f3;
   color: #333 !important;
   padding: 0 15px;
   width: 100%;
@@ -6352,7 +6352,7 @@ a > .block {
 .btn-teal-blue.btn-outline:hover {
   background-color: #5ac8fa;
   border-color: #5ac8fa;
-  color: #5ac8fa;
+  color: #fff;
 }
 
 .btn-green {
@@ -6380,7 +6380,7 @@ a > .block {
 .btn-green.btn-outline:hover {
   background-color: #4cd964;
   border-color: #4cd964;
-  color: #4cd964;
+  color: #FFF;
 }
 
 .btn-red {
@@ -6408,7 +6408,7 @@ a > .block {
 .btn-red.btn-outline:hover {
   background-color: #ff3b30;
   border-color: #ff3b30;
-  color: #ff3b30;
+  color: #FFF;
 }
 
 .btn-pink {
@@ -6436,7 +6436,7 @@ a > .block {
 .btn-pink.btn-outline:hover {
   background-color: #ff2d55;
   border-color: #ff2d55;
-  color: #ff2d55;
+  color: #FFF;
 }
 
 .btn-orange {
@@ -6464,7 +6464,7 @@ a > .block {
 .btn-orange.btn-outline:hover {
   background-color: #ff9500;
   border-color: #ff9500;
-  color: #ff9500;
+  color: #FFF;
 }
 
 .btn-yellow {
@@ -6492,7 +6492,7 @@ a > .block {
 .btn-yellow.btn-outline:hover {
   background-color: #ffcc00;
   border-color: #ffcc00;
-  color: #ffcc00;
+  color: #FFF;
 }
 
 .btn-purple {
@@ -6525,12 +6525,12 @@ a > .block {
 
 .btn-color-470604 {
   color: #ffffff !important;
-  background: linear-gradient(left, #e9168c 2%, #f75254 99%);
+  background: linear-gradient(to left, #e9168c 2%, #f75254 99%);
   background: -o-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -ms-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -moz-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -webkit-linear-gradient(left, #e9168c 2%, #f75254 99%);
-  border-image: linear-gradient(left, #e9168c 2%, #f75254 99%);
+  border-image: linear-gradient(to left, #e9168c 2%, #f75254 99%);
   border-image: -o-linear-gradient(left, #e9168c 2%, #f75254 99%);
   border-image: -ms-linear-gradient(left, #e9168c 2%, #f75254 99%);
   border-image: -moz-linear-gradient(left, #e9168c 2%, #f75254 99%);
@@ -6540,12 +6540,12 @@ a > .block {
 .btn-color-470604:active,
 .btn-color-470604:focus,
 .btn-color-470604:hover {
-  background: linear-gradient(left, #e9168c 2%, #f75254 99%);
+  background: linear-gradient(to left, #e9168c 2%, #f75254 99%);
   background: -o-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -ms-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -moz-linear-gradient(left, #e9168c 2%, #f75254 99%);
   background: -webkit-linear-gradient(left, #e9168c 2%, #f75254 99%);
-  border-image: linear-gradient(left, #e9168c 2%, #f75254 99%);
+  border-image: linear-gradient(to left, #e9168c 2%, #f75254 99%);
   border-image: -o-linear-gradient(left, #e9168c 2%, #f75254 99%);
   border-image: -ms-linear-gradient(left, #e9168c 2%, #f75254 99%);
   border-image: -moz-linear-gradient(left, #e9168c 2%, #f75254 99%);
@@ -7888,7 +7888,8 @@ a > .block {
   margin: 2rem 0;
 }
 
-.or--1 {
+.or--1,
+.or--2 {
   position: relative;
 }
 
@@ -7913,7 +7914,6 @@ a > .block {
   display: inline-block;
   height: 30px;
   position: relative;
-  left: 50%;
   transform: translate(-50%, 50%);
   font-size: 0.875rem;
   color: #d8d8d8;
@@ -9567,8 +9567,8 @@ input:checked + .toggle-switch-slider:before {
   font-size: 0.875rem;
   text-align: center;
   opacity: 0.7;
-  border: 1px solid transparent;
-  border-radius: 2px;
+  border: 2px solid #d3d3d3;
+  border-radius: 50%;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
@@ -9623,7 +9623,7 @@ input:checked + .toggle-switch-slider:before {
   display: block;
   overflow: hidden;
   padding: 0.625rem 1.25rem;
-  border: 1px solid transparent;
+  border: 1px solid #e6e6e6;
   border-radius: 2px;
   color: #FFF;
   outline: none;
@@ -9653,6 +9653,11 @@ input:checked + .toggle-switch-slider:before {
   background: transparent;
 }
 
+.custom-input-file--2 + label,
+.custom-input-file--3 + label,
+.custom-input-file--4 + label{
+    color: #555;
+}
 .custom-input-file--2 + label:hover,
 .custom-input-file--2.has-focus + label,
 .custom-input-file--2:focus + label {
@@ -12479,6 +12484,7 @@ ul.list-border--dotted > li:last-child {
 .star-rating i {
   display: inline-block;
   color: #ffcc00;
+  margin-right: 3px;
 }
 
 .star-rating-sm i {
@@ -22330,4 +22336,20 @@ pre {
 
 .icons-holder .mobile {
   font-size: 34px;
+}
+
+.bg-twitter {
+	background-color:#00aced;
+}
+.bg-facebook {
+	background-color:#3b579d;
+}
+.bg-google {
+	background-color:#dd4a3a;
+}
+.bg-instagram {
+	background-color:#e1306c;
+}
+.bg-youtube {
+	background-color:#E62117;
 }
