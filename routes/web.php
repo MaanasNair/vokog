@@ -20,7 +20,7 @@ Route::get('/social-login/redirect/{provider}', 'Auth\LoginController@redirectTo
 Route::get('/social-login/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('social.callback');
 Route::get('/users/login', 'HomeController@login')->name('user.login');
 Route::get('/users/registration', 'HomeController@registration')->name('user.registration');
-Route::post('/users/login', 'HomeController@user_login')->name('user.login.submit');
+//Route::post('/users/login', 'HomeController@user_login')->name('user.login.submit');
 Route::post('/users/login/cart', 'HomeController@cart_login')->name('cart.login.submit');
 
 Route::post('/subcategories/get_subcategories_by_category', 'SubCategoryController@get_subcategories_by_category')->name('subcategories.get_subcategories_by_category');
@@ -28,12 +28,15 @@ Route::post('/subsubcategories/get_subsubcategories_by_subcategory', 'SubSubCate
 Route::post('/subsubcategories/get_brands_by_subsubcategory', 'SubSubCategoryController@get_brands_by_subsubcategory')->name('subsubcategories.get_brands_by_subsubcategory');
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/sitemap.xml', function(){
+	return base_path('sitemap.xml');
+});
 Route::get('/product/{slug}', 'HomeController@product')->name('product');
 Route::get('/products', 'HomeController@listing')->name('products');
-Route::get('/search?category_id={category_id}', 'HomeController@search')->name('products.category');
-Route::get('/search?subcategory_id={subcategory_id}', 'HomeController@search')->name('products.subcategory');
-Route::get('/search?subsubcategory_id={subsubcategory_id}', 'HomeController@search')->name('products.subsubcategory');
-Route::get('//search?brand_id={brand_id}', 'HomeController@search')->name('products.brand');
+Route::get('/search?category={category_slug}', 'HomeController@search')->name('products.category');
+Route::get('/search?subcategory={subcategory_slug}', 'HomeController@search')->name('products.subcategory');
+Route::get('/search?subsubcategory={subsubcategory_slug}', 'HomeController@search')->name('products.subsubcategory');
+Route::get('/search?brand={brand_slug}', 'HomeController@search')->name('products.brand');
 Route::post('/product/variant_price', 'HomeController@variant_price')->name('products.variant_price');
 Route::get('/shops/visit/{slug}', 'HomeController@shop')->name('shop.visit');
 Route::get('/shops/visit/{slug}/{type}', 'HomeController@filter_shop')->name('shop.visit.type');
@@ -50,6 +53,7 @@ Route::get('/checkout', 'CheckoutController@get_shipping_info')->name('checkout.
 Route::post('/checkout/payment_select', 'CheckoutController@store_shipping_info')->name('checkout.store_shipping_infostore');
 Route::get('/checkout/payment_select', 'CheckoutController@get_payment_info')->name('checkout.payment_info');
 Route::post('/checkout/apply_coupon_code', 'CheckoutController@apply_coupon_code')->name('checkout.apply_coupon_code');
+Route::post('/checkout/remove_coupon_code', 'CheckoutController@remove_coupon_code')->name('checkout.remove_coupon_code');
 
 //Paypal START
 Route::get('/paypal/payment/done', 'PaypalController@getDone')->name('payment.done');
@@ -144,3 +148,9 @@ Route::group(['middleware' => ['auth']], function(){
 
 Route::resource('shops', 'ShopController');
 Route::get('/track_your_order', 'HomeController@trackOrder')->name('orders.track');
+
+Route::get('/instamojo/payment/pay-success', 'InstamojoController@success')->name('instamojo.success');
+
+Route::post('rozer/payment/pay-success', 'RazorpayController@payment')->name('payment.rozer');
+
+Route::get('/paystack/payment/callback', 'PaystackController@handleGatewayCallback');

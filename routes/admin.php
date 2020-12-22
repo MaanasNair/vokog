@@ -40,6 +40,8 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
 	Route::get('/sellers/approve/{id}', 'SellerController@approve_seller')->name('sellers.approve');
 	Route::get('/sellers/reject/{id}', 'SellerController@reject_seller')->name('sellers.reject');
 	Route::post('/sellers/payment_modal', 'SellerController@payment_modal')->name('sellers.payment_modal');
+	Route::get('/seller/payments', 'PaymentController@payment_histories')->name('sellers.payment_histories');
+	Route::get('/seller/payments/show/{id}', 'PaymentController@show')->name('sellers.payment_history');
 
 	Route::resource('customers','CustomerController');
 	Route::get('/customers/destroy/{id}', 'CustomerController@destroy')->name('customers.destroy');
