@@ -1,7 +1,7 @@
 @extends('layouts.blank')
 @section('content')
     <div class="mar-ver pad-btm text-center">
-        <h1 class="h3">Vokog Installation</h1>
+        <h1 class="h3">Active eCommerce CMS Installation</h1>
         <p>You will need to know the following items before
         proceeding.</p>
     </div>
