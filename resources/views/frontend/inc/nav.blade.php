@@ -28,12 +28,11 @@
 
                         <li class="dropdown" id="currency-change">
                             @php
-                                $code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'home_default_currency')->first()->value)->code;
                                 if(Session::has('currency_code')){
                                     $currency_code = Session::get('currency_code', $code);
                                 }
                                 else{
-                                    $currency_code = $code;
+                                    $currency_code = \App\Currency::findOrFail(\App\BusinessSetting::where('type', 'system_default_currency')->first()->value)->code;
                                 }
                             @endphp
                             <a href="" class="dropdown-toggle top-bar-item" data-toggle="dropdown">
@@ -57,7 +56,7 @@
                         </li>
                         @auth
                         <li>
-                            <a href="{{ route('dashboard') }}" class="top-bar-item">{{__('My Profile')}}</a>
+                            <a href="{{ route('dashboard') }}" class="top-bar-item">{{__('My Panel')}}</a>
                         </li>
                         <li>
                             <a href="{{ route('logout') }}" class="top-bar-item">{{__('Logout')}}</a>
@@ -173,6 +172,25 @@
                             </a>
                         </li>
 
+                        @if (\App\BusinessSetting::where('type', 'wallet_system')->first()->value == 1)
+                            <li>
+                                <a href="{{ route('wallet.index') }}" class="{{ areActiveRoutesHome(['wallet.index'])}}">
+                                    <i class="la la-dollar"></i>
+                                    <span class="category-name">
+                                        {{__('My Wallet')}}
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
+                        <li>
+                            <a href="{{ route('support_ticket.index') }}" class="{{ areActiveRoutesHome(['support_ticket.index', 'support_ticket.show'])}}">
+                                <i class="la la-support"></i>
+                                <span class="category-name">
+                                    {{__('Support Ticket')}}
+                                </span>
+                            </a>
+                        </li>
+
                     </ul>
                     @if (Auth::check() && Auth::user()->user_type == 'seller')
                         <div class="sidebar-widget-title py-0">
@@ -272,7 +290,7 @@
                     <ul class="side-seller-menu">
                         @foreach (\App\Category::all() as $key => $category)
                             <li>
-                            <a href="{{ route('products.category', $category->id) }}" class="text-truncate">
+                            <a href="{{ route('products.category', $category->slug) }}" class="text-truncate">
                                 <img class="cat-image" src="{{ asset($category->icon) }}" width="13">
                                 <span>{{ __($category->name) }}</span>
                             </a>
@@ -336,10 +354,10 @@
                                             <input type="text" aria-label="Search" id="search" name="q" class="w-100" placeholder="I'm shopping for..." autocomplete="off">
                                         </div>
                                         <div class="form-group category-select d-none d-xl-block">
-                                            <select class="form-control selectpicker" name="category_id">
+                                            <select class="form-control selectpicker" name="category">
                                                 <option value="">{{__('All Categories')}}</option>
                                                 @foreach (\App\Category::all() as $key => $category)
-                                                <option value="{{ $category->id }}"
+                                                <option value="{{ $category->slug }}"
                                                     @isset($category_id)
                                                         @if ($category_id == $category->id)
                                                             selected
@@ -462,16 +480,18 @@
                                                             </div>
                                                             <div class="py-2 text-center dc-btn">
                                                                 <ul class="inline-links inline-links--style-3">
-                                                                    <li class="pr-3">
+                                                                    <li class="px-1">
                                                                         <a href="{{ route('cart') }}" class="link link--style-1 text-capitalize btn btn-base-1 px-3 py-1">
                                                                             <i class="la la-shopping-cart"></i> {{__('View cart')}}
                                                                         </a>
                                                                     </li>
-                                                                    <li>
+                                                                    @if (Auth::check())
+                                                                    <li class="px-1">
                                                                         <a href="{{ route('checkout.shipping_info') }}" class="link link--style-1 text-capitalize btn btn-base-1 px-3 py-1 light-text">
                                                                             <i class="la la-mail-forward"></i> {{__('Checkout')}}
                                                                         </a>
                                                                     </li>
+                                                                    @endif
                                                                 </ul>
                                                             </div>
                                                         @else
@@ -510,7 +530,7 @@
                                         $brands = array();
                                     @endphp
                                     <li>
-                                        <a href="{{ route('products.category', $category->id) }}">
+                                        <a href="{{ route('products.category', $category->slug) }}">
                                             <img class="cat-image" src="{{ asset($category->icon) }}" width="30">
                                             <span class="cat-name">{{ __($category->name) }}</span>
                                         </a>
@@ -524,7 +544,7 @@
                                                                     @foreach ($category->subcategories as $subcategory)
                                                                         <div class="card">
                                                                             <ul class="sub-cat-items">
-                                                                                <li class="sub-cat-name"><a href="{{ route('products.subcategory', $subcategory->id) }}">{{ __($subcategory->name) }}</a></li>
+                                                                                <li class="sub-cat-name"><a href="{{ route('products.subcategory', $subcategory->slug) }}">{{ __($subcategory->name) }}</a></li>
                                                                                 @foreach ($subcategory->subsubcategories as $subsubcategory)
                                                                                     @php
                                                                                         foreach (json_decode($subsubcategory->brands) as $brand) {
@@ -533,7 +553,7 @@
                                                                                             }
                                                                                         }
                                                                                     @endphp
-                                                                                    <li><a href="{{ route('products.subsubcategory', $subsubcategory->id) }}">{{ __($subsubcategory->name) }}</a></li>
+                                                                                    <li><a href="{{ route('products.subsubcategory', $subsubcategory->slug) }}">{{ __($subsubcategory->name) }}</a></li>
                                                                                 @endforeach
                                                                             </ul>
                                                                         </div>
@@ -577,7 +597,7 @@
                                                                 @foreach ($brands as $brand_id)
                                                                     @if(\App\Brand::find($brand_id) != null)
                                                                         <li class="sub-brand-item">
-                                                                            <a href="{{ route('products.brand', $brand_id) }}" ><img src="{{ asset(\App\Brand::find($brand_id)->logo) }}" class="img-fluid"></a>
+                                                                            <a href="{{ route('products.brand', \App\Brand::find($brand_id)->slug) }}" ><img src="{{ asset(\App\Brand::find($brand_id)->logo) }}" class="img-fluid"></a>
                                                                         </li>
                                                                     @endif
                                                                 @endforeach
