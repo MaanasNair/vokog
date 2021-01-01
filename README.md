@@ -13,8 +13,13 @@ Badges:
 Just github thingeys:
 
 [![GitHub commits](https://img.shields.io/github/commits-since/MaanasNair/vokog/v1.0.0.svg)](https://GitHub.com/MaanasNair/vokog/commit/)
+
 [![GitHub forks](https://img.shields.io/github/forks/MaanasNair/vokog.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/MaanasNair/vokog/network/)
+
 [![GitHub stars](https://img.shields.io/github/stars/MaanasNair/vokog.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/MaanasNair/vokog/stargazers/)
+
 [![GitHub watchers](https://img.shields.io/github/watchers/MaanasNair/vokog.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/MaanasNair/vokog/watchers/)
+
 [![GitHub followers](https://img.shields.io/github/followers/MaanasNair.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/MaanasNair?tab=followers)
+
 ![Profile views](https://gpvc.arturio.dev/MaanasNair)
