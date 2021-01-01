@@ -1,6 +1,6 @@
 ## Welcome to the Vokog README!
 
-# Badges:
+Badges:
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/MaanasNair/vokog/graphs/commit-activity)
 [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](http://shields.io/)
@@ -10,7 +10,7 @@
 [![GitHub release](https://img.shields.io/github/release/MaanasNair/vokog.svg)](https://GitHub.com/MaanasNair/vokog/releases/)
 [![GitHub issues](https://img.shields.io/github/issues/MaanasNair/vokog.svg)](https://GitHub.com/MaanasNair/vokog/issues/)
 
-# Just github thingeys:
+Just github thingeys:
 
 [![GitHub commits](https://img.shields.io/github/commits-since/MaanasNair/vokog/v1.0.0.svg)](https://GitHub.com/MaanasNair/vokog/commit/)
 [![GitHub forks](https://img.shields.io/github/forks/MaanasNair/vokog.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/MaanasNair/vokog/network/)
