@@ -1,150 +1,159 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-
-    <section class="gry-bg py-4 profile">
-        <div class="container">
-            <div class="row cols-xs-space cols-sm-space cols-md-space">
-                <div class="col-lg-12 mx-auto">
-                    <div class="main-content">
-                        <!-- Page title -->
-                        <div class="page-title">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
-                                        {{__('Track Order')}}
-                                    </h2>
-                                </div>
+<section class="pt-4 mb-4">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-6 text-center text-lg-left">
+                <h1 class="fw-600 h4">{{ translate('Track Order') }}</h1>
+            </div>
+            <div class="col-lg-6">
+                <ul class="breadcrumb bg-transparent p-0 justify-content-center justify-content-lg-end">
+                    <li class="breadcrumb-item opacity-50">
+                        <a class="text-reset" href="{{ route('home') }}">{{ translate('Home') }}</a>
+                    </li>
+                    <li class="text-dark fw-600 breadcrumb-item">
+                        <a class="text-reset" href="{{ route('orders.track') }}">"{{ translate('Track Order') }}"</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="mb-5">
+    <div class="container text-left">
+        <div class="row">
+            <div class="col-xxl-5 col-xl-6 col-lg-8 mx-auto">
+                <form class="" action="{{ route('orders.track') }}" method="GET" enctype="multipart/form-data">
+                    <div class="bg-white rounded shadow-sm">
+                        <div class="fs-15 fw-600 p-3 border-bottom text-center">
+                            {{ translate('Check Your Order Status')}}
+                        </div>
+                        <div class="form-box-content p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control mb-3" placeholder="{{ translate('Order Code')}}" name="order_code" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">{{ translate('Track Order')}}</button>
                             </div>
                         </div>
-                        <form class="" action="{{ route('orders.track') }}" method="GET" enctype="multipart/form-data">
-                            <div class="form-box bg-white mt-4">
-                                <div class="form-box-title px-3 py-2">
-                                    {{__('Order Info')}}
-                                </div>
-                                <div class="form-box-content p-3">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>{{__('Order Code')}} <span class="required-star">*</span></label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="text" class="form-control mb-3" placeholder="{{__('Order Code')}}" name="order_code" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right mt-4">
-                                <button type="submit" class="btn btn-styled btn-base-1">{{__('Track Order')}}</button>
-                            </div>
-                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @isset($order)
+            <div class="bg-white rounded shadow-sm mt-5">
+                <div class="fs-15 fw-600 p-3 border-bottom">
+                    {{ translate('Order Summary')}}
+                </div>
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Order Code')}}:</td>
+                                    <td>{{ $order->code }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Customer')}}:</td>
+                                    <td>{{ json_decode($order->shipping_address)->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Email')}}:</td>
+                                    @if ($order->user_id != null)
+                                        <td>{{ $order->user->email }}</td>
+                                    @endif
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Shipping address')}}:</td>
+                                    <td>{{ json_decode($order->shipping_address)->address }}, {{ json_decode($order->shipping_address)->city }}, {{ json_decode($order->shipping_address)->country }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Order date')}}:</td>
+                                    <td>{{ date('d-m-Y H:i A', $order->date) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Total order amount')}}:</td>
+                                    <td>{{ single_price($order->orderDetails->sum('price') + $order->orderDetails->sum('tax')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Shipping method')}}:</td>
+                                    <td>{{ translate('Flat shipping rate')}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-50 fw-600">{{ translate('Payment method')}}:</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $order->payment_type)) }}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            @isset($order)
-                <div class="card mt-4">
-                    <div class="card-header py-2 px-3 heading-6 strong-600 clearfix">
-                        <div class="float-left">{{__('Order Summary')}}</div>
+
+            @foreach ($order->orderDetails as $key => $orderDetail)
+                @php
+                    $status = $orderDetail->delivery_status;
+                @endphp
+                <div class="bg-white rounded shadow-sm mt-4">
+                    <div class="p-4">
+                        <ul class="list-inline text-center aiz-steps">
+                            <li class="list-inline-item @if($status == 'pending') active @else done @endif">
+                                <div class="icon">
+                                    <i class="las la-file-invoice"></i>
+                                </div>
+                                <div class="title">{{ translate('Order placed')}}</div>
+                            </li>
+                            <li class="list-inline-item @if($status == 'confirmed') active @elseif($status == 'on_delivery' || $status == 'delivered') done @endif">
+                                <div class="icon">
+                                    <i class="las la-newspaper"></i>
+                                </div>
+                                <div class="title">{{ translate('Confirmed')}}</div>
+                            </li>
+                            <li class="list-inline-item @if($status == 'on_delivery') active @elseif($status == 'delivered') done @endif">
+                                <div class="icon">
+                                    <i class="las la-truck"></i>
+                                </div>
+                                <div class="title">{{ translate('On delivery')}}</div>
+                            </li>
+                            <li class="list-inline-item @if($status == 'delivered') done @endif">
+                                <div class="icon">
+                                    <i class="las la-clipboard-check"></i>
+                                </div>
+                                <div class="title">{{ translate('Delivered')}}</div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <table class="details-table table">
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Order Code')}}:</td>
-                                        <td>{{ $order->code }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Customer')}}:</td>
-                                        <td>{{ json_decode($order->shipping_address)->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Email')}}:</td>
-                                        @if ($order->user_id != null)
-                                            <td>{{ $order->user->email }}</td>
-                                        @endif
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Shipping address')}}:</td>
-                                        <td>{{ json_decode($order->shipping_address)->address }}, {{ json_decode($order->shipping_address)->city }}, {{ json_decode($order->shipping_address)->country }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-lg-6">
-                                <table class="details-table table">
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Order date')}}:</td>
-                                        <td>{{ date('d-m-Y H:m A', $order->date) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Total order amount')}}:</td>
-                                        <td>{{ single_price($order->orderDetails->sum('price') + $order->orderDetails->sum('tax')) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Shipping method')}}:</td>
-                                        <td>{{__('Flat shipping rate')}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="w-50 strong-600">{{__('Payment method')}}:</td>
-                                        <td>{{ ucfirst(str_replace('_', ' ', $order->payment_type)) }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                    @if($orderDetail->product != null)
+                    <div class="p-3">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>{{ translate('Product Name')}}</th>
+                                    <th>{{ translate('Quantity')}}</th>
+                                    <th>{{ translate('Shipped By')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                <td>{{ $orderDetail->product->getTranslation('name') }} ({{ $orderDetail->variation }})</td>
+                                    <td>{{ $orderDetail->quantity }}</td>
+                                    <td>{{ $orderDetail->product->user->name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    @endif
                 </div>
+            @endforeach
 
-
-                @foreach ($order->orderDetails as $key => $orderDetail)
-                    @php
-                        $status = $orderDetail->delivery_status;
-                    @endphp
-                    <div class="card mt-4">
-                        <div class="card-header py-2 px-3 heading-6 strong-600 clearfix">
-                            <ul class="process-steps clearfix">
-                                <li @if($status == 'pending') class="active" @else class="done" @endif>
-                                    <div class="icon">1</div>
-                                    <div class="title">{{__('Order placed')}}</div>
-                                </li>
-                                <li @if($status == 'on_review') class="active" @elseif($status == 'on_delivery' || $status == 'delivered') class="done" @endif>
-                                    <div class="icon">2</div>
-                                    <div class="title">{{__('On review')}}</div>
-                                </li>
-                                <li @if($status == 'on_delivery') class="active" @elseif($status == 'delivered') class="done" @endif>
-                                    <div class="icon">3</div>
-                                    <div class="title">{{__('On delivery')}}</div>
-                                </li>
-                                <li @if($status == 'delivered') class="done" @endif>
-                                    <div class="icon">4</div>
-                                    <div class="title">{{__('Delivered')}}</div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="col-6">
-                                <table class="details-table table">
-                                    @if($orderDetail->product != null)
-                                        <tr>
-                                            <td class="w-50 strong-600">{{__('Product Name')}}:</td>
-                                            <td>{{ $orderDetail->product->name }} ({{ $orderDetail->variation }})</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="w-50 strong-600">{{__('Quantity')}}:</td>
-                                            <td>{{ $orderDetail->quantity }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="w-50 strong-600">{{__('Shipped By')}}:</td>
-                                            <td>{{ $orderDetail->product->user->name }}</td>
-                                        </tr>
-                                    @endif
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-            @endisset
-        </div>
-    </section>
+        @endisset
+    </div>
+</section>
 
 @endsection

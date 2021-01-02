@@ -18,8 +18,8 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <select class="form-control selectpicker" name="{{$option->name}}_{{$options}}_variation">
-                                        <option value="increase">{{__('Increase')}}</option>
-                                        <option value="decrease">{{__('Decrease')}}</option>
+                                        <option value="increase">{{translate('Increase')}}</option>
+                                        <option value="decrease">{{translate('Decrease')}}</option>
                                     </select>
                                 </div>
                             </div>

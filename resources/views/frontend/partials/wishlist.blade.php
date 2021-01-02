@@ -1,9 +1,11 @@
-<a href="{{ route('wishlists.index') }}" class="nav-box-link">
-    <i class="la la-heart-o d-inline-block nav-box-icon"></i>
-    <span class="nav-box-text d-none d-lg-inline-block">{{__('Wishlist')}}</span>
-    @if(Auth::check())
-        <span class="nav-box-number">{{ count(Auth::user()->wishlists)}}</span>
-    @else
-        <span class="nav-box-number">0</span>
-    @endif
+<a href="{{ route('wishlists.index') }}" class="d-flex align-items-center text-reset">
+    <i class="la la-heart-o la-2x opacity-80"></i>
+    <span class="flex-grow-1 ml-1">
+        @if(Auth::check())
+            <span class="badge badge-primary badge-inline badge-pill">{{ count(Auth::user()->wishlists)}}</span>
+        @else
+            <span class="badge badge-primary badge-inline badge-pill">0</span>
+        @endif
+        <span class="nav-box-text d-none d-xl-block opacity-70">{{translate('Wishlist')}}</span>
+    </span>
 </a>

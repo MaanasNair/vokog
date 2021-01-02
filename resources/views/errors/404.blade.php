@@ -1,13 +1,15 @@
-@extends('layouts.blank')
+@extends('frontend.layouts.app')
 
 @section('content')
-<div class="text-center">
-    <h1 class="error-code text-danger">{{__('404')}}</h1>
-    <p class="h4 text-uppercase text-bold">{{__('Page Not Found!')}}</p>
-    <div class="pad-btm">
-        {{__('Sorry, but the page you are looking for has not been found on our server.')}}
+<section class="text-center py-6">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 mx-auto">
+				<img src="{{ static_asset('assets/img/404.svg') }}" class="mw-100 mx-auto mb-5" height="300">
+			    <h1 class="fw-700">{{ translate('Page Not Found!') }}</h1>
+			    <p class="fs-16 opacity-60">{{ translate('The page you are looking for has not been found on our server.') }}</p>
+			</div>
+		</div>
     </div>
-    <hr class="new-section-sm bord-no">
-    <div class="pad-top"><a class="btn btn-primary" href="{{env('APP_URL')}}">{{__('Return Home')}}</a></div>
-</div>
+</section>
 @endsection

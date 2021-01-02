@@ -5,118 +5,104 @@
         <div class="profile">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-8 offset-xl-2">
+                    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 mx-auto">
                         <div class="card">
-                            <div class="text-center px-35 pt-5">
-                                <h3 class="heading heading-4 strong-500">
-                                    {{__('Login to your account.')}}
-                                </h3>
+                            <div class="text-center pt-4">
+                                <h1 class="h4 fw-600">
+                                    {{ translate('Login to your account.')}}
+                                </h1>
                             </div>
-                            <div class="px-5 py-3 py-lg-5">
-                                <div class="row align-items-center">
-                                    <div class="col-12 col-lg">
-                                        <form class="form-default" role="form" action="{{ route('login') }}" method="POST">
-                                            @csrf
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <!-- <label>{{ __('email') }}</label> -->
-                                                        <div class="input-group input-group--style-1">
-                                                            <input type="email" class="form-control form-control-sm {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{__('Email')}}" name="email" id="email">
-                                                            <span class="input-group-addon">
-                                                                <i class="text-md la la-user"></i>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <!-- <label>{{ __('password') }}</label> -->
-                                                        <div class="input-group input-group--style-1">
-                                                            <input type="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{__('Password')}}" name="password" id="password">
-                                                            <span class="input-group-addon">
-                                                                <i class="text-md la la-lock"></i>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="px-4 py-3 py-lg-4">
+                                <div class="">
+                                    <form class="form-default" role="form" action="{{ route('login') }}" method="POST">
+                                        @csrf
+                                        <div class="form-group">
+                                            @if (\App\Addon::where('unique_identifier', 'otp_system')->first() != null && \App\Addon::where('unique_identifier', 'otp_system')->first()->activated)
+                                                <input type="text" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ translate('Email Or Phone')}}" name="email" id="email">
+                                            @else
+                                                <input type="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('Email') }}" name="email">
+                                            @endif
+                                            @if (\App\Addon::where('unique_identifier', 'otp_system')->first() != null && \App\Addon::where('unique_identifier', 'otp_system')->first()->activated)
+                                                <span class="opacity-60">{{  translate('Use country code before number') }}</span>
+                                            @endif
+                                        </div>
 
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="form-group">
-                                                        <div class="checkbox pad-btm text-left">
-                                                            <input id="demo-form-checkbox" class="magic-checkbox" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                                            <label for="demo-form-checkbox" class="text-sm">
-                                                                {{ __('Remember Me') }}
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @if(env('MAIL_USERNAME') != null && env('MAIL_PASSWORD') != null)
-                                                    <div class="col-6 text-right">
-                                                        <a href="{{ route('password.request') }}" class="link link-xs link--style-3">{{__('Forgot password?')}}</a>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ translate('Password')}}" name="password" id="password">
+                                        </div>
 
-                                            <div class="row">
-                                                <div class="col text-center">
-                                                    <button type="submit" class="btn btn-styled btn-base-1 btn-md w-100">{{ __('Login') }}</button>
-                                                </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <label class="aiz-checkbox">
+                                                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                                    <span class=opacity-60>{{  translate('Remember Me') }}</span>
+                                                    <span class="aiz-square-check"></span>
+                                                </label>
                                             </div>
-                                        </form>
-                                    </div>
-                                    <div class="col-lg-1 text-center align-self-stretch">
-                                        <div class="border-right h-100 mx-auto" style="width:1px;"></div>
-                                    </div>
-                                    <div class="col-12 col-lg">
-                                        @if(\App\BusinessSetting::where('type', 'google_login')->first()->value == 1)
-                                            <a href="{{ route('social.login', ['provider' => 'google']) }}" class="btn btn-styled btn-block btn-google btn-icon--2 btn-icon-left px-4 my-4">
-                                                <i class="icon fa fa-google"></i> {{__('Login with Google')}}
-                                            </a>
-                                        @endif
-                                        @if (\App\BusinessSetting::where('type', 'facebook_login')->first()->value == 1)
-                                            <a href="{{ route('social.login', ['provider' => 'facebook']) }}" class="btn btn-styled btn-block btn-facebook btn-icon--2 btn-icon-left px-4 my-4">
-                                                <i class="icon fa fa-facebook"></i> {{__('Login with Facebook')}}
-                                            </a>
-                                        @endif
-                                        @if (\App\BusinessSetting::where('type', 'twitter_login')->first()->value == 1)
-                                        <a href="{{ route('social.login', ['provider' => 'twitter']) }}" class="btn btn-styled btn-block btn-twitter btn-icon--2 btn-icon-left px-4 my-4">
-                                            <i class="icon fa fa-twitter"></i> {{__('Login with Twitter')}}
-                                        </a>
-                                        @endif
-                                    </div>
+                                            <div class="col-6 text-right">
+                                                <a href="{{ route('password.request') }}" class="text-reset opacity-60 fs-14">{{ translate('Forgot password?')}}</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-5">
+                                            <button type="submit" class="btn btn-primary btn-block fw-600">{{  translate('Login') }}</button>
+                                        </div>
+                                    </form>
+                                    @if(\App\BusinessSetting::where('type', 'google_login')->first()->value == 1 || \App\BusinessSetting::where('type', 'facebook_login')->first()->value == 1 || \App\BusinessSetting::where('type', 'twitter_login')->first()->value == 1)
+                                        <div class="separator mb-3">
+                                            <span class="bg-white px-3 opacity-60">{{ translate('Or Login With')}}</span>
+                                        </div>
+                                        <ul class="list-inline social colored text-center mb-5">
+                                            @if (\App\BusinessSetting::where('type', 'facebook_login')->first()->value == 1)
+                                                <li class="list-inline-item">
+                                                    <a href="{{ route('social.login', ['provider' => 'facebook']) }}" class="facebook">
+                                                        <i class="lab la-facebook-f"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if(\App\BusinessSetting::where('type', 'google_login')->first()->value == 1)
+                                                <li class="list-inline-item">
+                                                    <a href="{{ route('social.login', ['provider' => 'google']) }}" class="google">
+                                                        <i class="lab la-google"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if (\App\BusinessSetting::where('type', 'twitter_login')->first()->value == 1)
+                                                <li class="list-inline-item">
+                                                    <a href="{{ route('social.login', ['provider' => 'twitter']) }}" class="twitter">
+                                                        <i class="lab la-twitter"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    @endif
                                 </div>
-                            </div>
-                            <div class="text-center px-35 pb-3">
-                                <p class="text-md">
-                                    {{__('Need an account?')}} <a href="{{ route('user.registration') }}" class="strong-600">{{__('Register Now')}}</a>
-                                </p>
+                                <div class="text-center">
+                                    <p class="text-muted mb-0">{{ translate('Dont have an account?')}}</p>
+                                    <a href="{{ route('user.registration') }}">{{ translate('Register Now')}}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    {{-- <div class="bg-white p-4 mx-auto mt-4">
-                        <div class="">
-                            <table class="table table-responsive table-bordered mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td>{{__('Seller Account')}}</td>
-                                        <td><button class="btn btn-info" onclick="autoFillSeller()">Copy credentials</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{__('Customer Account')}}</td>
-                                        <td><button class="btn btn-info" onclick="autoFillCustomer()">Copy credentials</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    @if (env("DEMO_MODE") == "On")
+                        <div class="bg-white p-4 mx-auto mt-4">
+                            <div class="">
+                                <table class="table table-responsive table-bordered mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ translate('Seller Account')}}</td>
+                                            <td><button class="btn btn-info" onclick="autoFillSeller()">{{ translate('Copy credentials') }}</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ translate('Customer Account')}}</td>
+                                            <td><button class="btn btn-info" onclick="autoFillCustomer()">{{ translate('Copy credentials') }}</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div> --}}
-
+                    @endif
                 </div>
             </div>
         </div>

@@ -1,13 +1,15 @@
-@extends('layouts.blank')
+@extends('frontend.layouts.app')
 
 @section('content')
-<div class="text-center">
-    <h1 class="error-code text-danger">{{__('500')}}</h1>
-    <p class="h4 text-uppercase text-bold">{{__('OOPS!')}}</p>
-    <div class="pad-btm">
-        {{__('Something went wrong. Looks like server failed to load your request.')}}
-    </div>
-    <hr class="new-section-sm bord-no">
-    <div class="pad-top"><a class="btn btn-primary" href="{{env('APP_URL')}}">{{__('Return Home')}}</a></div>
-</div>
+<section class="text-center py-6">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 mx-auto">
+				<img src="{{ static_asset('assets/img/500.svg') }}" class="img-fluid w-75">
+				<h1 class="h2 fw-700 mt-5">{{ translate("Something went wrong!") }}</h1>
+		    	<p class="fs-16 opacity-60">{{ translate("Sorry for the inconvenience, but we're working on it.") }} <br> {{ translate("Error code") }}: 500</p>
+			</div>
+		</div>
+	</div>
+</section>
 @endsection

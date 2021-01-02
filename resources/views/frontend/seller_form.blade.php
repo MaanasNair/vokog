@@ -1,143 +1,118 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-
-    <section class="gry-bg py-4 profile">
-        <div class="container">
-            <div class="row cols-xs-space cols-sm-space cols-md-space">
-                <div class="col-lg-9 mx-auto">
-                    <div class="main-content">
-                        <!-- Page title -->
-                        <div class="page-title">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
-                                        {{__('Shop Informations')}}
-                                    </h2>
+<section class="pt-4 mb-4">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-6 text-center text-lg-left">
+                <h1 class="fw-600 h4">{{ translate('Register your shop')}}</h1>
+            </div>
+            <div class="col-lg-6">
+                <ul class="breadcrumb bg-transparent p-0 justify-content-center justify-content-lg-end">
+                    <li class="breadcrumb-item opacity-50">
+                        <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
+                    </li>
+                    <li class="text-dark fw-600 breadcrumb-item">
+                        <a class="text-reset" href="{{ route('shops.create') }}">"{{ translate('Register your shop')}}"</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="pt-4 mb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-xxl-5 col-xl-6 col-md-8 mx-auto">
+                <form id="shop" class="" action="{{ route('shops.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @if (!Auth::check())
+                        <div class="bg-white rounded shadow-sm mb-3">
+                            <div class="fs-15 fw-600 p-3 border-bottom">
+                                {{ translate('Personal Info')}}
+                            </div>
+                            <div class="p-3">
+                                <div class="form-group">
+                                    <label>{{ translate('Your Name')}} <span class="text-primary">*</span></label>
+                                    <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ old('name') }}" placeholder="{{  translate('Name') }}" name="name">
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="float-md-right">
-                                        <ul class="breadcrumb">
-                                            <li><a href="{{ route('home') }}">{{__('Home')}}</a></li>
-                                            <li><a href="{{ route('dashboard') }}">{{__('Dashboard')}}</a></li>
-                                            <li class="active"><a href="{{ route('shops.create') }}">{{__('Create Shop')}}</a></li>
-                                        </ul>
-                                    </div>
+                                <div class="form-group">
+                                    <label>{{ translate('Your Email')}} <span class="text-primary">*</span></label>
+                                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('Email') }}" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ translate('Your Password')}} <span class="text-primary">*</span></label>
+                                    <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{  translate('Password') }}" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ translate('Repeat Password')}} <span class="text-primary">*</span></label>
+                                    <input type="password" class="form-control" placeholder="{{  translate('Confirm Password') }}" name="password_confirmation">
                                 </div>
                             </div>
                         </div>
-                        <form class="" action="{{ route('shops.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @if (!Auth::check())
-                                <div class="form-box bg-white mt-4">
-                                    <div class="form-box-title px-3 py-2">
-                                        {{__('User Info')}}
-                                    </div>
-                                    <div class="form-box-content p-3">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <!-- <label>{{ __('Name') }}</label> -->
-                                                    <div class="input-group input-group--style-1">
-                                                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ old('name') }}" placeholder="{{ __('Name') }}" name="name">
-                                                        <span class="input-group-addon">
-                                                            <i class="text-md la la-user"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <!-- <label>{{ __('Email') }}</label> -->
-                                                    <div class="input-group input-group--style-1">
-                                                        <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('Email') }}" name="email">
-                                                        <span class="input-group-addon">
-                                                            <i class="text-md la la-envelope"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <!-- <label>{{ __('Password') }}</label> -->
-                                                    <div class="input-group input-group--style-1">
-                                                        <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('Password') }}" name="password">
-                                                        <span class="input-group-addon">
-                                                            <i class="text-md la la-lock"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <!-- <label>{{ __('Confirm Password') }}</label> -->
-                                                    <div class="input-group input-group--style-1">
-                                                        <input type="password" class="form-control" placeholder="{{ __('Confirm Password') }}" name="password_confirmation">
-                                                        <span class="input-group-addon">
-                                                            <i class="text-md la la-lock"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="form-box bg-white mt-4">
-                                <div class="form-box-title px-3 py-2">
-                                    {{__('Basic Info')}}
-                                </div>
-                                <div class="form-box-content p-3">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>{{__('Shop Name')}} <span class="required-star">*</span></label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="text" class="form-control mb-3" placeholder="{{__('Shop Name')}}" name="name" required>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>{{__('Logo')}}</label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="file" name="logo" id="file-2" class="custom-input-file custom-input-file--4" data-multiple-caption="{count} files selected" accept="image/*" />
-                                            <label for="file-2" class="mw-100 mb-3">
-                                                <span></span>
-                                                <strong>
-                                                    <i class="fa fa-upload"></i>
-                                                    {{__('Choose image')}}
-                                                </strong>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>{{__('Address')}} <span class="required-star">*</span></label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="text" class="form-control mb-3" placeholder="{{__('Address')}}" name="address" required>
-                                        </div>
-                                    </div>
+                    @endif
+                    <div class="bg-white rounded shadow-sm mb-4">
+                        <div class="fs-15 fw-600 p-3 border-bottom">
+                            {{ translate('Basic Info')}}
+                        </div>
+                        <div class="p-3">
+                            <div class="form-group">
+                                <label>{{ translate('Shop Name')}} <span class="text-primary">*</span></label>
+                                <input type="text" class="form-control" placeholder="{{ translate('Shop Name')}}" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ translate('Logo')}}</label>
+                                <div class="custom-file">
+                                    <label class="custom-file-label">
+                                        <input type="file" class="custom-file-input" name="logo" accept="image/*">
+                                        <span class="custom-file-name">{{ translate('Choose image') }}</span>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="text-right mt-4">
-                                <button type="submit" class="btn btn-styled btn-base-1">{{__('Save')}}</button>
+                            <div class="form-group">
+                                <label>{{ translate('Address')}} <span class="text-primary">*</span></label>
+                                <input type="text" class="form-control mb-3" placeholder="{{ translate('Address')}}" name="address" required>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+
+                    @if(\App\BusinessSetting::where('type', 'google_recaptcha')->first()->value == 1)
+                        <div class="form-group mt-2 mx-auto row">
+                            <div class="g-recaptcha" data-sitekey="{{ env('CAPTCHA_KEY') }}"></div>
+                        </div>
+                    @endif
+
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary fw-600">{{ translate('Register Your Shop')}}</button>
+                    </div>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
+@endsection
+
+@section('script')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script type="text/javascript">
+    // making the CAPTCHA  a required field for form submission
+    $(document).ready(function(){
+        // alert('helloman');
+        $("#shop").on("submit", function(evt)
+        {
+            var response = grecaptcha.getResponse();
+            if(response.length == 0)
+            {
+            //reCaptcha not verified
+                alert("please verify you are humann!");
+                evt.preventDefault();
+                return false;
+            }
+            //captcha verified
+            //do the rest of your validations here
+            $("#reg-form").submit();
+        });
+    });
+</script>
 @endsection

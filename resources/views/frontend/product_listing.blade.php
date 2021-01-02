@@ -1,16 +1,6 @@
 @extends('frontend.layouts.app')
 
-@if(isset($subsubcategory_id))
-    @php
-        $meta_title = \App\SubSubCategory::find($subsubcategory_id)->meta_title;
-        $meta_description = \App\SubSubCategory::find($subsubcategory_id)->meta_description;
-    @endphp
-@elseif (isset($subcategory_id))
-    @php
-        $meta_title = \App\SubCategory::find($subcategory_id)->meta_title;
-        $meta_description = \App\SubCategory::find($subcategory_id)->meta_description;
-    @endphp
-@elseif (isset($category_id))
+@if (isset($category_id))
     @php
         $meta_title = \App\Category::find($category_id)->meta_title;
         $meta_description = \App\Category::find($category_id)->meta_description;
@@ -22,8 +12,8 @@
     @endphp
 @else
     @php
-        $meta_title = env('APP_NAME');
-        $meta_description = \App\SeoSetting::first()->description;
+        $meta_title         = get_setting('meta_title');
+        $meta_description   = get_setting('meta_description');
     @endphp
 @endif
 
@@ -46,338 +36,291 @@
 
 @section('content')
 
-    <div class="breadcrumb-area">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <ul class="breadcrumb">
-                        <li><a href="{{ route('home') }}">{{__('Home')}}</a></li>
-                        <li><a href="{{ route('products') }}">{{__('All Categories')}}</a></li>
-                        @if(isset($category_id))
-                            <li class="active"><a href="{{ route('products.category', \App\Category::find($category_id)->slug) }}">{{ \App\Category::find($category_id)->name }}</a></li>
-                        @endif
-                        @if(isset($subcategory_id))
-                            <li ><a href="{{ route('products.category', \App\SubCategory::find($subcategory_id)->category->slug) }}">{{ \App\SubCategory::find($subcategory_id)->category->name }}</a></li>
-                            <li class="active"><a href="{{ route('products.subcategory', \App\SubCategory::find($subcategory_id)->slug) }}">{{ \App\SubCategory::find($subcategory_id)->name }}</a></li>
-                        @endif
-                        @if(isset($subsubcategory_id))
-                            <li ><a href="{{ route('products.category', \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->slug) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->subcategory->category->name }}</a></li>
-                            <li ><a href="{{ route('products.subcategory', \App\SubsubCategory::find($subsubcategory_id)->subcategory->slug) }}">{{ \App\SubsubCategory::find($subsubcategory_id)->subcategory->name }}</a></li>
-                            <li class="active"><a href="{{ route('products.subsubcategory', \App\SubSubCategory::find($subsubcategory_id)->slug) }}">{{ \App\SubSubCategory::find($subsubcategory_id)->name }}</a></li>
-                        @endif
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    <section class="mb-4 pt-3">
+        <div class="container sm-px-0">
+            <form class="" id="search-form" action="" method="GET">
+                <div class="row">
+                    <div class="col-xl-3">
+                        <div class="aiz-filter-sidebar collapse-sidebar-wrap sidebar-xl sidebar-right z-1035">
+                            <div class="overlay overlay-fixed dark c-pointer" data-toggle="class-toggle" data-target=".aiz-filter-sidebar" data-same=".filter-sidebar-thumb"></div>
+                            <div class="collapse-sidebar c-scrollbar-light text-left">
+                                <div class="d-flex d-xl-none justify-content-between align-items-center pl-3 border-bottom">
+                                    <h3 class="h6 mb-0 fw-600">{{ translate('Filters') }}</h3>
+                                    <button type="button" class="btn btn-sm p-2 filter-sidebar-thumb" data-toggle="class-toggle" data-target=".aiz-filter-sidebar" type="button">
+                                        <i class="las la-times la-2x"></i>
+                                    </button>
+                                </div>
+                                <div class="bg-white shadow-sm rounded mb-3">
+                                    <div class="fs-15 fw-600 p-3 border-bottom">
+                                        {{ translate('Categories')}}
+                                    </div>
+                                    <div class="p-3">
+                                        <ul class="list-unstyled">
+                                            @if (!isset($category_id))
+                                                @foreach (\App\Category::where('level', 0)->get() as $category)
+                                                    <li class="mb-2 ml-2">
+                                                        <a class="text-reset fs-14" href="{{ route('products.category', $category->slug) }}">{{ $category->getTranslation('name') }}</a>
+                                                    </li>
+                                                @endforeach
+                                            @else
+                                                <li class="mb-2">
+                                                    <a class="text-reset fs-14 fw-600" href="{{ route('search') }}">
+                                                        <i class="las la-angle-left"></i>
+                                                        {{ translate('All Categories')}}
+                                                    </a>
+                                                </li>
+                                                @if (\App\Category::find($category_id)->parent_id != 0)
+                                                    <li class="mb-2">
+                                                        <a class="text-reset fs-14 fw-600" href="{{ route('products.category', \App\Category::find(\App\Category::find($category_id)->parent_id)->slug) }}">
+                                                            <i class="las la-angle-left"></i>
+                                                            {{ \App\Category::find(\App\Category::find($category_id)->parent_id)->getTranslation('name') }}
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                                <li class="mb-2">
+                                                    <a class="text-reset fs-14 fw-600" href="{{ route('products.category', \App\Category::find($category_id)->slug) }}">
+                                                        <i class="las la-angle-left"></i>
+                                                        {{ \App\Category::find($category_id)->getTranslation('name') }}
+                                                    </a>
+                                                </li>
+                                                @foreach (\App\Utility\CategoryUtility::get_immediate_children_ids($category_id) as $key => $id)
+                                                    <li class="ml-4 mb-2">
+                                                        <a class="text-reset fs-14" href="{{ route('products.category', \App\Category::find($id)->slug) }}">{{ \App\Category::find($id)->getTranslation('name') }}</a>
+                                                    </li>
+                                                @endforeach
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-white shadow-sm rounded mb-3">
+                                    <div class="fs-15 fw-600 p-3 border-bottom">
+                                        {{ translate('Price range')}}
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="aiz-range-slider">
+                                            <div
+                                                id="input-slider-range"
+                                                data-range-value-min="@if(count(\App\Product::query()->get()) < 1) 0 @else {{ filter_products(\App\Product::query())->get()->min('unit_price') }} @endif"
+                                                data-range-value-max="@if(count(\App\Product::query()->get()) < 1) 0 @else {{ filter_products(\App\Product::query())->get()->max('unit_price') }} @endif"
+                                            ></div>
 
-
-    <section class="gry-bg py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-3 d-none d-xl-block">
-
-                    <div class="bg-white sidebar-box mb-3">
-                        <div class="box-title text-center">
-                            {{__('Categories')}}
-                        </div>
-                        <div class="box-content">
-                            <div class="category-accordion">
-                                @foreach (\App\Category::all() as $key => $category)
-                                    <div class="single-category">
-                                        <button class="btn w-100 category-name collapsed" type="button" data-toggle="collapse" data-target="#category-{{ $key }}" aria-expanded="true">
-                                            {{ __($category->name) }}
-                                        </button>
-
-                                        <div id="category-{{ $key }}" class="collapse">
-                                            @foreach ($category->subcategories as $key2 => $subcategory)
-                                                <div class="single-sub-category">
-                                                    <button class="btn w-100 sub-category-name" type="button" data-toggle="collapse" data-target="#subCategory-{{ $key }}-{{ $key2 }}" aria-expanded="true">
-                                                        {{ __($subcategory->name) }}
-                                                    </button>
-                                                    <div id="subCategory-{{ $key }}-{{ $key2 }}" class="collapse">
-                                                        <ul class="sub-sub-category-list">
-                                                            @foreach ($subcategory->subsubcategories as $key3 => $subsubcategory)
-                                                                <li><a href="{{ route('products.subsubcategory', $subsubcategory->slug) }}">{{ __($subsubcategory->name) }}</a></li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <span class="range-slider-value value-low fs-14 fw-600 opacity-70"
+                                                        @if (isset($min_price))
+                                                            data-range-value-low="{{ $min_price }}"
+                                                        @elseif($products->min('unit_price') > 0)
+                                                            data-range-value-low="{{ $products->min('unit_price') }}"
+                                                        @else
+                                                            data-range-value-low="0"
+                                                        @endif
+                                                        id="input-slider-range-value-low"
+                                                    ></span>
                                                 </div>
+                                                <div class="col-6 text-right">
+                                                    <span class="range-slider-value value-high fs-14 fw-600 opacity-70"
+                                                        @if (isset($max_price))
+                                                            data-range-value-high="{{ $max_price }}"
+                                                        @elseif($products->max('unit_price') > 0)
+                                                            data-range-value-high="{{ $products->max('unit_price') }}"
+                                                        @else
+                                                            data-range-value-high="0"
+                                                        @endif
+                                                        id="input-slider-range-value-high"
+                                                    ></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white shadow-sm rounded mb-3">
+                                    <div class="fs-15 fw-600 p-3 border-bottom">
+                                        {{ translate('Filter by color')}}
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="aiz-radio-inline">
+                                            @foreach ($all_colors as $key => $color)
+                                            <label class="aiz-megabox pl-0 mr-2" data-toggle="tooltip" data-title="{{ \App\Color::where('code', $color)->first()->name }}">
+                                                <input
+                                                    type="radio"
+                                                    name="color"
+                                                    value="{{ $color }}"
+                                                    onchange="filter()"
+                                                    @if(isset($selected_color) && $selected_color == $color) checked @endif
+                                                >
+                                                <span class="aiz-megabox-elem rounded d-flex align-items-center justify-content-center p-1 mb-2">
+                                                    <span class="size-30px d-inline-block rounded" style="background: {{ $color }};"></span>
+                                                </span>
+                                            </label>
                                             @endforeach
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white sidebar-box mb-3">
-                        <div class="box-title text-center">
-                            {{__('Price range')}}
-                        </div>
-                        <div class="box-content">
-                            <div class="range-slider-wrapper mt-3">
-                                <!-- Range slider container -->
-                                <div id="input-slider-range" data-range-value-min="{{ filter_products(\App\Product::all())->min('unit_price') }}" data-range-value-max="{{ filter_products(\App\Product::all())->max('unit_price') }}"></div>
-
-                                <!-- Range slider values -->
-                                <div class="row">
-                                    <div class="col-6">
-                                        <span class="range-slider-value value-low"
-                                            @if (isset($min_price))
-                                                data-range-value-low="{{ $min_price }}"
-                                            @elseif($products->min('unit_price') > 0)
-                                                data-range-value-low="{{ $products->min('unit_price') }}"
-                                            @else
-                                                data-range-value-low="0"
-                                            @endif
-                                            id="input-slider-range-value-low">
-                                    </div>
-
-                                    <div class="col-6 text-right">
-                                        <span class="range-slider-value value-high"
-                                            @if (isset($max_price))
-                                                data-range-value-high="{{ $max_price }}"
-                                            @elseif($products->max('unit_price') > 0)
-                                                data-range-value-high="{{ $products->max('unit_price') }}"
-                                            @else
-                                                data-range-value-high="0"
-                                            @endif
-                                            id="input-slider-range-value-high">
-                                    </div>
                                 </div>
+
+                                @foreach ($attributes as $key => $attribute)
+                                    @if (\App\Attribute::find($attribute['id']) != null)
+                                        <div class="bg-white shadow-sm rounded mb-3">
+                                            <div class="fs-15 fw-600 p-3 border-bottom">
+                                                {{ translate('Filter by') }} {{ \App\Attribute::find($attribute['id'])->getTranslation('name') }}
+                                            </div>
+                                            <div class="p-3">
+                                                <div class="aiz-checkbox-list">
+                                                    @if(array_key_exists('values', $attribute))
+                                                        @foreach ($attribute['values'] as $key => $value)
+                                                            @php
+                                                                $flag = false;
+                                                                if(isset($selected_attributes)){
+                                                                    foreach ($selected_attributes as $key => $selected_attribute) {
+                                                                        if($selected_attribute['id'] == $attribute['id']){
+                                                                            if(in_array($value, $selected_attribute['values'])){
+                                                                                $flag = true;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <label class="aiz-checkbox">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    name="attribute_{{ $attribute['id'] }}[]"
+                                                                    value="{{ $value }}" @if ($flag) checked @endif
+                                                                    onchange="filter()"
+                                                                >
+                                                                <span class="aiz-square-check"></span>
+                                                                <span>{{ $value }}</span>
+                                                            </label>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+
+                                {{-- <button type="submit" class="btn btn-styled btn-block btn-base-4">Apply filter</button> --}}
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-9">
-                    <!-- <div class="bg-white"> -->
-                        <div class="brands-bar row no-gutters pb-3 bg-white p-3">
-                            <div class="col-11">
-                                <div class="brands-collapse-box" id="brands-collapse-box">
-                                    <ul class="inline-links">
-                                        @php
-                                            $brands = array();
-                                        @endphp
-                                        @if(isset($subsubcategory_id))
-                                            @php
-                                                foreach (json_decode(\App\SubSubCategory::find($subsubcategory_id)->brands) as $brand) {
-                                                    if(!in_array($brand, $brands)){
-                                                        array_push($brands, $brand);
-                                                    }
-                                                }
-                                            @endphp
-                                        @elseif(isset($subcategory_id))
-                                            @foreach (\App\SubCategory::find($subcategory_id)->subsubcategories as $key => $subsubcategory)
-                                                @php
-                                                    foreach (json_decode($subsubcategory->brands) as $brand) {
-                                                        if(!in_array($brand, $brands)){
-                                                            array_push($brands, $brand);
-                                                        }
-                                                    }
-                                                @endphp
-                                            @endforeach
-                                        @elseif(isset($category_id))
-                                            @foreach (\App\Category::find($category_id)->subcategories as $key => $subcategory)
-                                                @foreach ($subcategory->subsubcategories as $key => $subsubcategory)
-                                                    @php
-                                                        foreach (json_decode($subsubcategory->brands) as $brand) {
-                                                            if(!in_array($brand, $brands)){
-                                                                array_push($brands, $brand);
-                                                            }
-                                                        }
-                                                    @endphp
-                                                @endforeach
-                                            @endforeach
-                                        @else
-                                            @php
-                                                foreach (\App\Brand::all() as $key => $brand){
-                                                    if(!in_array($brand->id, $brands)){
-                                                        array_push($brands, $brand->id);
-                                                    }
-                                                }
-                                            @endphp
-                                        @endif
+                    <div class="col-xl-9">
 
-                                        @foreach ($brands as $key => $id)
-                                            @if (\App\Brand::find($id) != null)
-                                                <li><a href="{{ route('products.brand', \App\Brand::find($id)->slug) }}"><img src="{{ asset(\App\Brand::find($id)->logo) }}" alt="" class="img-fluid"></a></li>
+                        <ul class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item opacity-50">
+                                <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
+                            </li>
+                            @if(!isset($category_id))
+                                <li class="breadcrumb-item fw-600  text-dark">
+                                    <a class="text-reset" href="{{ route('search') }}">"{{ translate('All Categories')}}"</a>
+                                </li>
+                            @else
+                                <li class="breadcrumb-item opacity-50">
+                                    <a class="text-reset" href="{{ route('search') }}">{{ translate('All Categories')}}</a>
+                                </li>
+                            @endif
+                            @if(isset($category_id))
+                                <li class="text-dark fw-600 breadcrumb-item">
+                                    <a class="text-reset" href="{{ route('products.category', \App\Category::find($category_id)->slug) }}">"{{ \App\Category::find($category_id)->getTranslation('name') }}"</a>
+                                </li>
+                            @endif
+                        </ul>
+
+                        <div class="text-left">
+                            <div class="d-flex">
+                                <div class="form-group w-200px">
+                                    <label class="mb-0 opacity-50">{{ translate('Sort by')}}</label>
+                                    <select class="form-control form-control-sm aiz-selectpicker" name="sort_by" onchange="filter()">
+                                        <option value="newest" @isset($sort_by) @if ($sort_by == 'newest') selected @endif @endisset>{{ translate('Newest')}}</option>
+                                        <option value="oldest" @isset($sort_by) @if ($sort_by == 'oldest') selected @endif @endisset>{{ translate('Oldest')}}</option>
+                                        <option value="price-asc" @isset($sort_by) @if ($sort_by == 'price-asc') selected @endif @endisset>{{ translate('Price low to high')}}</option>
+                                        <option value="price-desc" @isset($sort_by) @if ($sort_by == 'price-desc') selected @endif @endisset>{{ translate('Price high to low')}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group ml-auto mr-0 w-200px d-none d-md-block">
+                                    <label class="mb-0 opacity-50">{{ translate('Brands')}}</label>
+                                    <select class="form-control form-control-sm aiz-selectpicker" data-live-search="true" name="brand" onchange="filter()">
+                                        <option value="">{{ translate('All Brands')}}</option>
+                                        @foreach (\App\Brand::all() as $brand)
+                                            <option value="{{ $brand->slug }}" @isset($brand_id) @if ($brand_id == $brand->id) selected @endif @endisset>{{ $brand->getTranslation('name') }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group ml-2 mr-0 w-200px d-none d-md-block">
+                                    <label class="mb-0 opacity-50">{{ translate('Sellers')}}</label>
+                                    <select class="form-control form-control-sm aiz-selectpicker" data-live-search="true" name="seller_id" onchange="filter()">
+                                        <option value="">{{ translate('All Sellers')}}</option>
+                                        @foreach (\App\Seller::all() as $key => $seller)
+                                            @if ($seller->user != null && $seller->user->shop != null)
+                                                <option value="{{ $seller->id }}" @isset($seller_id) @if ($seller_id == $seller->id) selected @endif @endisset>{{ $seller->user->shop->name }}</option>
                                             @endif
                                         @endforeach
-                                    </ul>
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="col-1">
-                                <button type="button" name="button" onclick="morebrands(this)" class="more-brands-btn">
-                                    <i class="fa fa-plus"></i>
-                                    <span class="d-none d-md-inline-block">{{__('More')}}</span>
-                                </button>
+                                <div class="d-xl-none ml-auto ml-md-3 mr-0 form-group align-self-end">
+                                    <button type="button" class="btn btn-icon p-0" data-toggle="class-toggle" data-target=".aiz-filter-sidebar">
+                                        <i class="la la-filter la-2x"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <form class="" id="search-form" action="{{ route('search') }}" method="GET">
-                            @isset($category_id)
-                                <input type="hidden" name="category" value="{{ \App\Category::find($category_id)->slug }}">
-                            @endisset
-                            @isset($subcategory_id)
-                                <input type="hidden" name="subcategory" value="{{ \App\SubCategory::find($subcategory_id)->slug }}">
-                            @endisset
-                            @isset($subsubcategory_id)
-                                <input type="hidden" name="subsubcategory" value="{{ \App\SubSubCategory::find($subsubcategory_id)->slug }}">
-                            @endisset
-
-                            <div class="sort-by-bar row no-gutters bg-white mb-3 px-3">
-                                <div class="col-lg-4 col-md-5">
-                                    <div class="sort-by-box">
-                                        <div class="form-group">
-                                            <label>{{__('Search')}}</label>
-                                            <div class="search-widget">
-                                                <input class="form-control input-lg" type="text" name="q" placeholder="{{__('Search products')}}" @isset($query) value="{{ $query }}" @endisset>
-                                                <button type="submit" class="btn-inner">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 offset-lg-1">
-                                    <div class="row no-gutters">
-                                        <div class="col-4">
-                                            <div class="sort-by-box px-1">
-                                                <div class="form-group">
-                                                    <label>{{__('Sort by')}}</label>
-                                                    <select class="form-control sortSelect" data-minimum-results-for-search="Infinity" name="sort_by" onchange="filter()">
-                                                        <option value="1" @isset($sort_by) @if ($sort_by == '1') selected @endif @endisset>{{__('Newest')}}</option>
-                                                        <option value="2" @isset($sort_by) @if ($sort_by == '2') selected @endif @endisset>{{__('Oldest')}}</option>
-                                                        <option value="3" @isset($sort_by) @if ($sort_by == '3') selected @endif @endisset>{{__('Price low to high')}}</option>
-                                                        <option value="4" @isset($sort_by) @if ($sort_by == '4') selected @endif @endisset>{{__('Price high to low')}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="sort-by-box px-1">
-                                                <div class="form-group">
-                                                    <label>{{__('Brands')}}</label>
-                                                    <select class="form-control sortSelect" data-placeholder="{{__('All Brands')}}" name="brand" onchange="filter()">
-                                                        <option value="">{{__('All Brands')}}</option>
-                                                        @foreach ($brands as $key => $id)
-                                                            @if (\App\Brand::find($id) != null)
-                                                                <option value="{{ \App\Brand::find($id)->slug }}" @isset($brand_id) @if ($brand_id == $id) selected @endif @endisset>{{ \App\Brand::find($id)->name }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="sort-by-box px-1">
-                                                <div class="form-group">
-                                                    <label>{{__('Sellers')}}</label>
-                                                    <select class="form-control sortSelect" data-placeholder="{{__('All Sellers')}}" name="seller_id" onchange="filter()">
-                                                        <option value="">{{__('All Sellers')}}</option>
-                                                        @foreach (\App\Seller::all() as $key => $seller)
-                                                            <option value="{{ $seller->id }}" @isset($seller_id) @if ($seller_id == $seller->id) selected @endif @endisset>{{ $seller->user->shop->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="min_price" value="">
-                            <input type="hidden" name="max_price" value="">
-                        </form>
-                        <!-- <hr class=""> -->
-                        <div class="products-box-bar p-3 bg-white">
-                            <div class="row sm-no-gutters gutters-5">
-                                @foreach ($products as $key => $product)
-                                    <div class="col-xxl-3 col-xl-4 col-lg-3 col-md-4 col-6">
-                                        <div class="product-box-2 bg-white alt-box my-2">
-                                            <div class="position-relative overflow-hidden">
-                                                <a href="{{ route('product', $product->slug) }}" class="d-block product-image h-100" style="background-image:url('{{ asset($product->thumbnail_img) }}');" tabindex="0">
+                        <input type="hidden" name="min_price" value="">
+                        <input type="hidden" name="max_price" value="">
+                        <div class="row gutters-5 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2">
+                            @foreach ($products as $key => $product)
+                                <div class="col mb-3">
+                                    <div class="aiz-card-box h-100 border border-light rounded shadow-sm hov-shadow-md has-transition bg-white">
+                                        <div class="position-relative">
+                                            <a href="{{ route('product', $product->slug) }}" class="d-block">
+                                                <img
+                                                    class="img-fit lazyload mx-auto h-160px h-md-220px h-xl-270px h-xxl-250px"
+                                                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                                                    data-src="{{ uploaded_asset($product->thumbnail_img) }}"
+                                                    alt="{{  $product->getTranslation('name')  }}"
+                                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                                >
+                                            </a>
+                                            <div class="absolute-top-right aiz-p-hov-icon">
+                                                <a href="javascript:void(0)" onclick="addToWishList({{ $product->id }})" data-toggle="tooltip" data-title="{{ translate('Add to wishlist') }}" data-placement="left">
+                                                    <i class="la la-heart-o"></i>
                                                 </a>
-                                                <div class="product-btns clearfix">
-                                                    <button class="btn add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})" tabindex="0">
-                                                        <i class="la la-heart-o"></i>
-                                                    </button>
-                                                    <button class="btn add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})" tabindex="0">
-                                                        <i class="la la-refresh"></i>
-                                                    </button>
-                                                    <button class="btn quick-view" title="Quick view" onclick="showAddToCartModal({{ $product->id }})" tabindex="0">
-                                                        <i class="la la-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="p-3 border-top">
-                                                <h2 class="product-title p-0 text-truncate">
-                                                    <a href="{{ route('product', $product->slug) }}" tabindex="0">{{ __($product->name) }}</a>
-                                                </h2>
-                                                <div class="star-rating mb-1">
-                                                    {{ renderStarRating($product->rating) }}
-                                                </div>
-                                                <div class="clearfix">
-                                                    <div class="price-box float-left">
-                                                        @if(home_base_price($product->id) != home_discounted_base_price($product->id))
-                                                            <del class="old-product-price strong-400">{{ home_base_price($product->id) }}</del>
-                                                        @endif
-                                                        <span class="product-price strong-600">{{ home_discounted_base_price($product->id) }}</span>
-                                                    </div>
-                                                </div>
+                                                <a href="javascript:void(0)" onclick="addToCompare({{ $product->id }})" data-toggle="tooltip" data-title="{{ translate('Add to compare') }}" data-placement="left">
+                                                    <i class="las la-sync"></i>
+                                                </a>
+                                                <a href="javascript:void(0)" onclick="showAddToCartModal({{ $product->id }})" data-toggle="tooltip" data-title="{{ translate('Add to cart') }}" data-placement="left">
+                                                    <i class="las la-shopping-cart"></i>
+                                                </a>
                                             </div>
                                         </div>
-                                        <!-- <div class="product-card-1 mb-2">
-                                            <figure class="product-image-container">
-                                                <a href="{{ route('product', $product->slug) }}" class="product-image d-block" style="background-image:url('{{ asset($product->thumbnail_img) }}');">
-                                                </a>
-                                                <button class="btn-quickview" onclick="showAddToCartModal({{ $product->id }})"><i class="la la-eye"></i></button>
-                                                @if (strtotime($product->created_at) > strtotime('-10 day'))
-                                                    <span class="product-label label-hot">{{__('New')}}</span>
+                                        <div class="p-md-3 p-2 text-left">
+                                            <div class="fs-15">
+                                                @if(home_base_price($product->id) != home_discounted_base_price($product->id))
+                                                    <del class="fw-600 opacity-50 mr-1">{{ home_base_price($product->id) }}</del>
                                                 @endif
-                                            </figure>
-                                            <div class="product-details text-center">
-                                                <h2 class="product-title text-truncate mb-0">
-                                                    <a href="{{ route('product', $product->slug) }}">{{ __($product->name) }}</a>
-                                                </h2>
-                                                <div class="star-rating star-rating-sm mt-1 mb-2">
-                                                    {{ renderStarRating($product->rating) }}
-                                                </div>
-                                                <div class="price-box">
-                                                    @if(home_base_price($product->id) != home_discounted_base_price($product->id))
-                                                        <span class="old-product-price strong-300">{{ home_base_price($product->id) }}</span>
-                                                    @endif
-                                                    <span class="product-price strong-300"><strong>{{ home_discounted_base_price($product->id) }}</strong></span>
-                                                </div>
-
-                                                <div class="product-card-1-action">
-                                                    <button class="paction add-wishlist" title="Add to Wishlist" onclick="addToWishList({{ $product->id }})">
-                                                        <i class="la la-heart-o"></i>
-                                                    </button>
-
-                                                    <button type="button" class="paction add-cart btn btn-base-1 btn-circle btn-icon-left" onclick="showAddToCartModal({{ $product->id }})">
-                                                        <i class="fa la la-shopping-cart mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block">{{__('Add to cart')}}</span>
-                                                    </button>
-
-                                                    <button class="paction add-compare" title="Add to Compare" onclick="addToCompare({{ $product->id }})">
-                                                        <i class="la la-refresh"></i>
-                                                    </button>
-                                                </div>
+                                                <span class="fw-700 text-primary">{{ home_discounted_base_price($product->id) }}</span>
                                             </div>
-                                        </div> -->
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="products-pagination bg-white p-3">
-                            <nav aria-label="Center aligned pagination">
-                                <ul class="pagination justify-content-center">
-                                    {{ $products->links() }}
-                                </ul>
-                            </nav>
-                        </div>
+                                            <div class="rating rating-sm mt-1">
+                                                {{ renderStarRating($product->rating) }}
+                                            </div>
+                                            <h3 class="fw-600 fs-13 text-truncate-2 lh-1-4 mb-0">
+                                                <a href="{{ route('product', $product->slug) }}" class="d-block text-reset">{{ $product->getTranslation('name') }}</a>
+                                            </h3>
 
-                    <!-- </div> -->
+                                            @if (\App\Addon::where('unique_identifier', 'club_point')->first() != null && \App\Addon::where('unique_identifier', 'club_point')->first()->activated)
+                                                <div class="rounded px-2 mt-2 bg-soft-primary border-soft-primary border">
+                                                    {{ translate('Club Point') }}:
+                                                    <span class="fw-700 float-right">{{ $product->earn_point }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="aiz-pagination aiz-pagination-center mt-4">
+                            {{ $products->links() }}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </section>
 
