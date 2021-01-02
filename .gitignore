@@ -4,8 +4,10 @@
 /node_modules
 /public/hot
 /public/storage
+/public/uploads
 /storage/*.key
 /vendor
+/temp
 /.idea
 /.vscode
 /.vagrant
@@ -15,3 +17,9 @@ npm-debug.log
 yarn-error.log
 .DS_Store
 .idea/
+
+updates/
+composer.lock
+*.lock
+resources/lang/en.json
+.env
