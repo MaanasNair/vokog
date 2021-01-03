@@ -17,7 +17,7 @@
                             <select class="form-control aiz-selectpicker mb-2 mb-md-0" name="MAIL_DRIVER" onchange="checkMailDriver()">
                                 <option value="sendmail" @if (env('MAIL_DRIVER') == "sendmail") selected @endif>{{ translate('Sendmail') }}</option>
                                 <option value="smtp" @if (env('MAIL_DRIVER') == "smtp") selected @endif>{{ translate('SMTP') }}</option>
-                                <option value="mailgun" @if (env('MAIL_DRIVER') == "mailgun") selected @endif>{{ translate('Mailgun') }}</option>
+                                <!-- <option value="mailgun" @if (env('MAIL_DRIVER') == "mailgun") selected @endif>{{ translate('Mailgun') }}</option> -->
                             </select>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="mailgun">
+                    <!-- <div id="mailgun">
                         <div class="form-group row">
                             <input type="hidden" name="types[]" value="MAILGUN_DOMAIN">
                             <div class="col-md-3">
@@ -105,7 +105,7 @@
                                 <input type="text" class="form-control" name="MAILGUN_SECRET" value="{{  env('MAILGUN_SECRET') }}" placeholder="{{ translate('MAILGUN SECRET') }}" required>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group mb-0 text-right">
                         <button type="submit" class="btn btn-primary">{{translate('Save Configuration')}}</button>
                     </div>
