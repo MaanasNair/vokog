@@ -18,10 +18,26 @@ class SellerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sellers = Seller::orderBy('created_at', 'desc')->get();
-        return view('sellers.index', compact('sellers'));
+        $sort_search = null;
+        $approved = null;
+        $sellers = Seller::orderBy('created_at', 'desc');
+        if ($request->has('search')){
+            $sort_search = $request->search;
+            $user_ids = User::where('user_type', 'seller')->where(function($user) use ($sort_search){
+                $user->where('name', 'like', '%'.$sort_search.'%')->orWhere('email', 'like', '%'.$sort_search.'%');
+            })->pluck('id')->toArray();
+            $sellers = $sellers->where(function($seller) use ($user_ids){
+                $seller->whereIn('user_id', $user_ids);
+            });
+        }
+        if ($request->approved_status != null) {
+            $approved = $request->approved_status;
+            $sellers = $sellers->where('verification_status', $approved);
+        }
+        $sellers = $sellers->paginate(15);
+        return view('backend.sellers.index', compact('sellers', 'sort_search', 'approved'));
     }
 
     /**
@@ -31,7 +47,7 @@ class SellerController extends Controller
      */
     public function create()
     {
-        return view('sellers.create');
+        return view('backend.sellers.create');
     }
 
     /**
@@ -43,7 +59,7 @@ class SellerController extends Controller
     public function store(Request $request)
     {
         if(User::where('email', $request->email)->first() != null){
-            flash(__('Email already exists!'))->error();
+            flash(translate('Email already exists!'))->error();
             return back();
         }
         $user = new User;
@@ -59,12 +75,11 @@ class SellerController extends Controller
                 $shop->user_id = $user->id;
                 $shop->slug = 'demo-shop-'.$user->id;
                 $shop->save();
-                flash(__('Seller has been inserted successfully'))->success();
+                flash(translate('Seller has been inserted successfully'))->success();
                 return redirect()->route('sellers.index');
             }
         }
-
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 
@@ -88,7 +103,7 @@ class SellerController extends Controller
     public function edit($id)
     {
         $seller = Seller::findOrFail(decrypt($id));
-        return view('sellers.edit', compact('seller'));
+        return view('backend.sellers.edit', compact('seller'));
     }
 
     /**
@@ -109,12 +124,12 @@ class SellerController extends Controller
         }
         if($user->save()){
             if($seller->save()){
-                flash(__('Seller has been updated successfully'))->success();
+                flash(translate('Seller has been updated successfully'))->success();
                 return redirect()->route('sellers.index');
             }
         }
 
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 
@@ -127,24 +142,25 @@ class SellerController extends Controller
     public function destroy($id)
     {
         $seller = Seller::findOrFail($id);
-        Shop::destroy($seller->user->id);
-        Product::where('user_id', $seller->user->id)->delete();
-        Order::where('user_id', $seller->user->id)->delete();
-        OrderDetail::where('seller_id', $seller->user->id)->delete();
+        Shop::where('user_id', $seller->user_id)->delete();
+        Product::where('user_id', $seller->user_id)->delete();
+        Order::where('user_id', $seller->user_id)->delete();
+        OrderDetail::where('seller_id', $seller->user_id)->delete();
         User::destroy($seller->user->id);
         if(Seller::destroy($id)){
-            flash(__('Seller has been deleted successfully'))->success();
+            flash(translate('Seller has been deleted successfully'))->success();
             return redirect()->route('sellers.index');
         }
-
-        flash(__('Something went wrong'))->error();
-        return back();
+        else {
+            flash(translate('Something went wrong'))->error();
+            return back();
+        }
     }
 
     public function show_verification_request($id)
     {
         $seller = Seller::findOrFail($id);
-        return view('sellers.verification', compact('seller'));
+        return view('backend.sellers.verification', compact('seller'));
     }
 
     public function approve_seller($id)
@@ -152,10 +168,10 @@ class SellerController extends Controller
         $seller = Seller::findOrFail($id);
         $seller->verification_status = 1;
         if($seller->save()){
-            flash(__('Seller has been approved successfully'))->success();
+            flash(translate('Seller has been approved successfully'))->success();
             return redirect()->route('sellers.index');
         }
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 
@@ -165,10 +181,10 @@ class SellerController extends Controller
         $seller->verification_status = 0;
         $seller->verification_info = null;
         if($seller->save()){
-            flash(__('Seller verification request has been rejected successfully'))->success();
+            flash(translate('Seller verification request has been rejected successfully'))->success();
             return redirect()->route('sellers.index');
         }
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 
@@ -176,6 +192,48 @@ class SellerController extends Controller
     public function payment_modal(Request $request)
     {
         $seller = Seller::findOrFail($request->id);
-        return view('sellers.payment_modal', compact('seller'));
+        return view('backend.sellers.payment_modal', compact('seller'));
+    }
+
+    public function profile_modal(Request $request)
+    {
+        $seller = Seller::findOrFail($request->id);
+        return view('backend.sellers.profile_modal', compact('seller'));
+    }
+
+    public function updateApproved(Request $request)
+    {
+        $seller = Seller::findOrFail($request->id);
+        $seller->verification_status = $request->status;
+        if($seller->save()){
+            return 1;
+        }
+        return 0;
+    }
+
+    public function login($id)
+    {
+        $seller = Seller::findOrFail(decrypt($id));
+
+        $user  = $seller->user;
+
+        auth()->login($user, true);
+
+        return redirect()->route('dashboard');
+    }
+
+    public function ban($id) {
+        $seller = Seller::findOrFail($id);
+
+        if($seller->user->banned == 1) {
+            $seller->user->banned = 0;
+            flash(translate('Seller has been unbanned successfully'))->success();
+        } else {
+            $seller->user->banned = 1;
+            flash(translate('Seller has been banned successfully'))->success();
+        }
+
+        $seller->user->save();
+        return back();
     }
 }

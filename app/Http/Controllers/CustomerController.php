@@ -14,10 +14,21 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::orderBy('created_at', 'desc')->get();
-        return view('customers.index', compact('customers'));
+        $sort_search = null;
+        $customers = Customer::orderBy('created_at', 'desc');
+        if ($request->has('search')){
+            $sort_search = $request->search;
+            $user_ids = User::where('user_type', 'customer')->where(function($user) use ($sort_search){
+                $user->where('name', 'like', '%'.$sort_search.'%')->orWhere('email', 'like', '%'.$sort_search.'%');
+            })->pluck('id')->toArray();
+            $customers = $customers->where(function($customer) use ($user_ids){
+                $customer->whereIn('user_id', $user_ids);
+            });
+        }
+        $customers = $customers->paginate(15);
+        return view('backend.customer.customers.index', compact('customers', 'sort_search'));
     }
 
     /**
@@ -86,11 +97,38 @@ class CustomerController extends Controller
         Order::where('user_id', Customer::findOrFail($id)->user->id)->delete();
         User::destroy(Customer::findOrFail($id)->user->id);
         if(Customer::destroy($id)){
-            flash(__('Customer has been deleted successfully'))->success();
+            flash(translate('Customer has been deleted successfully'))->success();
             return redirect()->route('customers.index');
         }
 
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
+        return back();
+    }
+
+    public function login($id)
+    {
+        $customer = Customer::findOrFail(decrypt($id));
+
+        $user  = $customer->user;
+
+        auth()->login($user, true);
+
+        return redirect()->route('dashboard');
+    }
+
+    public function ban($id) {
+        $customer = Customer::findOrFail($id);
+
+        if($customer->user->banned == 1) {
+            $customer->user->banned = 0;
+            flash(translate('Customer UnBanned Successfully'))->success();
+        } else {
+            $customer->user->banned = 1;
+            flash(translate('Customer Banned Successfully'))->success();
+        }
+
+        $customer->user->save();
+
         return back();
     }
 }

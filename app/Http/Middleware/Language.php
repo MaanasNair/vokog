@@ -19,13 +19,15 @@ class Language
     public function handle($request, Closure $next)
     {
         if(Session::has('locale')){
-            $locale = Session::get('locale', Config::get('app.locale'));
+            $locale = Session::get('locale');
         }
         else{
-            $locale = 'en';
+            $locale = env('DEFAULT_LANGUAGE','en');
         }
 
         App::setLocale($locale);
+        $request->session()->put('locale', $locale);
+
         return $next($request);
     }
 }

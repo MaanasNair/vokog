@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Session;
 use File;
 use App\Language;
+use App\Translation;
 
 class LanguageController extends Controller
 {
@@ -13,18 +14,18 @@ class LanguageController extends Controller
     {
     	$request->session()->put('locale', $request->locale);
         $language = Language::where('code', $request->locale)->first();
-    	flash(__('Language changed to ').$language->name)->success();
+    	flash(translate('Language changed to ').$language->name)->success();
     }
 
     public function index(Request $request)
     {
-        $languages = Language::all();
-        return view('business_settings.languages.index', compact('languages'));
+        $languages = Language::paginate(10);
+        return view('backend.setup_configurations.languages.index', compact('languages'));
     }
 
     public function create(Request $request)
     {
-        return view('business_settings.languages.create');
+        return view('backend.setup_configurations.languages.create');
     }
 
     public function store(Request $request)
@@ -33,26 +34,33 @@ class LanguageController extends Controller
         $language->name = $request->name;
         $language->code = $request->code;
         if($language->save()){
-            saveJSONFile($language->code, openJSONFile('en'));
-            flash(__('Language has been inserted successfully'))->success();
+
+            flash(translate('Language has been inserted successfully'))->success();
             return redirect()->route('languages.index');
         }
         else{
-            flash(__('Something went wrong'))->error();
+            flash(translate('Something went wrong'))->error();
             return back();
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $sort_search = null;
         $language = Language::findOrFail(decrypt($id));
-        return view('business_settings.languages.language_view', compact('language'));
+        $lang_keys = Translation::where('lang', env('DEFAULT_LANGUAGE', 'en'));
+        if ($request->has('search')){
+            $sort_search = $request->search;
+            $lang_keys = $lang_keys->where('lang_key', 'like', '%'.$sort_search.'%');
+        }
+        $lang_keys = $lang_keys->paginate(50);
+        return view('backend.setup_configurations.languages.language_view', compact('language','lang_keys','sort_search'));
     }
 
     public function edit($id)
     {
         $language = Language::findOrFail(decrypt($id));
-        return view('business_settings.languages.edit', compact('language'));
+        return view('backend.setup_configurations.languages.edit', compact('language'));
     }
 
     public function update(Request $request, $id)
@@ -61,11 +69,11 @@ class LanguageController extends Controller
         $language->name = $request->name;
         $language->code = $request->code;
         if($language->save()){
-            flash(__('Language has been updated successfully'))->success();
+            flash(translate('Language has been updated successfully'))->success();
             return redirect()->route('languages.index');
         }
         else{
-            flash(__('Something went wrong'))->error();
+            flash(translate('Something went wrong'))->error();
             return back();
         }
     }
@@ -73,12 +81,21 @@ class LanguageController extends Controller
     public function key_value_store(Request $request)
     {
         $language = Language::findOrFail($request->id);
-        $data = openJSONFile($language->code);
-        foreach ($request->key as $key => $key) {
-            $data[$key] = $request->key[$key];
+        foreach ($request->values as $key => $value) {
+            $translation_def = Translation::where('lang_key', $key)->where('lang', $language->code)->first();
+            if($translation_def == null){
+                $translation_def = new Translation;
+                $translation_def->lang = $language->code;
+                $translation_def->lang_key = $key;
+                $translation_def->lang_value = $value;
+                $translation_def->save();
+            }
+            else {
+                $translation_def->lang_value = $value;
+                $translation_def->save();
+            }
         }
-        saveJSONFile($language->code, $data);
-        flash(__('Key-Value updated  for ').$language->name)->success();
+        flash(translate('Translations updated for ').$language->name)->success();
         return back();
     }
 
@@ -87,7 +104,7 @@ class LanguageController extends Controller
         $language = Language::findOrFail($request->id);
         $language->rtl = $request->status;
         if($language->save()){
-            flash(__('RTL status updated successfully'))->success();
+            flash(translate('RTL status updated successfully'))->success();
             return 1;
         }
         return 0;
@@ -95,13 +112,8 @@ class LanguageController extends Controller
 
     public function destroy($id)
     {
-        if(Language::destroy($id)){
-            flash(__('Language has been deleted successfully'))->success();
-            return redirect()->route('languages.index');
-        }
-        else{
-            flash(__('Something went wrong'))->error();
-            return back();
-        }
+        Language::destroy($id);
+        flash(translate('Language has been deleted successfully'))->success();
+        return redirect()->route('languages.index');
     }
 }

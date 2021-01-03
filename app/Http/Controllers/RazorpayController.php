@@ -10,6 +10,9 @@ use App\Order;
 use App\Seller;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Input;
+use App\CustomerPackage;
+use App\SellerPackage;
+use App\Http\Controllers\CustomerPackageController;
 use Auth;
 
 class RazorpayController extends Controller
@@ -19,31 +22,27 @@ class RazorpayController extends Controller
         if(Session::has('payment_type')){
             if(Session::get('payment_type') == 'cart_payment'){
                 $order = Order::findOrFail(Session::get('order_id'));
-                return view('frontend.payWithRazorpay', compact('order'));
-            }
-            elseif (Session::get('payment_type') == 'seller_payment') {
-                $seller = Seller::findOrFail(Session::get('payment_data')['seller_id']);
-                return view('razorpay.payWithRazorpay', compact('seller'));
+                return view('frontend.razor_wallet.order_payment_Razorpay', compact('order'));
             }
             elseif (Session::get('payment_type') == 'wallet_payment') {
-                return view('frontend.razor_wallet.payWithRazorpay');
+                return view('frontend.razor_wallet.wallet_payment_Razorpay');
+            }
+            elseif (Session::get('payment_type') == 'customer_package_payment') {
+                return view('frontend.razor_wallet.customer_package_payment_Razorpay');
+            }
+            elseif (Session::get('payment_type') == 'seller_package_payment') {
+                return view('frontend.razor_wallet.seller_package_payment_Razorpay');
             }
         }
 
     }
 
-    public function payment()
+    public function payment(Request $request)
     {
         //Input items of form
-        $input = Input::all();
+        $input = $request->all();
         //get API Configuration
-        if(Session::get('payment_type') == 'cart_payment' || Session::get('payment_type') == 'wallet_payment'){
-            $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
-        }
-        elseif (Session::get('payment_type') == 'seller_payment') {
-            $seller = Seller::findOrFail(Session::get('payment_data')['seller_id']);
-            $api = new Api($seller->razorpay_api_key, $seller->razorpay_secret);
-        }
+        $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
 
         //Fetch payment information by razorpay_payment_id
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
@@ -65,13 +64,17 @@ class RazorpayController extends Controller
                     $checkoutController = new CheckoutController;
                     return $checkoutController->checkout_done(Session::get('order_id'), $payment_detalis);
                 }
-                elseif (Session::get('payment_type') == 'seller_payment') {
-                    $commissionController = new CommissionController;
-                    return $commissionController->seller_payment_done(Session::get('payment_data'), $payment_detalis);
-                }
                 elseif (Session::get('payment_type') == 'wallet_payment') {
                     $walletController = new WalletController;
                     return $walletController->wallet_payment_done(Session::get('payment_data'), $payment_detalis);
+                }
+                elseif (Session::get('payment_type') == 'customer_package_payment') {
+                    $customer_package_controller = new CustomerPackageController;
+                    return $customer_package_controller->purchase_payment_done(Session::get('payment_data'), $payment);
+                }
+                elseif (Session::get('payment_type') == 'seller_package_payment') {
+                    $seller_package_controller = new SellerPackageController;
+                    return $seller_package_controller->purchase_payment_done(Session::get('payment_data'), $payment);
                 }
             }
         }

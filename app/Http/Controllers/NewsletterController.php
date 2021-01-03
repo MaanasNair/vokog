@@ -12,14 +12,14 @@ class NewsletterController extends Controller
 {
     public function index(Request $request)
     {
-    	$users = User::all();
+        $users = User::all();
         $subscribers = Subscriber::all();
-    	return view('newsletters.index', compact('users', 'subscribers'));
+        return view('backend.marketing.newsletters.index', compact('users', 'subscribers'));
     }
 
     public function send(Request $request)
     {
-        if (env('MAIL_USERNAME') != null && env('MAIL_PASSWORD') != null) {
+        if (env('MAIL_USERNAME') != null) {
             //sends newsletter to selected users
         	if ($request->has('user_emails')) {
                 foreach ($request->user_emails as $key => $email) {
@@ -28,7 +28,11 @@ class NewsletterController extends Controller
                     $array['from'] = env('MAIL_USERNAME');
                     $array['content'] = $request->content;
 
-                    Mail::to($email)->queue(new EmailManager($array));
+                    try {
+                        Mail::to($email)->queue(new EmailManager($array));
+                    } catch (\Exception $e) {
+                        //dd($e);
+                    }
             	}
             }
 
@@ -40,16 +44,36 @@ class NewsletterController extends Controller
                     $array['from'] = env('MAIL_USERNAME');
                     $array['content'] = $request->content;
 
-                    Mail::to($email)->queue(new EmailManager($array));
+                    try {
+                        Mail::to($email)->queue(new EmailManager($array));
+                    } catch (\Exception $e) {
+                        //dd($e);
+                    }
             	}
             }
         }
         else {
-            flash(__('Please configure SMTP first'))->error();
+            flash(translate('Please configure SMTP first'))->error();
             return back();
         }
 
-    	flash(__('Newsletter has been send'))->success();
+    	flash(translate('Newsletter has been send'))->success();
     	return redirect()->route('admin.dashboard');
+    }
+
+    public function testEmail(Request $request){
+        $array['view'] = 'emails.newsletter';
+        $array['subject'] = "SMTP Test";
+        $array['from'] = env('MAIL_USERNAME');
+        $array['content'] = "This is a test email.";
+
+        try {
+            Mail::to($request->email)->queue(new EmailManager($array));
+        } catch (\Exception $e) {
+            dd($e);
+        }
+
+        flash(translate('An email has been sent.'))->success();
+        return back();
     }
 }

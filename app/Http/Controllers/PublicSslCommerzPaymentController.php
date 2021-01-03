@@ -13,6 +13,9 @@ use App\Seller;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\WalletController;
+use App\CustomerPackage;
+use App\SellerPackage;
+use App\Http\Controllers\CustomerPackageController;
 session_start();
 
 class PublicSslCommerzPaymentController extends Controller
@@ -32,10 +35,14 @@ class PublicSslCommerzPaymentController extends Controller
                     $post_data['currency'] = "BDT";
                     $post_data['tran_id'] = substr(md5($request->session()->get('order_id')), 0, 10); // tran_id must be unique
 
+                    $post_data['value_a'] = $post_data['tran_id'];
+                    $post_data['value_b'] = $request->session()->get('order_id');
+                    $post_data['value_c'] = $request->session()->get('payment_type');
+
                     #Start to save these value  in session to pick in success page.
-                    $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
-                    $_SESSION['payment_values']['order_id']=$request->session()->get('order_id');
-                    $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
+                    // $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
+                    // $_SESSION['payment_values']['order_id']=$request->session()->get('order_id');
+                    // $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
                     #End to save these value  in session to pick in success page.
 
                     # CUSTOMER INFORMATION
@@ -47,37 +54,72 @@ class PublicSslCommerzPaymentController extends Controller
                     $post_data['cus_phone'] = $request->session()->get('shipping_info')['phone'];
                     $post_data['cus_email'] = $request->session()->get('shipping_info')['email'];
                 }
-                elseif (Session::get('payment_type') == 'seller_payment') {
-                    $post_data = array();
-                    $post_data['total_amount'] = $request->session()->get('payment_data')['amount']; # You cant not pay less than 10
-                    $post_data['currency'] = "BDT";
-                    $post_data['tran_id'] = substr(md5($request->session()->get('payment_data')['seller_id']), 0, 10); // tran_id must be unique
-
-                    #Start to save these value  in session to pick in success page.
-                    $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
-                    $_SESSION['payment_values']['payment_data']=$request->session()->get('payment_data');
-                    $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
-                    #End to save these value  in session to pick in success page.
-
-                    # CUSTOMER INFORMATION
-                    $seller = Seller::findOrFail($request->session()->get('payment_data')['seller_id']);
-                    $post_data['cus_name'] = $seller->user->name;
-                    $post_data['cus_add1'] = $seller->user->address;
-                    $post_data['cus_city'] = $seller->user->city;
-                    $post_data['cus_postcode'] = $seller->user->postal_code;
-                    $post_data['cus_country'] = $seller->user->country;
-                    $post_data['cus_phone'] = $seller->user->phone;
-                }
                 elseif (Session::get('payment_type') == 'wallet_payment') {
                     $post_data = array();
                     $post_data['total_amount'] = $request->session()->get('payment_data')['amount']; # You cant not pay less than 10
                     $post_data['currency'] = "BDT";
                     $post_data['tran_id'] = substr(md5(Auth::user()->id), 0, 10); // tran_id must be unique
 
+                    $post_data['value_a'] = $post_data['tran_id'];
+                    $post_data['value_b'] = json_encode($request->session()->get('payment_data'));
+                    $post_data['value_c'] = $request->session()->get('payment_type');
+
                     #Start to save these value  in session to pick in success page.
-                    $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
-                    $_SESSION['payment_values']['payment_data']=$request->session()->get('payment_data');
-                    $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
+                    // $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
+                    // $_SESSION['payment_values']['payment_data']=$request->session()->get('payment_data');
+                    // $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
+                    #End to save these value  in session to pick in success page.
+
+                    # CUSTOMER INFORMATION
+                    $user = Auth::user();
+                    $post_data['cus_name'] = $user->name;
+                    $post_data['cus_add1'] = $user->address;
+                    $post_data['cus_city'] = $user->city;
+                    $post_data['cus_postcode'] = $user->postal_code;
+                    $post_data['cus_country'] = $user->country;
+                    $post_data['cus_phone'] = $user->phone;
+                }
+                elseif (Session::get('payment_type') == 'customer_package_payment') {
+                    $customer_package = CustomerPackage::findOrFail(Session::get('payment_data')['customer_package_id']);
+                    $post_data = array();
+                    $post_data['total_amount'] = $customer_package->amount; # You cant not pay less than 10
+                    $post_data['currency'] = "BDT";
+                    $post_data['tran_id'] = substr(md5(Auth::user()->id), 0, 10); // tran_id must be unique
+
+                    $post_data['value_a'] = $post_data['tran_id'];
+                    $post_data['value_b'] = json_encode($request->session()->get('payment_data'));
+                    $post_data['value_c'] = $request->session()->get('payment_type');
+
+                    #Start to save these value  in session to pick in success page.
+                    // $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
+                    // $_SESSION['payment_values']['payment_data']=$request->session()->get('payment_data');
+                    // $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
+                    #End to save these value  in session to pick in success page.
+
+                    # CUSTOMER INFORMATION
+                    $user = Auth::user();
+                    $post_data['cus_name'] = $user->name;
+                    $post_data['cus_add1'] = $user->address;
+                    $post_data['cus_city'] = $user->city;
+                    $post_data['cus_postcode'] = $user->postal_code;
+                    $post_data['cus_country'] = $user->country;
+                    $post_data['cus_phone'] = $user->phone;
+                }
+                elseif (Session::get('payment_type') == 'seller_package_payment') {
+                    $seller_package = SellerPackage::findOrFail(Session::get('payment_data')['seller_package_id']);
+                    $post_data = array();
+                    $post_data['total_amount'] = $seller_package->amount; # You cant not pay less than 10
+                    $post_data['currency'] = "BDT";
+                    $post_data['tran_id'] = substr(md5(Auth::user()->id), 0, 10); // tran_id must be unique
+
+                    $post_data['value_a'] = $post_data['tran_id'];
+                    $post_data['value_b'] = json_encode($request->session()->get('payment_data'));
+                    $post_data['value_c'] = $request->session()->get('payment_type');
+
+                    #Start to save these value  in session to pick in success page.
+                    // $_SESSION['payment_values']['tran_id']=$post_data['tran_id'];
+                    // $_SESSION['payment_values']['payment_data']=$request->session()->get('payment_data');
+                    // $_SESSION['payment_values']['payment_type']=$request->session()->get('payment_type');
                     #End to save these value  in session to pick in success page.
 
                     # CUSTOMER INFORMATION
@@ -128,22 +170,26 @@ class PublicSslCommerzPaymentController extends Controller
 
         $sslc = new SSLCommerz();
         #Start to received these value from session. which was saved in index function.
-        $tran_id = $_SESSION['payment_values']['tran_id'];
+        $tran_id = $request->value_a;
         #End to received these value from session. which was saved in index function.
         $payment = json_encode($request->all());
 
-        if(isset($_SESSION['payment_values']['payment_type'])){
-            if($_SESSION['payment_values']['payment_type'] == 'cart_payment'){
+        if(isset($request->value_c)){
+            if($request->value_c == 'cart_payment'){
                 $checkoutController = new CheckoutController;
-                return $checkoutController->checkout_done($_SESSION['payment_values']['order_id'], $payment);
+                return $checkoutController->checkout_done($request->value_b, $payment);
             }
-            elseif ($_SESSION['payment_values']['payment_type'] == 'seller_payment') {
-                $commissionController = new CommissionController;
-                return $commissionController->seller_payment_done($_SESSION['payment_values']['payment_data'], $payment);
-            }
-            elseif ($_SESSION['payment_values']['payment_type'] == 'wallet_payment') {
+            elseif ($request->value_c == 'wallet_payment') {
                 $walletController = new WalletController;
-                return $walletController->wallet_payment_done($_SESSION['payment_values']['payment_data'], $payment);
+                return $walletController->wallet_payment_done(json_decode($request->value_b), $payment);
+            }
+            elseif ($request->value_c == 'customer_package_payment') {
+                $customer_package_controller = new CustomerPackageController;
+                return $customer_package_controller->purchase_payment_done(json_decode($request->value_b), $payment);
+            }
+            elseif ($request->value_c == 'seller_package_payment') {
+                $seller_package_controller = new SellerPackageController;
+                return $seller_package_controller->purchase_payment_done(json_decode($request->value_b), $payment);
             }
         }
     }
@@ -152,7 +198,7 @@ class PublicSslCommerzPaymentController extends Controller
     {
         $request->session()->forget('order_id');
         $request->session()->forget('payment_data');
-        flash(__('Payment Failed'))->success();
+        flash(translate('Payment Failed'))->success();
         return redirect()->url()->previous();
     }
 
@@ -160,7 +206,7 @@ class PublicSslCommerzPaymentController extends Controller
     {
         $request->session()->forget('order_id');
         $request->session()->forget('payment_data');
-        flash(__('Payment cancelled'))->success();
+        flash(translate('Payment cancelled'))->success();
     	return redirect()->url()->previous();
     }
 
@@ -172,7 +218,7 @@ class PublicSslCommerzPaymentController extends Controller
 
           $tran_id = $request->input('tran_id');
 
-        #Check order status in order tabel against the transaction id or order id.
+          #Check order status in order tabel against the transaction id or order id.
           $order = Order::findOrFail($request->session()->get('order_id'));
 
                 if($order->payment_status =='Pending')

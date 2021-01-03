@@ -15,7 +15,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('partials.admin_profile');
+        return view('backend.admin_profile.index');
     }
 
     /**
@@ -70,18 +70,24 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(env('DEMO_MODE') == 'On'){
+            flash(translate('Sorry! the action is not permitted in demo '))->error();
+            return back();
+        }
+
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
         if($request->new_password != null && ($request->new_password == $request->confirm_password)){
             $user->password = Hash::make($request->new_password);
         }
+        $user->avatar_original = $request->avatar;
         if($user->save()){
-            flash(__('Your Profile has been updated successfully!'))->success();
+            flash(translate('Your Profile has been updated successfully!'))->success();
             return back();
         }
 
-        flash(__('Sorry! Something went wrong.'))->error();
+        flash(translate('Sorry! Something went wrong.'))->error();
         return back();
     }
 

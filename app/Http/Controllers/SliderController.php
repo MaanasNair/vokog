@@ -39,10 +39,11 @@ class SliderController extends Controller
         if($request->hasFile('photos')){
             foreach ($request->photos as $key => $photo) {
                 $slider = new Slider;
+                $slider->link = $request->url;
                 $slider->photo = $photo->store('uploads/sliders');
                 $slider->save();
             }
-            flash(__('Slider has been inserted successfully'))->success();
+            flash(translate('Slider has been inserted successfully'))->success();
         }
         return redirect()->route('home_settings.index');
     }
@@ -76,6 +77,7 @@ class SliderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
         $slider = Slider::find($id);
@@ -99,10 +101,10 @@ class SliderController extends Controller
         $slider = Slider::findOrFail($id);
         if(Slider::destroy($id)){
             //unlink($slider->photo);
-            flash(__('Slider has been deleted successfully'))->success();
+            flash(translate('Slider has been deleted successfully'))->success();
         }
         else{
-            flash(__('Something went wrong'))->error();
+            flash(translate('Something went wrong'))->error();
         }
         return redirect()->route('home_settings.index');
     }

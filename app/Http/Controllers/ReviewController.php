@@ -15,10 +15,10 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reviews = Review::all();
-        return view('reviews.index', compact('reviews'));
+        $reviews = Review::orderBy('created_at', 'desc')->paginate(15);
+        return view('backend.product.reviews.index', compact('reviews'));
     }
 
 
@@ -32,7 +32,13 @@ class ReviewController extends Controller
                     ->distinct()
                     ->paginate(9);
 
-        return view('frontend.seller.reviews', compact('reviews'));
+        foreach ($reviews as $key => $value) {
+            $review = \App\Review::find($value->id);
+            $review->viewed = 1;
+            $review->save();
+        }
+
+        return view('frontend.user.seller.reviews', compact('reviews'));
     }
 
     /**
@@ -58,6 +64,7 @@ class ReviewController extends Controller
         $review->user_id = Auth::user()->id;
         $review->rating = $request->rating;
         $review->comment = $request->comment;
+        $review->viewed = '0';
         if($review->save()){
             $product = Product::findOrFail($request->product_id);
             if(count(Review::where('product_id', $product->id)->where('status', 1)->get()) > 0){
@@ -67,10 +74,10 @@ class ReviewController extends Controller
                 $product->rating = 0;
             }
             $product->save();
-            flash('Review has been submitted successfully')->success();
+            flash(translate('Review has been submitted successfully'))->success();
             return back();
         }
-        flash('Something went wrong')->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 

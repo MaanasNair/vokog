@@ -5,6 +5,8 @@ namespace App\Http;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsSeller;
 use App\Http\Middleware\IsUser;
+use App\Http\Middleware\CheckoutMiddleware;
+use App\Http\Middleware\IsUnbanned;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -31,7 +33,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
+            //\App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
@@ -39,11 +41,11 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\Language::class,
-            // \App\Http\Middleware\HttpsProtocol::class
+            \App\Http\Middleware\HttpsProtocol::class
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:100,1',
             'bindings',
         ],
     ];
@@ -59,6 +61,8 @@ class Kernel extends HttpKernel
         'admin' => IsAdmin::class,
         'seller' => IsSeller::class,
         'user' => IsUser::class,
+        'unbanned' => IsUnbanned::class,
+        'checkout' => CheckoutMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,

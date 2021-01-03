@@ -8,6 +8,7 @@ use App\SubSubCategory;
 use App\Category;
 use Session;
 use App\Color;
+use Cookie;
 
 class CartController extends Controller
 {
@@ -35,8 +36,16 @@ class CartController extends Controller
 
         $data = array();
         $data['id'] = $product->id;
+        $data['owner_id'] = $product->user_id;
         $str = '';
         $tax = 0;
+
+        if($product->digital != 1 && $request->quantity < $product->min_qty) {
+            return array('status' => 0, 'view' => view('frontend.partials.minQtyNotSatisfied', [
+                'min_qty' => $product->min_qty
+            ])->render());
+        }
+
 
         //check the color enabled or disabled for the product
         if($request->has('color')){
@@ -44,28 +53,27 @@ class CartController extends Controller
             $str = Color::where('code', $request['color'])->first()->name;
         }
 
-        //Gets all the choice values of customer choice option and generate a string like Black-S-Cotton
-        foreach (json_decode(Product::find($request->id)->choice_options) as $key => $choice) {
-            $data[$choice->name] = $request[$choice->name];
-            if($str != null){
-                $str .= '-'.str_replace(' ', '', $request[$choice->name]);
-            }
-            else{
-                $str .= str_replace(' ', '', $request[$choice->name]);
+        if ($product->digital != 1) {
+            //Gets all the choice values of customer choice option and generate a string like Black-S-Cotton
+            foreach (json_decode(Product::find($request->id)->choice_options) as $key => $choice) {
+                if($str != null){
+                    $str .= '-'.str_replace(' ', '', $request['attribute_id_'.$choice->attribute_id]);
+                }
+                else{
+                    $str .= str_replace(' ', '', $request['attribute_id_'.$choice->attribute_id]);
+                }
             }
         }
 
-        //Check the string and decreases quantity for the stock
-        if($str != null){
-            $variations = json_decode($product->variations);
-            $price = $variations->$str->price;
-            if($variations->$str->qty >= $request['quantity']){
-                // $variations->$str->qty -= $request['quantity'];
-                // $product->variations = json_encode($variations);
-                // $product->save();
-            }
-            else{
-                return view('frontend.partials.outOfStockCart');
+        $data['variant'] = $str;
+
+        if($str != null && $product->variant_product){
+            $product_stock = $product->stocks->where('variant', $str)->first();
+            $price = $product_stock->price;
+            $quantity = $product_stock->qty;
+
+            if($quantity < $request['quantity']){
+                return array('status' => 0, 'view' => view('frontend.partials.outOfStockCart')->render());
             }
         }
         else{
@@ -74,17 +82,22 @@ class CartController extends Controller
 
         //discount calculation based on flash deal and regular discount
         //calculation of taxes
-        $flash_deal = \App\FlashDeal::where('status', 1)->first();
-        if ($flash_deal != null && strtotime(date('d-m-Y')) >= $flash_deal->start_date && strtotime(date('d-m-Y')) <= $flash_deal->end_date && \App\FlashDealProduct::where('flash_deal_id', $flash_deal->id)->where('product_id', $product->id)->first() != null) {
-            $flash_deal_product = \App\FlashDealProduct::where('flash_deal_id', $flash_deal->id)->where('product_id', $product->id)->first();
-            if($flash_deal_product->discount_type == 'percent'){
-                $price -= ($price*$flash_deal_product->discount)/100;
-            }
-            elseif($flash_deal_product->discount_type == 'amount'){
-                $price -= $flash_deal_product->discount;
+        $flash_deals = \App\FlashDeal::where('status', 1)->get();
+        $inFlashDeal = false;
+        foreach ($flash_deals as $flash_deal) {
+            if ($flash_deal != null && $flash_deal->status == 1  && strtotime(date('d-m-Y')) >= $flash_deal->start_date && strtotime(date('d-m-Y')) <= $flash_deal->end_date && \App\FlashDealProduct::where('flash_deal_id', $flash_deal->id)->where('product_id', $product->id)->first() != null) {
+                $flash_deal_product = \App\FlashDealProduct::where('flash_deal_id', $flash_deal->id)->where('product_id', $product->id)->first();
+                if($flash_deal_product->discount_type == 'percent'){
+                    $price -= ($price*$flash_deal_product->discount)/100;
+                }
+                elseif($flash_deal_product->discount_type == 'amount'){
+                    $price -= $flash_deal_product->discount;
+                }
+                $inFlashDeal = true;
+                break;
             }
         }
-        else{
+        if (!$inFlashDeal) {
             if($product->discount_type == 'percent'){
                 $price -= ($price*$product->discount)/100;
             }
@@ -94,34 +107,60 @@ class CartController extends Controller
         }
 
         if($product->tax_type == 'percent'){
-            $price += ($price*$product->tax)/100;
+            $tax = ($price*$product->tax)/100;
         }
         elseif($product->tax_type == 'amount'){
-            $price += $product->tax;
+            $tax = $product->tax;
         }
 
         $data['quantity'] = $request['quantity'];
         $data['price'] = $price;
         $data['tax'] = $tax;
-        $data['shipping_type'] = $product->shipping_type;
+        $data['shipping'] = 0;
+        $data['product_referral_code'] = null;
+        $data['digital'] = $product->digital;
 
-        if($product->shipping_type == 'free'){
-            $data['shipping'] = 0;
+        if ($request['quantity'] == null){
+            $data['quantity'] = 1;
         }
-        else{
-            $data['shipping'] = $product->shipping_cost;
+
+        if(Cookie::has('referred_product_id') && Cookie::get('referred_product_id') == $product->id) {
+            $data['product_referral_code'] = Cookie::get('product_referral_code');
         }
 
         if($request->session()->has('cart')){
-            $cart = $request->session()->get('cart', collect([]));
-            $cart->push($data);
+            $foundInCart = false;
+            $cart = collect();
+
+            foreach ($request->session()->get('cart') as $key => $cartItem){
+                if($cartItem['id'] == $request->id){
+                    if($cartItem['variant'] == $str && $str != null){
+                        $product_stock = $product->stocks->where('variant', $str)->first();
+                        $quantity = $product_stock->qty;
+
+                        if($quantity < $cartItem['quantity'] + $request['quantity']){
+                            return array('status' => 0, 'view' => view('frontend.partials.outOfStockCart')->render());
+                        }
+                        else{
+                            $foundInCart = true;
+                            $cartItem['quantity'] += $request['quantity'];
+                        }
+                    }
+                }
+                $cart->push($cartItem);
+            }
+
+            if (!$foundInCart) {
+                $cart->push($data);
+            }
+            $request->session()->put('cart', $cart);
         }
         else{
             $cart = collect([$data]);
             $request->session()->put('cart', $cart);
         }
 
-        return view('frontend.partials.addedToCart', compact('product', 'data'));
+        return array('status' => 1, 'view' => view('frontend.partials.addedToCart', compact('product', 'data'))->render());
     }
 
     //removes from Cart
@@ -133,7 +172,7 @@ class CartController extends Controller
             $request->session()->put('cart', $cart);
         }
 
-        return view('frontend.partials.cart_details');;
+        return view('frontend.partials.cart_details');
     }
 
     //updated the quantity for a cart item
@@ -142,7 +181,21 @@ class CartController extends Controller
         $cart = $request->session()->get('cart', collect([]));
         $cart = $cart->map(function ($object, $key) use ($request) {
             if($key == $request->key){
-                $object['quantity'] = $request->quantity;
+                $product = \App\Product::find($object['id']);
+                if($object['variant'] != null && $product->variant_product){
+                    $product_stock = $product->stocks->where('variant', $object['variant'])->first();
+                    $quantity = $product_stock->qty;
+                    if($quantity >= $request->quantity){
+                        if($request->quantity >= $product->min_qty){
+                            $object['quantity'] = $request->quantity;
+                        }
+                    }
+                }
+                elseif ($product->current_stock >= $request->quantity) {
+                    if($request->quantity >= $product->min_qty){
+                        $object['quantity'] = $request->quantity;
+                    }
+                }
             }
             return $object;
         });

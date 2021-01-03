@@ -12,27 +12,21 @@ class CurrencyController extends Controller
     {
     	$request->session()->put('currency_code', $request->currency_code);
         $currency = Currency::where('code', $request->currency_code)->first();
-    	flash(__('Currency changed to ').$currency->name)->success();
+    	flash(translate('Currency changed to ').$currency->name)->success();
     }
 
     public function currency(Request $request)
     {
-        $currencies = Currency::all();
-        $active_currencies = Currency::where('status', 1)->get();
-        return view('business_settings.currency', compact('currencies', 'active_currencies'));
-    }
-
-    public function updateCurrency(Request $request)
-    {
-        $currency = Currency::findOrFail($request->id);
-        $currency->exchange_rate = $request->exchange_rate;
-        $currency->status = $request->status;
-        if($currency->save()){
-            flash('Currency updated successfully')->success();
-            return '1';
+        $sort_search =null;
+        $currencies = Currency::orderBy('created_at', 'desc');
+        if ($request->has('search')){
+            $sort_search = $request->search;
+            $currencies = $currencies->where('name', 'like', '%'.$sort_search.'%');
         }
-        flash('Something went wrong')->error();
-        return '0';
+        $currencies = $currencies->paginate(10);
+
+        $active_currencies = Currency::where('status', 1)->get();
+        return view('backend.setup_configurations.currencies.index', compact('currencies', 'active_currencies','sort_search'));
     }
 
     public function updateYourCurrency(Request $request)
@@ -42,12 +36,53 @@ class CurrencyController extends Controller
         $currency->symbol = $request->symbol;
         $currency->code = $request->code;
         $currency->exchange_rate = $request->exchange_rate;
+        $currency->status = $currency->status;
+        if($currency->save()){
+            flash(translate('Currency updated successfully'))->success();
+            return redirect()->route('currency.index');
+        }
+        else {
+            flash(translate('Something went wrong'))->error();
+            return redirect()->route('currency.index');
+        }
+    }
+
+    public function create()
+    {
+        return view('backend.setup_configurations.currencies.create');
+    }
+
+    public function edit(Request $request)
+    {
+        $currency = Currency::findOrFail($request->id);
+        return view('backend.setup_configurations.currencies.edit', compact('currency'));
+    }
+
+    public function store(Request $request)
+    {
+        $currency = new Currency;
+        $currency->name = $request->name;
+        $currency->symbol = $request->symbol;
+        $currency->code = $request->code;
+        $currency->exchange_rate = $request->exchange_rate;
+        $currency->status = '0';
+        if($currency->save()){
+            flash(translate('Currency updated successfully'))->success();
+            return redirect()->route('currency.index');
+        }
+        else {
+            flash(translate('Something went wrong'))->error();
+            return redirect()->route('currency.index');
+        }
+    }
+
+    public function update_status(Request $request)
+    {
+        $currency = Currency::findOrFail($request->id);
         $currency->status = $request->status;
         if($currency->save()){
-            flash('Currency updated successfully')->success();
-            return '1';
+            return 1;
         }
-        flash('Something went wrong')->error();
-        return '0';
+        return 0;
     }
 }

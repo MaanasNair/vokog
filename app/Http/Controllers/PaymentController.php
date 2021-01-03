@@ -16,7 +16,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = Payment::where('seller_id', Auth::user()->seller->id)->paginate(9);
-        return view('frontend.seller.payment_history', compact('payments'));
+        return view('frontend.user.seller.payment_history', compact('payments'));
     }
 
     /**
@@ -26,8 +26,8 @@ class PaymentController extends Controller
      */
     public function payment_histories(Request $request)
     {
-        $payments = Payment::orderBy('created_at', 'desc')->get();
-        return view('sellers.payment_histories', compact('payments'));
+        $payments = Payment::orderBy('created_at', 'desc')->paginate(15);
+        return view('backend.sellers.payment_histories.index', compact('payments'));
     }
 
     /**
@@ -60,7 +60,11 @@ class PaymentController extends Controller
     public function show($id)
     {
         $payments = Payment::where('seller_id', decrypt($id))->orderBy('created_at', 'desc')->get();
-        return view('sellers.payment', compact('payments'));
+        if($payments->count() > 0){
+            return view('backend.sellers.payment', compact('payments'));
+        }
+        flash(translate('No payment history available for this seller'))->warning();
+        return back();
     }
 
     /**

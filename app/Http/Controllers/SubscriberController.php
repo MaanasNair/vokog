@@ -14,7 +14,8 @@ class SubscriberController extends Controller
      */
     public function index()
     {
-        //
+        $subscribers = Subscriber::orderBy('created_at', 'desc')->paginate(15);
+        return view('backend.marketing.subscribers.index', compact('subscribers'));
     }
 
     /**
@@ -40,10 +41,10 @@ class SubscriberController extends Controller
             $subscriber = new Subscriber;
             $subscriber->email = $request->email;
             $subscriber->save();
-            flash(__('You have subscribed successfully'))->success();
+            flash(translate('You have subscribed successfully'))->success();
         }
         else{
-            flash(__('You are  already a subscriber'))->success();
+            flash(translate('You are  already a subscriber'))->success();
         }
         return back();
     }

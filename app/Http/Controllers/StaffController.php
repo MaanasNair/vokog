@@ -17,8 +17,8 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = Staff::all();
-        return view('staffs.index', compact('staffs'));
+        $staffs = Staff::paginate(10);
+        return view('backend.staff.staffs.index', compact('staffs'));
     }
 
     /**
@@ -29,7 +29,7 @@ class StaffController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('staffs.create', compact('roles'));
+        return view('backend.staff.staffs.create', compact('roles'));
     }
 
     /**
@@ -40,22 +40,25 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->user_type = "staff";
-        $user->password = Hash::make($request->password);
-        if($user->save()){
-            $staff = new Staff;
-            $staff->user_id = $user->id;
-            $staff->role_id = $request->role_id;
-            if($staff->save()){
-                flash(__('Staff has been inserted successfully'))->success();
-                return redirect()->route('staffs.index');
+        if(User::where('email', $request->email)->first() == null){
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->mobile;
+            $user->user_type = "staff";
+            $user->password = Hash::make($request->password);
+            if($user->save()){
+                $staff = new Staff;
+                $staff->user_id = $user->id;
+                $staff->role_id = $request->role_id;
+                if($staff->save()){
+                    flash(translate('Staff has been inserted successfully'))->success();
+                    return redirect()->route('staffs.index');
+                }
             }
         }
 
-        flash(__('Something went wrong'))->error();
+        flash(translate('Email already used'))->error();
         return back();
     }
 
@@ -80,7 +83,7 @@ class StaffController extends Controller
     {
         $staff = Staff::findOrFail(decrypt($id));
         $roles = Role::all();
-        return view('staffs.edit', compact('staff', 'roles'));
+        return view('backend.staff.staffs.edit', compact('staff', 'roles'));
     }
 
     /**
@@ -96,17 +99,19 @@ class StaffController extends Controller
         $user = $staff->user;
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->phone = $request->mobile;
         if(strlen($request->password) > 0){
             $user->password = Hash::make($request->password);
         }
         if($user->save()){
+            $staff->role_id = $request->role_id;
             if($staff->save()){
-                flash(__('Staff has been updated successfully'))->success();
+                flash(translate('Staff has been updated successfully'))->success();
                 return redirect()->route('staffs.index');
             }
         }
 
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 
@@ -120,11 +125,11 @@ class StaffController extends Controller
     {
         User::destroy(Staff::findOrFail($id)->user->id);
         if(Staff::destroy($id)){
-            flash(__('Staff has been deleted successfully'))->success();
+            flash(translate('Staff has been deleted successfully'))->success();
             return redirect()->route('staffs.index');
         }
 
-        flash(__('Something went wrong'))->error();
+        flash(translate('Something went wrong'))->error();
         return back();
     }
 }

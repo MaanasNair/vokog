@@ -9,6 +9,7 @@ use App\Seller;
 use App\BusinessSetting;
 use Auth;
 use Hash;
+use App\Notifications\EmailVerificationNotification;
 
 class ShopController extends Controller
 {
@@ -26,7 +27,7 @@ class ShopController extends Controller
     public function index()
     {
         $shop = Auth::user()->shop;
-        return view('frontend.seller.shop', compact('shop'));
+        return view('frontend.user.seller.shop', compact('shop'));
     }
 
     /**
@@ -37,7 +38,7 @@ class ShopController extends Controller
     public function create()
     {
         if(Auth::check() && Auth::user()->user_type == 'admin'){
-            flash(__('Admin can not be a seller'))->error();
+            flash(translate('Admin can not be a seller'))->error();
             return back();
         }
         else{
@@ -56,7 +57,7 @@ class ShopController extends Controller
         $user = null;
         if(!Auth::check()){
             if(User::where('email', $request->email)->first() != null){
-                flash(__('Email already exists!'))->error();
+                flash(translate('Email already exists!'))->error();
                 return back();
             }
             if($request->password == $request->password_confirmation){
@@ -68,7 +69,7 @@ class ShopController extends Controller
                 $user->save();
             }
             else{
-                flash(__('Sorry! Password did not match.'))->error();
+                flash(translate('Sorry! Password did not match.'))->error();
                 return back();
             }
         }
@@ -78,11 +79,6 @@ class ShopController extends Controller
                 $user->customer->delete();
             }
             $user->user_type = "seller";
-            $user->save();
-        }
-
-        if(BusinessSetting::where('type', 'email_verification')->first()->value != 1){
-            $user->email_verified_at = date('Y-m-d H:m:s');
             $user->save();
         }
 
@@ -99,7 +95,15 @@ class ShopController extends Controller
 
             if($shop->save()){
                 auth()->login($user, false);
-                flash(__('Your Shop has been created successfully!'))->success();
+                if(BusinessSetting::where('type', 'email_verification')->first()->value != 1){
+                    $user->email_verified_at = date('Y-m-d H:m:s');
+                    $user->save();
+                }
+                else {
+                    $user->notify(new EmailVerificationNotification());
+                }
+
+                flash(translate('Your Shop has been created successfully!'))->success();
                 return redirect()->route('shops.index');
             }
             else{
@@ -109,7 +113,7 @@ class ShopController extends Controller
             }
         }
 
-        flash(__('Sorry! Something went wrong.'))->error();
+        flash(translate('Sorry! Something went wrong.'))->error();
         return back();
     }
 
@@ -148,14 +152,21 @@ class ShopController extends Controller
 
         if($request->has('name') && $request->has('address')){
             $shop->name = $request->name;
+            if ($request->has('shipping_cost')) {
+                $shop->shipping_cost = $request->shipping_cost;
+            }
             $shop->address = $request->address;
             $shop->slug = preg_replace('/\s+/', '-', $request->name).'-'.$shop->id;
 
             $shop->meta_title = $request->meta_title;
             $shop->meta_description = $request->meta_description;
+            $shop->logo = $request->logo;
 
-            if($request->hasFile('logo')){
-                $shop->logo = $request->logo->store('uploads/shop/logo');
+            if ($request->has('pick_up_point_id')) {
+                $shop->pick_up_point_id = json_encode($request->pick_up_point_id);
+            }
+            else {
+                $shop->pick_up_point_id = json_encode(array());
             }
         }
 
@@ -164,32 +175,18 @@ class ShopController extends Controller
             $shop->google = $request->google;
             $shop->twitter = $request->twitter;
             $shop->youtube = $request->youtube;
-            $shop->instagram = $request->instagram;
         }
 
         else{
-            if($request->has('previous_sliders')){
-                $sliders = $request->previous_sliders;
-            }
-            else{
-                $sliders = array();
-            }
-
-            if($request->hasFile('sliders')){
-                foreach ($request->sliders as $key => $slider) {
-                    array_push($sliders, $slider->store('uploads/shop/sliders'));
-                }
-            }
-
-            $shop->sliders = json_encode($sliders);
+            $shop->sliders = $request->sliders;
         }
 
         if($shop->save()){
-            flash(__('Your Shop has been updated successfully!'))->success();
+            flash(translate('Your Shop has been updated successfully!'))->success();
             return back();
         }
 
-        flash(__('Sorry! Something went wrong.'))->error();
+        flash(translate('Sorry! Something went wrong.'))->error();
         return back();
     }
 
@@ -208,10 +205,10 @@ class ShopController extends Controller
     {
         if(Auth::user()->seller->verification_info == null){
             $shop = Auth::user()->shop;
-            return view('frontend.seller.verify_form', compact('shop'));
+            return view('frontend.user.seller.verify_form', compact('shop'));
         }
         else {
-            flash(__('Sorry! You have sent verification request already.'))->error();
+            flash(translate('Sorry! You have sent verification request already.'))->error();
             return back();
         }
     }
@@ -248,11 +245,11 @@ class ShopController extends Controller
         $seller = Auth::user()->seller;
         $seller->verification_info = json_encode($data);
         if($seller->save()){
-            flash(__('Your shop verification request has been submitted successfully!'))->success();
+            flash(translate('Your shop verification request has been submitted successfully!'))->success();
             return redirect()->route('dashboard');
         }
 
-        flash(__('Sorry! Something went wrong.'))->error();
+        flash(translate('Sorry! Something went wrong.'))->error();
         return back();
     }
 }
